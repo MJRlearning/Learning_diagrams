@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Education Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #1a73e8;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #1a73e8;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            cursor: pointer;
+        }
+        .left {
+            left: 0;
+        }
+        .right {
+            left: 50%;
+        }
+        .right::after {
+            left: -16px;
+        }
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .year {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        #details {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI in Education Timeline</h1>
+    <div class="timeline" id="timeline"></div>
+    <div id="details"></div>
+
+    <script>
+        const timelineData = [
+            { year: 1950, title: "Birth of AI", description: "Early AI research, foundational algorithms, and the Turing Test were introduced." },
+            { year: 1970, title: "Educational Software", description: "Introduction of computer-based learning and educational games." },
+            { year: 1980, title: "Internet and Online Learning", description: "Expansion of distance learning through the internet." },
+            { year: 2000, title: "Adaptive Learning", description: "AI begins to tailor learning experiences to individual student needs." },
+            { year: 2010, title: "MOOCs and Big Data", description: "Massive Open Online Courses (MOOCs) emerge, and big data analytics are applied to education." },
+            { year: 2016, title: "Google DeepMind's AlphaGo", description: "Demonstrates advanced AI problem-solving capabilities." },
+            { year: 2019, title: "GPT 1 & 2", description: "More advanced language models showing significant improvements in text generation." },
+            { year: 2020, title: "GPT-3", description: "Breakthrough in language models' capabilities, facilitating the creation of tutoring systems and educational chatbots." },
+            { year: 2022, title: "AI Tutoring and Personalization", description: "AI systems begin providing personalized tutoring and learning assessments." },
+            { year: 2023, title: "GPT-4 and Beyond", description: "Introduction of GPT-4, with even more nuanced understanding and interaction, finding applications in creating educational content, personalized learning pathways, and interactive learning environments." }
+        ];
+
+        const timeline = document.getElementById('timeline');
+        const details = document.getElementById('details');
+
+        timelineData.forEach((item, index) => {
+            const timelineItem = document.createElement('div');
+            timelineItem.className = `timeline-item ${index % 2 === 0 ? 'left' : 'right'}`;
+            timelineItem.innerHTML = `
+                <div class="content">
+                    <span class="year">${item.year}</span>
+                    <h2>${item.title}</h2>
+                </div>
+            `;
+            timelineItem.addEventListener('click', () => showDetails(item));
+            timeline.appendChild(timelineItem);
+        });
+
+        function showDetails(item) {
+            details.innerHTML = `
+                <h2>${item.year}: ${item.title}</h2>
+                <p>${item.description}</p>
+            `;
+            details.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
