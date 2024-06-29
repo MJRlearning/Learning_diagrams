@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Education Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #3498db;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #3498db;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .left {
+            left: 0;
+        }
+        .right {
+            left: 50%;
+        }
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #3498db;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #3498db;
+        }
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #3498db;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #3498db transparent transparent;
+        }
+        .right::after {
+            left: -16px;
+        }
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .content:hover {
+            background-color: #e8f4fc;
+        }
+        .content.active {
+            background-color: #d1ecff;
+        }
+        .year {
+            font-weight: bold;
+            color: #3498db;
+        }
+        #infoPanel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline">
+        <div class="container left">
+            <div class="content" onclick="toggleInfo('1950', 'Birth of AI', 'Early AI research, foundational algorithms, and the Turing Test were introduced.')">
+                <div class="year">1950</div>
+                <h2>Birth of AI</h2>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleInfo('1970', 'Educational Software', 'Introduction of computer-based learning and educational games.')">
+                <div class="year">1970</div>
+                <h2>Educational Software</h2>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleInfo('1980', 'Internet and Online Learning', 'Expansion of distance learning through the internet.')">
+                <div class="year">1980</div>
+                <h2>Internet and Online Learning</h2>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleInfo('2000', 'Adaptive Learning', 'AI begins to tailor learning experiences to individual student needs.')">
+                <div class="year">2000</div>
+                <h2>Adaptive Learning</h2>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleInfo('2010', 'MOOCs and Big Data', 'Massive Open Online Courses (MOOCs) emerge, and big data analytics are applied to education.')">
+                <div class="year">2010</div>
+                <h2>MOOCs and Big Data</h2>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleInfo('2016', 'Google DeepMind\'s AlphaGo', 'Demonstrates advanced AI problem-solving capabilities.')">
+                <div class="year">2016</div>
+                <h2>Google DeepMind's AlphaGo</h2>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleInfo('2019', 'GPT 1 & 2', 'More advanced language models showing significant improvements in text generation.')">
+                <div class="year">2019</div>
+                <h2>GPT 1 & 2</h2>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleInfo('2020', 'GPT-3', 'Breakthrough in language models\' capabilities, facilitating the creation of tutoring systems and educational chatbots.')">
+                <div class="year">2020</div>
+                <h2>GPT-3</h2>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleInfo('2022', 'AI Tutoring and Personalization', 'AI systems begin providing personalized tutoring and learning assessments.')">
+                <div class="year">2022</div>
+                <h2>AI Tutoring and Personalization</h2>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleInfo('2023', 'GPT-4 and Beyond', 'Introduction of GPT-4, with even more nuanced understanding and interaction, finding applications in creating educational content, personalized learning pathways, and interactive learning environments.')">
+                <div class="year">2023</div>
+                <h2>GPT-4 and Beyond</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoPanel">
+        <h2 id="infoTitle"></h2>
+        <p id="infoContent"></p>
+    </div>
+
+    <script>
+        let currentActiveContent = null;
+
+        function toggleInfo(year, title, content) {
+            const infoPanel = document.getElementById('infoPanel');
+            const infoTitle = document.getElementById('infoTitle');
+            const infoContent = document.getElementById('infoContent');
+            const clickedContent = event.currentTarget;
+
+            if (currentActiveContent === clickedContent) {
+                // If clicking the same box, close it
+                infoPanel.style.opacity = '0';
+                setTimeout(() => {
+                    infoPanel.style.display = 'none';
+                }, 300);
+                clickedContent.classList.remove('active');
+                currentActiveContent = null;
+            } else {
+                // If clicking a different box, update content and show
+                if (currentActiveContent) {
+                    currentActiveContent.classList.remove('active');
+                }
+                infoTitle.textContent = year + ': ' + title;
+                infoContent.textContent = content;
+                infoPanel.style.display = 'block';
+                setTimeout(() => {
+                    infoPanel.style.opacity = '1';
+                }, 10);
+                clickedContent.classList.add('active');
+                currentActiveContent = clickedContent;
+            }
+        }
+    </script>
+</body>
+</html>
