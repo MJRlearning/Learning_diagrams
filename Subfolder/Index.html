@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 350px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        .slider-container {
+            margin-top: 15px;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Neural Network Visualizer</h2>
+        <svg id="network" width="300" height="200"></svg>
+        <div class="slider-container">
+            <label for="input-layer">Input Layer Neurons: <span id="input-value">2</span></label>
+            <input type="range" id="input-layer" min="1" max="5" value="2">
+        </div>
+        <div class="slider-container">
+            <label for="hidden-layer">Hidden Layer Neurons: <span id="hidden-value">3</span></label>
+            <input type="range" id="hidden-layer" min="1" max="5" value="3">
+        </div>
+        <div class="slider-container">
+            <label for="output-layer">Output Layer Neurons: <span id="output-value">2</span></label>
+            <input type="range" id="output-layer" min="1" max="5" value="2">
+        </div>
+    </div>
 
+    <script>
+        const svg = document.getElementById('network');
+        const inputSlider = document.getElementById('input-layer');
+        const hiddenSlider = document.getElementById('hidden-layer');
+        const outputSlider = document.getElementById('output-layer');
+        const inputValue = document.getElementById('input-value');
+        const hiddenValue = document.getElementById('hidden-value');
+        const outputValue = document.getElementById('output-value');
+
+        let layers = [2, 3, 2];
+
+        function renderNeuron(x, y, radius) {
+            const neuron = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            neuron.setAttribute('cx', x);
+            neuron.setAttribute('cy', y);
+            neuron.setAttribute('r', radius);
+            neuron.setAttribute('fill', '#4299e1');
+            return neuron;
+        }
+
+        function renderLayer(neurons, xPosition, layerWidth, height) {
+            const neuronRadius = 10;
+            const yStep = height / (neurons + 1);
+            const layer = document.createDocumentFragment();
+            for (let i = 0; i < neurons; i++) {
+                layer.appendChild(renderNeuron(xPosition, (i + 1) * yStep, neuronRadius));
+            }
+            return layer;
+        }
+
+        function renderConnections(prevLayer, currentLayer, prevX, currentX, height) {
+            const connections = document.createDocumentFragment();
+            const prevYStep = height / (prevLayer + 1);
+            const currentYStep = height / (currentLayer + 1);
+
+            for (let i = 0; i < prevLayer; i++) {
+                for (let j = 0; j < currentLayer; j++) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', prevX);
+                    line.setAttribute('y1', (i + 1) * prevYStep);
+                    line.setAttribute('x2', currentX);
+                    line.setAttribute('y2', (j + 1) * currentYStep);
+                    line.setAttribute('stroke', '#a0aec0');
+                    line.setAttribute('stroke-width', '0.5');
+                    connections.appendChild(line);
+                }
+            }
+            return connections;
+        }
+
+        function renderNetwork() {
+            svg.innerHTML = '';
+            const width = 300;
+            const height = 200;
+            const layerWidth = width / (layers.length - 1);
+
+            for (let i = 0; i < layers.length; i++) {
+                const xPosition = i * layerWidth;
+                svg.appendChild(renderLayer(layers[i], xPosition, layerWidth, height));
+                
+                if (i > 0) {
+                    svg.appendChild(renderConnections(layers[i-1], layers[i], (i-1) * layerWidth, xPosition, height));
+                }
+            }
+        }
+
+        function updateNetwork() {
+            layers = [
+                parseInt(inputSlider.value),
+                parseInt(hiddenSlider.value),
+                parseInt(outputSlider.value)
+            ];
+            inputValue.textContent = layers[0];
+            hiddenValue.textContent = layers[1];
+            outputValue.textContent = layers[2];
+            renderNetwork();
+        }
+
+        inputSlider.addEventListener('input', updateNetwork);
+        hiddenSlider.addEventListener('input', updateNetwork);
+        outputSlider.addEventListener('input', updateNetwork);
+
+        renderNetwork();
+    </script>
+</body>
+</html>
