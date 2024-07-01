@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gagne's Nine Events of Instruction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            min-height: 150px;
+        }
+        .card h2 {
+            margin-top: 0;
+            color: #444;
+            display: flex;
+            align-items: center;
+        }
+        .card i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #007bff;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gagne's Nine Events of Instruction</h1>
+        <div class="card">
+            <h2 id="eventTitle"></h2>
+            <p id="eventDescription"></p>
+        </div>
+        <div class="button-container">
+            <button id="prevBtn" onclick="changeEvent(-1)">Previous</button>
+            <button id="nextBtn" onclick="changeEvent(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const events = [
+            {
+                title: "1. Gain Attention",
+                description: "Capture the learner's interest and focus their attention on the learning objectives.",
+                icon: "fa-solid fa-bullhorn"
+            },
+            {
+                title: "2. Inform Learners of Objectives",
+                description: "Clearly communicate what the learners will be able to accomplish and how they will be able to use the new knowledge.",
+                icon: "fa-solid fa-bullseye"
+            },
+            {
+                title: "3. Stimulate Recall of Prior Learning",
+                description: "Remind learners of prior knowledge relevant to the current lesson to help them build on existing knowledge.",
+                icon: "fa-solid fa-lightbulb"
+            },
+            {
+                title: "4. Present the Content",
+                description: "Deliver the new content in a clear and organized manner, using various methods to cater to different learning styles.",
+                icon: "fa-solid fa-chalkboard-teacher"
+            },
+            {
+                title: "5. Provide Learning Guidance",
+                description: "Offer strategies, examples, and additional resources to help learners understand and retain the new information.",
+                icon: "fa-solid fa-compass"
+            },
+            {
+                title: "6. Elicit Performance",
+                description: "Allow learners to practice and demonstrate their new knowledge or skills.",
+                icon: "fa-solid fa-tasks"
+            },
+            {
+                title: "7. Provide Feedback",
+                description: "Give specific and immediate feedback on the learner's performance to reinforce correct understanding and correct misunderstandings.",
+                icon: "fa-solid fa-comments"
+            },
+            {
+                title: "8. Assess Performance",
+                description: "Evaluate the learner's ability to achieve the stated objectives through tests, projects, or other assessments.",
+                icon: "fa-solid fa-chart-line"
+            },
+            {
+                title: "9. Enhance Retention and Transfer",
+                description: "Provide opportunities for learners to apply their new knowledge in different contexts to promote long-term retention and transfer of learning.",
+                icon: "fa-solid fa-brain"
+            }
+        ];
+
+        let currentEvent = 0;
+
+        function updateEvent() {
+            const event = events[currentEvent];
+            document.getElementById('eventTitle').innerHTML = `<i class="${event.icon}"></i> ${event.title}`;
+            document.getElementById('eventDescription').textContent = event.description;
+            document.getElementById('prevBtn').disabled = currentEvent === 0;
+            document.getElementById('nextBtn').disabled = currentEvent === events.length - 1;
+        }
+
+        function changeEvent(direction) {
+            currentEvent += direction;
+            if (currentEvent < 0) currentEvent = 0;
+            if (currentEvent >= events.length) currentEvent = events.length - 1;
+            updateEvent();
+        }
+
+        updateEvent();
+    </script>
+</body>
+</html>
