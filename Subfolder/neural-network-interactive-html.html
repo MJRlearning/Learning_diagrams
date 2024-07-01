@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Types of Neural Networks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .network-button {
+            padding: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.3s;
+        }
+        .network-button:hover {
+            opacity: 0.8;
+        }
+        #network-info {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .color-key {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Types of Neural Networks</h1>
+    <div class="network-grid" id="network-buttons"></div>
+    <div id="network-info"></div>
+    <h2>Color Key:</h2>
+    <div class="color-key" id="color-key"></div>
+
+    <script>
+        const networks = [
+            {
+                name: 'Artificial Neural Networks (ANNs)',
+                description: 'Composed of an input layer, hidden layers, and an output layer.',
+                applications: 'Data classification, forecasting, optimization, NLP, image and speech recognition.',
+                color: '#FF6B6B'
+            },
+            {
+                name: 'Convolutional Neural Networks (CNNs)',
+                description: 'Includes convolutional layers, pooling layers, activation layers, and fully connected layers.',
+                applications: 'Image and video processing tasks like object detection, facial recognition, image segmentation.',
+                color: '#4ECDC4'
+            },
+            {
+                name: 'Recurrent Neural Networks (RNNs)',
+                description: 'Handle sequential data with connections forming directed cycles.',
+                applications: 'Time series prediction, natural language processing, speech recognition.',
+                color: '#45B7D1'
+            },
+            {
+                name: 'Radial Basis Function Networks (RBFNs)',
+                description: 'Utilizes radial basis functions as activation functions.',
+                applications: 'Function approximation, time series prediction, control systems.',
+                color: '#FF9F1C'
+            },
+            {
+                name: 'Autoencoders',
+                description: 'Consists of an encoder and a decoder for unsupervised learning.',
+                applications: 'Feature extraction, dimensionality reduction, anomaly detection.',
+                color: '#E84855'
+            },
+            {
+                name: 'Hopfield Networks',
+                description: 'Fully connected networks with each neuron connected to every other neuron.',
+                applications: 'Optimization problems, pattern recognition, associative memory.',
+                color: '#7CB342'
+            }
+        ];
+
+        const networkButtons = document.getElementById('network-buttons');
+        const networkInfo = document.getElementById('network-info');
+        const colorKey = document.getElementById('color-key');
+
+        networks.forEach(network => {
+            const button = document.createElement('button');
+            button.className = 'network-button';
+            button.textContent = network.name;
+            button.style.backgroundColor = network.color;
+            button.onclick = () => showNetworkInfo(network);
+            networkButtons.appendChild(button);
+
+            const colorItem = document.createElement('div');
+            colorItem.className = 'color-item';
+            colorItem.innerHTML = `
+                <div class="color-box" style="background-color: ${network.color};"></div>
+                <span>${network.name}</span>
+            `;
+            colorKey.appendChild(colorItem);
+        });
+
+        function showNetworkInfo(network) {
+            networkInfo.style.display = 'block';
+            networkInfo.innerHTML = `
+                <h2 style="color: ${network.color};">${network.name}</h2>
+                <p><strong>Structure:</strong> ${network.description}</p>
+                <p><strong>Applications:</strong> ${network.applications}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
