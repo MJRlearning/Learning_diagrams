@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Applications Across Industries</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .tab:hover {
+            opacity: 0.8;
+        }
+        .tab.active {
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .card p {
+            margin-bottom: 10px;
+        }
+        .example {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+
+        #healthcare-tab, #healthcare .card { background-color: #3498db; color: white; }
+        #finance-tab, #finance .card { background-color: #2ecc71; color: white; }
+        #retail-tab, #retail .card { background-color: #e74c3c; color: white; }
+        #manufacturing-tab, #manufacturing .card { background-color: #f39c12; color: white; }
+
+        .card h3, .card .example { color: rgba(255, 255, 255, 0.9); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Applications Across Industries</h1>
+        <div class="tabs">
+            <button class="tab active" id="healthcare-tab" onclick="showTab('healthcare')">Healthcare</button>
+            <button class="tab" id="finance-tab" onclick="showTab('finance')">Finance</button>
+            <button class="tab" id="retail-tab" onclick="showTab('retail')">Retail</button>
+            <button class="tab" id="manufacturing-tab" onclick="showTab('manufacturing')">Manufacturing</button>
+        </div>
+        <div id="healthcare" class="tab-content active"></div>
+        <div id="finance" class="tab-content"></div>
+        <div id="retail" class="tab-content"></div>
+        <div id="manufacturing" class="tab-content"></div>
+    </div>
+
+    <script>
+    var industries = {
+        healthcare: [
+            {
+                title: "Disease Diagnosis",
+                description: "AI algorithms analyze medical images to detect diseases like cancer with high accuracy.",
+                example: "IBM Watson for Oncology assists doctors in cancer treatment decisions."
+            },
+            {
+                title: "Drug Discovery",
+                description: "AI accelerates the process of identifying potential new drugs and predicting their effects.",
+                example: "Atomwise uses AI to predict the effectiveness of new drug compounds."
+            },
+            {
+                title: "Personalized Treatment",
+                description: "AI analyzes patient data to recommend personalized treatment plans.",
+                example: "Tempus uses AI to analyze genetic data for personalized cancer treatments."
+            }
+        ],
+        finance: [
+            {
+                title: "Fraud Detection",
+                description: "AI systems monitor transactions in real-time to identify and prevent fraudulent activities.",
+                example: "Mastercard uses AI to analyze billions of transactions and flag potential fraud."
+            },
+            {
+                title: "Algorithmic Trading",
+                description: "AI-powered algorithms make high-speed trading decisions based on market data.",
+                example: "Two Sigma uses machine learning for quantitative trading strategies."
+            },
+            {
+                title: "Credit Scoring",
+                description: "AI models assess creditworthiness using a wider range of data points than traditional methods.",
+                example: "Lenddo uses non-traditional data like social media activity for credit scoring in emerging markets."
+            }
+        ],
+        retail: [
+            {
+                title: "Inventory Management",
+                description: "AI predicts demand and optimizes inventory levels across stores and warehouses.",
+                example: "Amazon uses AI for predictive inventory management in its fulfillment centers."
+            },
+            {
+                title: "Personalized Recommendations",
+                description: "AI analyzes customer behavior to provide personalized product recommendations.",
+                example: "Netflix's recommendation system uses AI to suggest shows based on viewing history."
+            },
+            {
+                title: "Dynamic Pricing",
+                description: "AI adjusts prices in real-time based on demand, competition, and other factors.",
+                example: "Uber uses AI for surge pricing during high-demand periods."
+            }
+        ],
+        manufacturing: [
+            {
+                title: "Predictive Maintenance",
+                description: "AI predicts when equipment is likely to fail, allowing for proactive maintenance.",
+                example: "Siemens uses AI for predictive maintenance in wind turbines, reducing downtime."
+            },
+            {
+                title: "Quality Control",
+                description: "AI-powered computer vision systems inspect products for defects at high speeds.",
+                example: "BMW uses AI-based visual inspection systems in its manufacturing plants."
+            },
+            {
+                title: "Supply Chain Optimization",
+                description: "AI optimizes supply chain operations, from procurement to delivery.",
+                example: "Unilever uses AI to optimize its supply chain, reducing stockouts and improving efficiency."
+            }
+        ]
+    };
+
+    function showTab(industryName) {
+        var tabContents = document.getElementsByClassName('tab-content');
+        for (var i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove('active');
+        }
+
+        var tabs = document.getElementsByClassName('tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+
+        document.getElementById(industryName).classList.add('active');
+        document.getElementById(industryName + '-tab').classList.add('active');
+
+        if (document.getElementById(industryName).children.length === 0) {
+            populateContent(industryName);
+        }
+    }
+
+    function populateContent(industryName) {
+        var content = '';
+        for (var i = 0; i < industries[industryName].length; i++) {
+            var app = industries[industryName][i];
+            content += '<div class="card">' +
+                '<h3>' + app.title + '</h3>' +
+                '<p>' + app.description + '</p>' +
+                '<p class="example"><strong>Example:</strong> ' + app.example + '</p>' +
+                '</div>';
+        }
+        document.getElementById(industryName).innerHTML = content;
+    }
+
+    // Initialize the first tab
+    populateContent('healthcare');
+    </script>
+</body>
+</html>
