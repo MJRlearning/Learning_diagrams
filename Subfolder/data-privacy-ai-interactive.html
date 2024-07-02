@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensuring Data Privacy in AI Applications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .section {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .privacy-measure {
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .privacy-measure:hover {
+            background-color: #d0e9f2;
+        }
+        .privacy-measure-details {
+            display: none;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+        #simulation {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #simulation-result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #privacy-score {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ensuring Data Privacy in AI Applications</h1>
+    
+    <div class="section">
+        <h2>Interactive Diagram: Data Privacy Measures</h2>
+        <p>Click on each measure to learn more:</p>
+        <div id="privacy-measures"></div>
+    </div>
+
+    <div class="section">
+        <h2>Data Privacy Simulation</h2>
+        <p>You're developing an AI-powered health monitoring app. Make decisions about data handling to ensure privacy:</p>
+        <div id="simulation">
+            <div id="scenario"></div>
+            <div id="options"></div>
+            <div id="simulation-result"></div>
+        </div>
+        <div id="privacy-score">Privacy Score: 0</div>
+    </div>
+
+    <script>
+    const privacyMeasures = [
+        {
+            title: "Data Minimization",
+            description: "Collect only the data necessary for the specific purpose of the AI application.",
+            details: "Implement data collection policies that limit the scope and duration of data retention. Regularly review and delete unnecessary data."
+        },
+        {
+            title: "Anonymization and Pseudonymization",
+            description: "Remove or encrypt personally identifiable information from datasets.",
+            details: "Use techniques like k-anonymity, l-diversity, or differential privacy to protect individual identities while maintaining data utility."
+        },
+        {
+            title: "Encryption",
+            description: "Secure data both in transit and at rest using strong encryption algorithms.",
+            details: "Implement end-to-end encryption for data transmission and use encryption at the database level for stored data. Regularly update encryption protocols."
+        },
+        {
+            title: "Access Control",
+            description: "Implement strict access controls to limit data exposure.",
+            details: "Use role-based access control (RBAC) systems, multi-factor authentication, and audit logs to manage and monitor data access."
+        },
+        {
+            title: "Transparency and Consent",
+            description: "Clearly communicate data usage and obtain explicit consent from users.",
+            details: "Develop comprehensive privacy policies and user-friendly consent mechanisms. Provide options for users to view, modify, or delete their data."
+        }
+    ];
+
+    const scenarios = [
+        {
+            question: "How will you handle user health data collection?",
+            options: [
+                { text: "Collect all possible health data for comprehensive analysis", score: -10 },
+                { text: "Collect only data necessary for the app's core functions", score: 10 },
+                { text: "Allow users to choose which data to share", score: 15 }
+            ]
+        },
+        {
+            question: "How will you store user data?",
+            options: [
+                { text: "Store all data in a central database", score: -5 },
+                { text: "Use encryption for all stored data", score: 10 },
+                { text: "Use encryption and anonymize data before storage", score: 15 }
+            ]
+        },
+        {
+            question: "How will you handle data sharing with third parties?",
+            options: [
+                { text: "Share data as needed to improve services", score: -10 },
+                { text: "Share only anonymized data with explicit consent", score: 10 },
+                { text: "Do not share any user data with third parties", score: 15 }
+            ]
+        }
+    ];
+
+    let currentScenario = 0;
+    let privacyScore = 0;
+
+    function displayPrivacyMeasures() {
+        const container = document.getElementById('privacy-measures');
+        privacyMeasures.forEach((measure, index) => {
+            const measureDiv = document.createElement('div');
+            measureDiv.className = 'privacy-measure';
+            measureDiv.innerHTML = `
+                <h3>${measure.title}</h3>
+                <p>${measure.description}</p>
+                <div class="privacy-measure-details" id="details-${index}">${measure.details}</div>
+            `;
+            measureDiv.onclick = () => toggleDetails(index);
+            container.appendChild(measureDiv);
+        });
+    }
+
+    function toggleDetails(index) {
+        const detailsDiv = document.getElementById(`details-${index}`);
+        detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function displayScenario() {
+        if (currentScenario >= scenarios.length) {
+            endSimulation();
+            return;
+        }
+        const scenario = scenarios[currentScenario];
+        document.getElementById('scenario').innerHTML = `<p><strong>Scenario ${currentScenario + 1}:</strong> ${scenario.question}</p>`;
+        const optionsHtml = scenario.options.map((option, index) => 
+            `<button onclick="selectOption(${index})">${option.text}</button>`
+        ).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+    }
+
+    function selectOption(optionIndex) {
+        const selectedOption = scenarios[currentScenario].options[optionIndex];
+        privacyScore += selectedOption.score;
+        document.getElementById('simulation-result').innerHTML = `
+            <p>You chose: ${selectedOption.text}</p>
+            <p>Impact on privacy: ${selectedOption.score > 0 ? 'Positive' : 'Negative'}</p>
+        `;
+        document.getElementById('privacy-score').innerHTML = `Privacy Score: ${privacyScore}`;
+        currentScenario++;
+        setTimeout(displayScenario, 2000);
+    }
+
+    function endSimulation() {
+        let feedback;
+        if (privacyScore >= 35) {
+            feedback = "Excellent! Your app prioritizes user privacy.";
+        } else if (privacyScore >= 20) {
+            feedback = "Good job! There's room for improvement in data privacy practices.";
+        } else {
+            feedback = "Caution! Your app needs significant improvements in data privacy.";
+        }
+        document.getElementById('simulation').innerHTML = `
+            <h3>Simulation Complete</h3>
+            <p>Final Privacy Score: ${privacyScore}</p>
+            <p>${feedback}</p>
+            <button onclick="resetSimulation()">Restart Simulation</button>
+        `;
+    }
+
+    function resetSimulation() {
+        currentScenario = 0;
+        privacyScore = 0;
+        document.getElementById('privacy-score').innerHTML = 'Privacy Score: 0';
+        displayScenario();
+    }
+
+    displayPrivacyMeasures();
+    displayScenario();
+    </script>
+</body>
+</html>
