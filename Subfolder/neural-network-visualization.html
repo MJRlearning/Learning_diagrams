@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Corrected Neural Network Movie Enjoyment Predictor</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .slider-container { margin-bottom: 20px; }
+        input[type="range"] { width: 100%; }
+        #neuralNetwork { width: 100%; height: 400px; }
+        .node { fill: #3498db; }
+        .link { stroke: #34495e; stroke-width: 2; }
+        .node-label { font-size: 12px; }
+        .node-value { font-size: 14px; fill: white; }
+        #result { font-size: 18px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Final Corrected Neural Network Movie Enjoyment Predictor</h1>
+    
+    <div class="slider-container">
+        <label for="genreMatch">Genre Match:</label>
+        <input type="range" id="genreMatch" min="0" max="1" step="0.01" value="0.5">
+        <span id="genreMatchValue">0.50</span>
+    </div>
+    
+    <div class="slider-container">
+        <label for="actorPopularity">Actor Popularity:</label>
+        <input type="range" id="actorPopularity" min="0" max="1" step="0.01" value="0.5">
+        <span id="actorPopularityValue">0.50</span>
+    </div>
+    
+    <svg id="neuralNetwork"></svg>
+    
+    <div id="result">Result: Not enjoy</div>
+
+    <script>
+    function sigmoid(x) {
+        return 1 / (1 + Math.exp(-x));
+    }
+
+    function adjustedSigmoid(x) {
+        // Scale sigmoid output from [0, 1] to [0.4, 0.75]
+        return 0.4 + (sigmoid(x) * 0.35);
+    }
+
+    function createNetwork() {
+        const svg = document.getElementById('neuralNetwork');
+        const width = svg.clientWidth;
+        const height = svg.clientHeight;
+        const nodeRadius = 30;
+
+        const layers = [
+            [{x: 100, y: height/3, label: 'Genre'},
+             {x: 100, y: 2*height/3, label: 'Actor'}],
+            [{x: width/2, y: height/3, label: 'H1'},
+             {x: width/2, y: 2*height/3, label: 'H2'}],
+            [{x: width-100, y: height/2, label: 'Enjoy'}]
+        ];
+
+        // Create links
+        layers.forEach((layer, i) => {
+            if (i < layers.length - 1) {
+                layer.forEach(node => {
+                    layers[i+1].forEach(nextNode => {
+                        svg.innerHTML += `<line class="link" x1="${node.x}" y1="${node.y}" x2="${nextNode.x}" y2="${nextNode.y}"/>`;
+                    });
+                });
+            }
+        });
+
+        // Create nodes
+        layers.flat().forEach(node => {
+            svg.innerHTML += `
+                <circle class="node" cx="${node.x}" cy="${node.y}" r="${nodeRadius}"/>
+                <text class="node-label" x="${node.x}" y="${node.y+nodeRadius+15}" text-anchor="middle">${node.label}</text>
+                <text class="node-value" x="${node.x}" y="${node.y}" text-anchor="middle" dominant-baseline="middle">0.00</text>
+            `;
+        });
+    }
+
+    function updateNetwork() {
+        const genreMatch = parseFloat(document.getElementById('genreMatch').value);
+        const actorPopularity = parseFloat(document.getElementById('actorPopularity').value);
+        
+        document.getElementById('genreMatchValue').textContent = genreMatch.toFixed(2);
+        document.getElementById('actorPopularityValue').textContent = actorPopularity.toFixed(2);
+        
+        // Update input nodes
+        document.querySelectorAll('.node-value')[0].textContent = genreMatch.toFixed(2);
+        document.querySelectorAll('.node-value')[1].textContent = actorPopularity.toFixed(2);
+        
+        // Calculate hidden layer
+        const h1 = adjustedSigmoid(0.6 * genreMatch + 0.4 * actorPopularity - 0.1);
+        const h2 = adjustedSigmoid(0.3 * genreMatch + 0.7 * actorPopularity + 0.1);
+        
+        // Update hidden layer nodes
+        document.querySelectorAll('.node-value')[2].textContent = h1.toFixed(2);
+        document.querySelectorAll('.node-value')[3].textContent = h2.toFixed(2);
+        
+        // Calculate output
+        const output = sigmoid(0.8 * h1 + 0.2 * h2 - 0.2);
+        
+        // Update output node
+        document.querySelectorAll('.node-value')[4].textContent = output.toFixed(2);
+
+        // Update result
+        const result = interpretResult(output);
+        document.getElementById('result').textContent = `Result: ${result}`;
+    }
+
+    function interpretResult(value) {
+        if (value < 0.6) return "Not enjoy";
+        if (value > 0.6) return "Enjoy";
+        return "Undetermined";  // For value exactly equal to 0.6
+    }
+
+    createNetwork();
+    document.getElementById('genreMatch').oninput = updateNetwork;
+    document.getElementById('actorPopularity').oninput = updateNetwork;
+    updateNetwork();
+    </script>
+</body>
+</html>
