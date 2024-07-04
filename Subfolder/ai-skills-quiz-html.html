@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skills Knowledge Review Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .quiz-container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.selected {
+            background-color: #3498db;
+            color: #fff;
+        }
+        .explanation {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .next-btn, .restart-btn {
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        .next-btn:hover, .restart-btn:hover {
+            background-color: #27ae60;
+        }
+        .score {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>AI Skills Knowledge Review Quiz</h1>
+        <div id="quiz">
+            <p class="question" id="question"></p>
+            <div class="options" id="options"></div>
+            <div class="explanation" id="explanation"></div>
+            <button class="next-btn" id="next-btn">Next Question</button>
+            <div class="score" id="score"></div>
+            <button class="restart-btn" id="restart-btn">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "A startup is developing an app to automatically categorize and tag user-uploaded images. Which AI skill area is most relevant for this task?",
+                options: ["Deep Learning", "Reinforcement Learning", "Natural Language Processing", "AI Ethics"],
+                correctAnswer: 0,
+                explanation: "Deep Learning, specifically Convolutional Neural Networks (CNNs), is most relevant for image processing tasks like image classification and object detection."
+            },
+            {
+                question: "A financial institution wants to implement an AI system to detect fraudulent transactions in real-time. Which interdisciplinary knowledge is crucial for this project?",
+                options: ["Healthcare applications", "Robotics", "Finance domain knowledge", "Environmental science"],
+                correctAnswer: 2,
+                explanation: "Domain-specific knowledge in finance is crucial for understanding the nuances of financial transactions and effectively applying AI to detect fraudulent activities."
+            },
+            {
+                question: "A research team is working on an AI agent that can play complex strategy games. Which type of learning would be most appropriate for this task?",
+                options: ["Supervised Learning", "Unsupervised Learning", "Reinforcement Learning", "Transfer Learning"],
+                correctAnswer: 2,
+                explanation: "Reinforcement Learning is ideal for training AI agents to make decisions in complex environments, such as playing strategy games."
+            },
+            {
+                question: "A company is developing an AI-powered customer service chatbot. Which NLP technique would be most useful for understanding customer sentiment?",
+                options: ["Machine Translation", "Named Entity Recognition", "Sentiment Analysis", "Text Summarization"],
+                correctAnswer: 2,
+                explanation: "Sentiment Analysis is the NLP technique most suited for understanding the emotional tone of customer messages, which is crucial for a customer service chatbot."
+            },
+            {
+                question: "An autonomous vehicle company is improving its cars' ability to recognize and respond to road signs. Which computer vision skill is most relevant?",
+                options: ["Facial Recognition", "3D Vision", "Object Detection", "Emotion Detection"],
+                correctAnswer: 2,
+                explanation: "Object Detection is the most relevant computer vision skill for recognizing road signs in autonomous vehicles."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const explanationEl = document.getElementById('explanation');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreEl = document.getElementById('score');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionEl.textContent = `${currentQuestion + 1}. ${question.question}`;
+
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.classList.add('option');
+                button.textContent = option;
+                button.addEventListener('click', () => selectOption(index));
+                optionsEl.appendChild(button);
+            });
+
+            explanationEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        function selectOption(index) {
+            if (selectedAnswer !== null) return;
+
+            selectedAnswer = index;
+            const options = document.querySelectorAll('.option');
+            options[index].classList.add('selected');
+
+            const question = questions[currentQuestion];
+            if (index === question.correctAnswer) {
+                score++;
+            }
+
+            explanationEl.textContent = question.explanation;
+            explanationEl.style.display = 'block';
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            selectedAnswer = null;
+
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            questionEl.textContent = 'Quiz completed!';
+            optionsEl.innerHTML = '';
+            explanationEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            scoreEl.textContent = `Your score: ${score} out of ${questions.length}`;
+            restartBtn.style.display = 'block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            scoreEl.textContent = '';
+            restartBtn.style.display = 'none';
+            loadQuestion();
+        }
+
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        loadQuestion();
+    </script>
+</body>
+</html>
