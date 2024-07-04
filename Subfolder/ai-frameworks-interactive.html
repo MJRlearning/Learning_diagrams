@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popular AI Frameworks and Libraries</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .framework-btn {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            text-align: left;
+        }
+        .framework-btn:hover {
+            background-color: #2980b9;
+        }
+        #details {
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+            overflow-wrap: break-word;
+        }
+        #details h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        #details ul {
+            padding-left: 20px;
+        }
+        #details li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Popular AI Frameworks and Libraries</h1>
+    <div class="grid" id="frameworkGrid"></div>
+    <div id="details"></div>
+
+    <script>
+        const frameworks = [
+            {
+                name: "TensorFlow",
+                description: "An open-source library developed by the Google Brain team, primarily used for machine learning and deep neural network research.",
+                languages: "Python, C++, Java",
+                platforms: "Linux, macOS, Windows, Android, iOS (via TensorFlow Lite)",
+                pros: "Highly flexible, modular, excellent community support, scalable for both small and large applications.",
+                cons: "Steeper learning curve for beginners, some operations can be less intuitive."
+            },
+            {
+                name: "PyTorch",
+                description: "Developed by Facebook, PyTorch is known for its flexibility and ease of use, making it popular for research and production.",
+                languages: "Python, C++",
+                platforms: "Linux, macOS, Windows",
+                pros: "Dynamic computation graph, strong community support, easy to debug.",
+                cons: "Less mature ecosystem compared to TensorFlow."
+            },
+            {
+                name: "Scikit-Learn",
+                description: "A free machine learning library that integrates seamlessly with Python, suitable for various machine learning tasks including classification, regression, and clustering.",
+                languages: "Python",
+                platforms: "Linux, macOS, Windows",
+                pros: "Comprehensive library for machine learning algorithms, strong documentation, ease of use.",
+                cons: "Not tailored for deep learning, doesn't support GPU acceleration."
+            },
+            {
+                name: "Keras",
+                description: "A high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano.",
+                languages: "Python",
+                platforms: "Linux, macOS, Windows",
+                pros: "User-friendly, modular, and extensible.",
+                cons: "Limited flexibility compared to lower-level frameworks like TensorFlow and PyTorch."
+            },
+            {
+                name: "Theano",
+                description: "An older deep learning library that is no longer actively developed but still used in some educational contexts.",
+                languages: "Python",
+                platforms: "Linux, macOS, Windows",
+                pros: "Efficient for mathematical computations, strong integration with NumPy.",
+                cons: "No longer actively maintained, less community support."
+            },
+            {
+                name: "MXNet",
+                description: "A deep learning framework designed for efficiency and flexibility, used by Amazon for its deep learning services.",
+                languages: "Python, Scala, C++, Julia, Perl, R",
+                platforms: "Linux, macOS, Windows",
+                pros: "Scalable, supports a wide range of languages, efficient for both training and inference.",
+                cons: "Smaller community compared to TensorFlow and PyTorch."
+            },
+            {
+                name: "Caffe",
+                description: "A deep learning framework made with expression, speed, and modularity in mind, particularly popular for computer vision tasks.",
+                languages: "C++, Python",
+                platforms: "Linux, macOS, Windows",
+                pros: "High performance, good for image processing tasks.",
+                cons: "Less flexible, harder to use for non-vision tasks."
+            },
+            {
+                name: "XGBoost",
+                description: "An optimized distributed gradient boosting library designed to be highly efficient, flexible, and portable.",
+                languages: "Python, R, Julia, Java, Scala, C++",
+                platforms: "Linux, macOS, Windows",
+                pros: "Excellent for structured data problems, high performance.",
+                cons: "Can be complex to tune hyperparameters."
+            },
+            {
+                name: "OpenAI GPT-4",
+                description: "A state-of-the-art language model developed by OpenAI, used for generating human-like text.",
+                languages: "Python (API)",
+                platforms: "Cloud-based",
+                pros: "Advanced natural language processing capabilities, versatile.",
+                cons: "Requires significant computational resources, potential ethical concerns."
+            },
+            {
+                name: "Microsoft Azure AI and Google Cloud AI",
+                description: "Cloud-based AI services offering a range of tools for machine learning, natural language processing, and more.",
+                pros: "Scalable, integrated with other cloud services, strong support.",
+                cons: "Cost can be high, dependent on cloud infrastructure."
+            },
+            {
+                name: "IBM Watson",
+                description: "A suite of AI tools and applications for various industries, known for its natural language processing and machine learning capabilities.",
+                pros: "Comprehensive suite of tools, strong enterprise support.",
+                cons: "Can be expensive, steep learning curve for some tools."
+            }
+        ];
+
+        const frameworkGrid = document.getElementById('frameworkGrid');
+        const detailsDiv = document.getElementById('details');
+
+        frameworks.forEach(framework => {
+            const button = document.createElement('button');
+            button.textContent = framework.name;
+            button.className = 'framework-btn';
+            button.addEventListener('click', () => {
+                let content = `<h2>${framework.name}</h2>`;
+                content += `<ul>`;
+                content += `<li><strong>Description:</strong> ${framework.description}</li>`;
+                if (framework.languages) content += `<li><strong>Languages:</strong> ${framework.languages}</li>`;
+                if (framework.platforms) content += `<li><strong>Platforms:</strong> ${framework.platforms}</li>`;
+                content += `<li><strong>Pros:</strong> ${framework.pros}</li>`;
+                content += `<li><strong>Cons:</strong> ${framework.cons}</li>`;
+                content += `</ul>`;
+                detailsDiv.innerHTML = content;
+            });
+            frameworkGrid.appendChild(button);
+        });
+
+        // Set initial content
+        detailsDiv.innerHTML = '<p>Click on a framework or library to see its details.</p>';
+    </script>
+</body>
+</html>
