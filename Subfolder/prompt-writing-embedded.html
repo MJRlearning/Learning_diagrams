@@ -1,0 +1,70 @@
+<div id="prompt-writing-demo" style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c3e50;">Prompt Writing Demonstration</h2>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #ffcccb;">
+        <strong>Task:</strong> Write a comprehensive guide on effective time management techniques.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #90ee90;">
+        <strong>Context:</strong> This guide will be used in a professional development course for mid-level managers who are struggling with balancing multiple projects and deadlines.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #ffffe0;">
+        <strong>Please structure the guide as follows:</strong>
+        <ol>
+            <li>Introduction to time management</li>
+            <li>Key principles of effective time management</li>
+            <li>Practical techniques (provide at least 5)</li>
+            <li>Tools and resources</li>
+            <li>Conclusion and action steps</li>
+        </ol>
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #add8e6;">
+        <strong>Examples:</strong> For each technique, please include a brief real-world example of how it can be applied.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #e6e6fa;">
+        <strong>Note:</strong> If the initial response doesn't fully address all aspects, I'll ask for revisions or additional information.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #e0ffff;">
+        <strong>AI Perspective:</strong> Please provide factual information based on established time management practices and research. Avoid personal anecdotes or opinions.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #d3d3d3;">
+        <strong>Clarification:</strong> If you need clarification on any part of this request, please ask before proceeding with the guide.
+    </div>
+    
+    <div style="padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #ffdab9;">
+        <strong>Constraints:</strong> Keep the guide under 1500 words and ensure it's suitable for a diverse, international audience.
+    </div>
+    
+    <button onclick="toggleExplanation()" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px;">Show Explanation</button>
+    
+    <div id="explanation" style="display: none; margin-top: 20px;">
+        <h3 style="color: #2c3e50;">Explanation of color-coded criteria:</h3>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #ffcccb;">Be Clear and Specific</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #90ee90;">Provide Adequate Context</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #ffffe0;">Use Step-by-Step Instructions</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #add8e6;">Leverage Examples</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #e6e6fa;">Iterate and Refine</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #e0ffff;">Consider the AI's Perspective</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #d3d3d3;">Experiment with Different Phrasings</div>
+        <div style="padding: 5px; margin-bottom: 5px; border-radius: 4px; background-color: #ffdab9;">Set Parameters and Constraints</div>
+    </div>
+</div>
+
+<script>
+function toggleExplanation() {
+    var explanation = document.getElementById('explanation');
+    var button = document.querySelector('#prompt-writing-demo button');
+    if (explanation.style.display === 'none' || explanation.style.display === '') {
+        explanation.style.display = 'block';
+        button.textContent = 'Hide Explanation';
+    } else {
+        explanation.style.display = 'none';
+        button.textContent = 'Show Explanation';
+    }
+}
+</script>
