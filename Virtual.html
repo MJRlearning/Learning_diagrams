@@ -32,19 +32,45 @@
         .item:hover {
             background-color: #e0e0e0;
         }
-        .details {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #e6f2ff;
-            border-radius: 5px;
+        .overlay {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        .details {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <h1>Technical Requirements for Online Learning</h1>
     <div class="grid" id="requirementsGrid"></div>
-    <div class="details" id="detailsSection"></div>
+    <div class="overlay" id="overlay">
+        <div class="details" id="detailsSection">
+            <span class="close-btn" onclick="closeOverlay()">&times;</span>
+        </div>
+    </div>
 
     <script>
         const requirementData = [
@@ -60,6 +86,7 @@
         ];
 
         const grid = document.getElementById('requirementsGrid');
+        const overlay = document.getElementById('overlay');
         const detailsSection = document.getElementById('detailsSection');
 
         requirementData.forEach((item, index) => {
@@ -76,10 +103,15 @@
         function showDetails(index) {
             const item = requirementData[index];
             detailsSection.innerHTML = `
+                <span class="close-btn" onclick="closeOverlay()">&times;</span>
                 <h2>${item.title}</h2>
                 <p>${item.description}</p>
             `;
-            detailsSection.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function closeOverlay() {
+            overlay.style.display = 'none';
         }
     </script>
 </body>
