@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collision Theory Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .simulator {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 20px auto;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .graph {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="simulator">
+        <h1>Collision Theory Simulator</h1>
+        <div class="controls">
+            <div>
+                <label for="element1">Element 1:</label>
+                <select id="element1">
+                    <option value="H">H</option>
+                    <option value="O">O</option>
+                    <option value="N">N</option>
+                    <option value="C">C</option>
+                    <option value="Cl">Cl</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+            <div>
+                <label for="element2">Element 2:</label>
+                <select id="element2">
+                    <option value="O">O</option>
+                    <option value="H">H</option>
+                    <option value="N">N</option>
+                    <option value="C">C</option>
+                    <option value="Cl">Cl</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+            <div>
+                <label for="temperature">Temperature (°C):</label>
+                <input type="range" id="temperature" min="0" max="100" value="25">
+                <span id="temperatureValue">25</span>
+            </div>
+            <div>
+                <label for="pressure">Pressure (atm):</label>
+                <input type="range" id="pressure" min="0.1" max="10" step="0.1" value="1">
+                <span id="pressureValue">1</span>
+            </div>
+            <div>
+                <label for="particleSpeed">Particle Speed:</label>
+                <input type="range" id="particleSpeed" min="1" max="10" value="5">
+                <span id="particleSpeedValue">5</span>
+            </div>
+        </div>
+        <button id="startStop">Start Simulation</button>
+        <canvas id="simulationCanvas" width="400" height="300"></canvas>
+        <div id="productInfo"></div>
+        <div class="graph">
+            <h3>Reaction Rate Graph</h3>
+            <canvas id="graphCanvas" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+
+        let particles = [];
+        let isSimulating = false;
+        let simulationTime = 0;
+        let productCount = 0;
+        let reactionData = [];
+
+        const elementColors = { H: '#FF0000', O: '#0000FF', N: '#00FF00', C: '#808080', Cl: '#FFFF00', F: '#FFA500' };
+        const productColors = { 'H2O': '#00FFFF', 'CO2': '#FFC0CB', 'NH3': '#800080', 'HCl': '#008000', 'HF': '#FFA07A' };
+
+        function getProduct(el1, el2) {
+            if ((el1 === 'H' && el2 === 'O') || (el1 === 'O' && el2 === 'H')) return 'H2O';
+            if ((el1 === 'C' && el2 === 'O') || (el1 === 'O' && el2 === 'C')) return 'CO2';
+            if ((el1 === 'N' && el2 === 'H') || (el1 === 'H' && el2 === 'N')) return 'NH3';
+            if ((el1 === 'H' && el2 === 'Cl') || (el1 === 'Cl' && el2 === 'H')) return 'HCl';
+            if ((el1 === 'H' && el2 === 'F') || (el1 === 'F' && el2 === 'H')) return 'HF';
+            return null;
+        }
+
+        function createParticles() {
+            particles = [];
+            const particleCount = Math.floor(parseFloat(document.getElementById('pressure').value) * 10);
+            const element1 = document.getElementById('element1').value;
+            const element2 = document.getElementById('element2').value;
+            const speed = parseFloat(document.getElementById('particleSpeed').value);
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: 5,
+                    dx: (Math.random() - 0.5) * speed,
+                    dy: (Math.random() - 0.5) * speed,
+                    element: Math.random() < 0.5 ? element1 : element2
+                });
+            }
+            productCount = 0;
+            reactionData = [];
+            simulationTime = 0;
+            updateProductInfo();
+        }
+
+        function updateParticles() {
+            const temperature = parseFloat(document.getElementById('temperature').value);
+
+            particles.forEach(particle => {
+                particle.x += particle.dx;
+                particle.y += particle.dy;
+
+                if (particle.x < 0 || particle.x > canvas.width) particle.dx *= -1;
+                if (particle.y < 0 || particle.y > canvas.height) particle.dy *= -1;
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p1 = particles[i];
+                    let p2 = particles[j];
+                    let dx = p2.x - p1.x;
+                    let dy = p2.y - p1.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < p1.radius + p2.radius) {
+                        let product = getProduct(p1.element, p2.element);
+                        if (product && Math.random() < temperature / 100) {
+                            particles[i] = {
+                                ...p1,
+                                element: product,
+                                radius: 7
+                            };
+                            particles.splice(j, 1);
+                            productCount++;
+                            updateProductInfo();
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                ctx.fillStyle = elementColors[particle.element] || productColors[particle.element] || '#FFFFFF';
+                ctx.fill();
+                ctx.closePath();
+            });
+        }
+
+        function updateGraph() {
+            graphCtx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+            
+            // Draw axes
+            graphCtx.beginPath();
+            graphCtx.moveTo(40, 280);
+            graphCtx.lineTo(380, 280);
+            graphCtx.moveTo(40, 280);
+            graphCtx.lineTo(40, 20);
+            graphCtx.stroke();
+
+            // Label axes
+            graphCtx.fillStyle = '#000';
+            graphCtx.fillText('Time (s)', 200, 295);
+            graphCtx.save();
+            graphCtx.translate(20, 150);
+            graphCtx.rotate(-Math.PI / 2);
+            graphCtx.fillText('Products', 0, 0);
+            graphCtx.restore();
+
+            // Plot data
+            if (reactionData.length > 1) {
+                const maxProducts = Math.max(...reactionData.map(d => d.products));
+                const maxTime = reactionData[reactionData.length - 1].time;
+
+                graphCtx.beginPath();
+                graphCtx.moveTo(40, 280 - (reactionData[0].products / maxProducts) * 260);
+
+                reactionData.forEach((point, index) => {
+                    const x = 40 + (point.time / maxTime) * 340;
+                    const y = 280 - (point.products / maxProducts) * 260;
+                    graphCtx.lineTo(x, y);
+                });
+
+                graphCtx.strokeStyle = 'blue';
+                graphCtx.stroke();
+            }
+        }
+
+        function updateProductInfo() {
+            const productInfo = document.getElementById('productInfo');
+            productInfo.innerHTML = `
+                <p>Products: H2O (Cyan), CO2 (Pink), NH3 (Purple), HCl (Green), HF (Light Salmon)</p>
+                <p>Total Products Formed: ${productCount}</p>
+            `;
+        }
+
+        function simulate() {
+            if (isSimulating) {
+                updateParticles();
+                drawParticles();
+                simulationTime += 1/60; // Assuming 60 FPS
+                if (simulationTime % 1 < 1/60) { // Update graph data every second
+                    reactionData.push({ time: Math.floor(simulationTime), products: productCount });
+                    updateGraph();
+                }
+                requestAnimationFrame(simulate);
+            }
+        }
+
+        document.getElementById('startStop').addEventListener('click', () => {
+            isSimulating = !isSimulating;
+            if (isSimulating) {
+                document.getElementById('startStop').textContent = 'Stop Simulation';
+                createParticles();
+                simulate();
+            } else {
+                document.getElementById('startStop').textContent = 'Start Simulation';
+            }
+        });
+
+        ['temperature', 'pressure', 'particleSpeed'].forEach(id => {
+            const input = document.getElementById(id);
+            const valueSpan = document.getElementById(`${id}Value`);
+            input.addEventListener('input', () => {
+                valueSpan.textContent = input.value;
+            });
+        });
+
+        updateProductInfo();
+        updateGraph();
+    </script>
+</body>
+</html>
