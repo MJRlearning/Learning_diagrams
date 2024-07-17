@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Effective Prompt Tips</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .tip {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .tip:hover {
+            background-color: #dbedfb;
+        }
+        .example {
+            display: none;
+            background-color: #fff3cd;
+            border-left: 6px solid #ffc107;
+            margin-top: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Key to Understanding Prompts</h1>
+        <p>Think of prompts as clear, specific instructions that guide the AI's response. The more detailed and precise your prompt, the better the AI can understand and fulfill your request.</p>
+        <h2>Tips for Creating Effective Prompts:</h2>
+        <div class="tip" onclick="toggleExample('example1')">
+            <strong>Be specific:</strong> Instead of vague requests, provide detailed instructions.
+            <div id="example1" class="example">
+                Example:<br>
+                Instead of "Tell me about dogs," try "Explain three unique characteristics of Golden Retrievers."
+            </div>
+        </div>
+        <div class="tip" onclick="toggleExample('example2')">
+            <strong>Provide context:</strong> Give background information for your request.
+            <div id="example2" class="example">
+                Example:<br>
+                "As a beginner gardener living in a temperate climate, what are five easy-to-grow vegetables for my first garden?"
+            </div>
+        </div>
+        <div class="tip" onclick="toggleExample('example3')">
+            <strong>Use clear language:</strong> Avoid ambiguity and be direct in your instructions.
+            <div id="example3" class="example">
+                Example:<br>
+                Instead of "Can you do something about climate?", try "List three specific actions individuals can take to reduce their carbon footprint."
+            </div>
+        </div>
+        <div class="tip" onclick="toggleExample('example4')">
+            <strong>Break down complex tasks:</strong> Separate multiple requests into clear steps.
+            <div id="example4" class="example">
+                Example:<br>
+                "1. Explain the concept of photosynthesis.<br>
+                 2. List the main components needed for photosynthesis.<br>
+                 3. Describe how this process benefits the ecosystem."
+            </div>
+        </div>
+        <div class="tip" onclick="toggleExample('example5')">
+            <strong>Experiment and refine:</strong> If you don't get the desired result, try rephrasing your prompt.
+            <div id="example5" class="example">
+                Example:<br>
+                If "Explain quantum computing" doesn't give you the level of detail you want, try "Explain quantum computing in simple terms, focusing on how it differs from classical computing and its potential applications."
+            </div>
+        </div>
+        <p>Remember, crafting good prompts is a skill that improves with practice. It's like learning to communicate effectively with a new friend – the more you interact, the better you'll understand how to ask for what you need.</p>
+    </div>
+
+    <script>
+        function toggleExample(id) {
+            var example = document.getElementById(id);
+            if (example.style.display === "none" || example.style.display === "") {
+                example.style.display = "block";
+            } else {
+                example.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
