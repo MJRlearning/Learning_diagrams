@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Practices for Writing Effective Prompts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .practice {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .practice:hover {
+            background-color: #dbedfb;
+        }
+        .example {
+            display: none;
+            background-color: #fff3cd;
+            border-left: 6px solid #ffc107;
+            margin-top: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Best Practices for Writing Effective Prompts</h1>
+        <p>Based on research, here are some best practices for writing specific and effective prompts. Click on each practice to see an example.</p>
+
+        <div class="practice" onclick="toggleExample('example1')">
+            <strong>1. Be clear and concise:</strong> Use straightforward language and avoid ambiguity. Clearly state what you want the AI to do or produce.
+            <div id="example1" class="example">
+                Example: "Write a 100-word summary of the plot of Romeo and Juliet."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example2')">
+            <strong>2. Provide context:</strong> Give relevant background information, specify the target audience, and describe any important themes or considerations.
+            <div id="example2" class="example">
+                Example: "Explain the concept of blockchain to a group of high school students who have basic knowledge of computers but no experience with cryptocurrencies."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example3')">
+            <strong>3. Use specific instructions:</strong> Instead of vague requests, give precise directions.
+            <div id="example3" class="example">
+                Example: "List five common symptoms of the flu, including their typical duration and severity."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example4')">
+            <strong>4. Assign a role:</strong> When appropriate, give the AI a specific role to assume.
+            <div id="example4" class="example">
+                Example: "As a financial advisor, provide three tips for young adults looking to start investing in the stock market."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example5')">
+            <strong>5. Break down complex tasks:</strong> If you have a multi-part request, separate it into clear steps or bullet points.
+            <div id="example5" class="example">
+                Example: "Please help me plan a vacation:
+                1. Suggest three budget-friendly European destinations.
+                2. For each destination, list two must-see attractions.
+                3. Provide an estimated daily budget for food and accommodation."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example6')">
+            <strong>6. Include examples:</strong> Providing examples can help guide the AI towards the style or format you're looking for.
+            <div id="example6" class="example">
+                Example: "Write a haiku about spring. A haiku is a three-line poem with 5 syllables in the first line, 7 in the second, and 5 in the third. Here's an example:
+                'An old silent pond...
+                A frog jumps into the pond,
+                splash! Silence again.'"
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example7')">
+            <strong>7. Set constraints:</strong> Establish guidelines or limitations to refine the AI's output.
+            <div id="example7" class="example">
+                Example: "Write a 150-word product description for a new smartphone. Use a professional tone and highlight three key features. Do not mention the price."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example8')">
+            <strong>8. Use positive language:</strong> Frame your prompts in terms of what you want, rather than what you don't want.
+            <div id="example8" class="example">
+                Example: Instead of "Don't use technical jargon," say "Use simple, everyday language."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example9')">
+            <strong>9. Utilize punctuation:</strong> Use commas, quotation marks, and line breaks to help the AI parse complex prompts more effectively.
+            <div id="example9" class="example">
+                Example: "Write a short dialogue between two characters:
+                - Character A: A busy executive
+                - Character B: A laid-back artist
+                Topic: The value of work-life balance
+                Use quotation marks for the dialogue and include brief descriptions of their actions."
+            </div>
+        </div>
+
+        <div class="practice" onclick="toggleExample('example10')">
+            <strong>10. Iterate and refine:</strong> Don't be afraid to experiment with different phrasings or structures. If you don't get the desired result, try rephrasing your prompt.
+            <div id="example10" class="example">
+                Example: If "Explain quantum computing" doesn't give you the desired level of detail, try "Explain quantum computing in simple terms, focusing on how it differs from classical computing and its potential real-world applications."
+            </div>
+        </div>
+
+        <h2>Comprehensive Example:</h2>
+        <div class="practice" onclick="toggleExample('fullExample')">
+            Click to see how these practices come together in a full prompt.
+            <div id="fullExample" class="example">
+                "Act as an experienced marketing professional. Write a 300-word blog post introduction about the benefits of content marketing for small businesses. Include three key advantages and use a friendly, conversational tone. The target audience is entrepreneurs who are new to digital marketing. Please structure the introduction with short paragraphs and incorporate one relevant statistic about content marketing effectiveness."
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleExample(id) {
+            var example = document.getElementById(id);
+            if (example.style.display === "none" || example.style.display === "") {
+                example.style.display = "block";
+            } else {
+                example.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
