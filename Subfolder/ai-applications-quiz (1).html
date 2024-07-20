@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Applications Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .column {
+            width: 200px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        .item {
+            background-color: #f1f3f5;
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .draggable {
+            cursor: move;
+        }
+        .droppable {
+            min-height: 42px;
+            border: 1px dashed #d1d5db;
+            background-color: #ffffff;
+        }
+        .correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        #score {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #2c3e50;
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        #reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        #reset:hover {
+            background-color: #c0392b;
+        }
+        #submit {
+            background-color: #2ecc71;
+            color: white;
+        }
+        #submit:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="column">
+            <h2>AI Applications</h2>
+            <div class="item draggable" draggable="true" data-app="Drug discovery">Drug discovery</div>
+            <div class="item draggable" draggable="true" data-app="Fraud detection">Fraud detection</div>
+            <div class="item draggable" draggable="true" data-app="Self-driving cars">Self-driving cars</div>
+            <div class="item draggable" draggable="true" data-app="Personalized recommendations">Personalized recommendations</div>
+        </div>
+        <div class="column">
+            <h2>Fields</h2>
+            <div class="item droppable" data-field="Healthcare">Healthcare</div>
+            <div class="item droppable" data-field="Finance">Finance</div>
+            <div class="item droppable" data-field="Autonomous Vehicles">Autonomous Vehicles</div>
+            <div class="item droppable" data-field="E-commerce">E-commerce</div>
+        </div>
+    </div>
+    <div id="score">Score: 0</div>
+    <div class="buttons">
+        <button id="reset">Reset</button>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        let score = 0;
+        const scoreElement = document.getElementById('score');
+        const draggables = document.querySelectorAll('.draggable');
+        const droppables = document.querySelectorAll('.droppable');
+        const resetButton = document.getElementById('reset');
+        const submitButton = document.getElementById('submit');
+
+        function initDragAndDrop() {
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+
+            droppables.forEach(droppable => {
+                droppable.addEventListener('dragover', e => {
+                    e.preventDefault();
+                });
+
+                droppable.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const draggable = document.querySelector('.dragging');
+                    const app = draggable.getAttribute('data-app');
+                    const field = droppable.getAttribute('data-field');
+
+                    if (!droppable.hasAttribute('data-filled')) {
+                        droppable.textContent = draggable.textContent;
+                        droppable.setAttribute('data-filled', app);
+                        draggable.style.visibility = 'hidden';
+                    }
+                });
+            });
+        }
+
+        function resetQuiz() {
+            draggables.forEach(draggable => {
+                draggable.style.visibility = 'visible';
+            });
+            droppables.forEach(droppable => {
+                droppable.textContent = droppable.getAttribute('data-field');
+                droppable.classList.remove('correct');
+                droppable.removeAttribute('data-filled');
+            });
+            score = 0;
+            scoreElement.textContent = 'Score: 0';
+        }
+
+        function submitQuiz() {
+            score = 0;
+            droppables.forEach(droppable => {
+                const app = droppable.getAttribute('data-filled');
+                const field = droppable.getAttribute('data-field');
+
+                if (
+                    (app === 'Drug discovery' && field === 'Healthcare') ||
+                    (app === 'Fraud detection' && field === 'Finance') ||
+                    (app === 'Self-driving cars' && field === 'Autonomous Vehicles') ||
+                    (app === 'Personalized recommendations' && field === 'E-commerce')
+                ) {
+                    score++;
+                    droppable.classList.add('correct');
+                } else {
+                    droppable.classList.remove('correct');
+                }
+            });
+            scoreElement.textContent = `Score: ${score}`;
+        }
+
+        resetButton.addEventListener('click', resetQuiz);
+        submitButton.addEventListener('click', submitQuiz);
+
+        initDragAndDrop();
+    </script>
+</body>
+</html>
