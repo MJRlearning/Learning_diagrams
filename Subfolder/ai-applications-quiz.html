@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Applications Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px;
+            gap: 30px;
+        }
+        .column {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .draggable {
+            background-color: #ecf0f1;
+            padding: 12px 15px;
+            margin: 10px 0;
+            cursor: move;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .draggable:hover {
+            background-color: #e0e6e9;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .droppable {
+            border: 2px dashed #bdc3c7;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 60px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .droppable.dragover {
+            background-color: #eef7fe;
+            border-color: #3498db;
+        }
+        .correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        #score {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 30px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="column">
+            <h2>AI Applications</h2>
+            <div class="draggable" draggable="true" data-app="Drug discovery">Drug discovery</div>
+            <div class="draggable" draggable="true" data-app="Fraud detection">Fraud detection</div>
+            <div class="draggable" draggable="true" data-app="Self-driving cars">Self-driving cars</div>
+            <div class="draggable" draggable="true" data-app="Personalized recommendations">Personalized recommendations</div>
+        </div>
+        <div class="column">
+            <h2>Fields</h2>
+            <div class="droppable" data-field="Healthcare">Healthcare</div>
+            <div class="droppable" data-field="Finance">Finance</div>
+            <div class="droppable" data-field="Autonomous Vehicles">Autonomous Vehicles</div>
+            <div class="droppable" data-field="E-commerce">E-commerce</div>
+            <div id="score">Score: 0</div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        const scoreElement = document.getElementById('score');
+        const draggables = document.querySelectorAll('.draggable');
+        const droppables = document.querySelectorAll('.droppable');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        droppables.forEach(droppable => {
+            droppable.addEventListener('dragover', e => {
+                e.preventDefault();
+                droppable.classList.add('dragover');
+            });
+
+            droppable.addEventListener('dragleave', () => {
+                droppable.classList.remove('dragover');
+            });
+
+            droppable.addEventListener('drop', e => {
+                e.preventDefault();
+                droppable.classList.remove('dragover');
+                const draggable = document.querySelector('.dragging');
+                const app = draggable.getAttribute('data-app');
+                const field = droppable.getAttribute('data-field');
+
+                if (
+                    (app === 'Drug discovery' && field === 'Healthcare') ||
+                    (app === 'Fraud detection' && field === 'Finance') ||
+                    (app === 'Self-driving cars' && field === 'Autonomous Vehicles') ||
+                    (app === 'Personalized recommendations' && field === 'E-commerce')
+                ) {
+                    droppable.appendChild(draggable);
+                    droppable.classList.add('correct');
+                    score++;
+                    scoreElement.textContent = `Score: ${score}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
