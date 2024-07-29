@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Interactive AI Glossary</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --highlight-color: #e74c3c;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        #search-container {
+            position: relative;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        #search {
+            flex-grow: 1;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        #search:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+        }
+        #search-icon {
+            position: absolute;
+            left: 15px;
+            color: #bbb;
+            pointer-events: none;
+        }
+        #reset-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+        #reset-button:hover {
+            background-color: #2980b9;
+        }
+        .term {
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .term:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .term-header {
+            background-color: #f9f9f9;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .term-header:hover {
+            background-color: #f0f0f0;
+        }
+        .term-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .term-content.active {
+            padding: 15px;
+            max-height: 1000px;
+        }
+        .highlight {
+            background-color: rgba(231, 76, 60, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .term-header.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive AI Glossary</h1>
+        <div id="search-container">
+            <i id="search-icon" class="fas fa-search"></i>
+            <input type="text" id="search" placeholder="Search for a term...">
+            <button id="reset-button">Reset</button>
+        </div>
+        <div id="glossary"></div>
+    </div>
+
+    <script>
+        const glossaryTerms = [
+            { term: "Algorithm", definition: "A step-by-step set of instructions or rules followed to solve a specific problem or perform a task." },
+            { term: "Artificial Intelligence (AI)", definition: "The simulation of human intelligence in machines that are programmed to think and learn like humans." },
+            { term: "Backpropagation", definition: "An algorithm used in deep learning to calculate the gradient of the loss function with respect to the weights of a neural network." },
+            { term: "Chatbot", definition: "A computer program designed to simulate human conversation through voice or text interactions, typically used to provide customer support or information." },
+            { term: "Convolutional Neural Network (CNN)", definition: "A type of deep neural network commonly used for analyzing visual data, such as images or videos." },
+            { term: "Deep Learning", definition: "A subset of machine learning that uses artificial neural networks to learn and make predictions or decisions without explicit programming." },
+            { term: "GAN (Generative Adversarial Network)", definition: "A type of generative model consisting of two neural networks, a generator and a discriminator, which compete with each other during training to generate realistic data." },
+            { term: "Generative AI", definition: "A field of AI that focuses on creating machines capable of generating new content, such as images, music, or text, based on patterns learned from existing data." },
+            { term: "Machine Learning", definition: "A branch of AI that enables computers to learn and improve from experience without being explicitly programmed." },
+            { term: "Natural Language Processing (NLP)", definition: "A subfield of AI that focuses on the interaction between computers and human language, enabling machines to understand, interpret, and generate human language." },
+            { term: "Neural Network", definition: "A computational model inspired by the structure and functionality of the human brain, composed of interconnected artificial neurons that process and transmit information." },
+            { term: "Overfitting", definition: "A phenomenon in machine learning when a model is too closely fitted to the training data, resulting in poor performance on new, unseen data." },
+            { term: "Reinforcement Learning", definition: "A type of machine learning where an agent learns to make decisions by interacting with an environment and receiving rewards or punishments based on its actions." },
+            { term: "Supervised Learning", definition: "A type of machine learning where a model is trained on labeled data, with known input-output pairs, to make predictions or classify new, unseen data." },
+            { term: "TensorFlow", definition: "An open-source machine learning framework developed by Google, widely used for building and training deep learning models." },
+            { term: "Transfer Learning", definition: "A technique in machine learning where knowledge gained from training on one task is applied to improve performance on a different but related task." },
+            { term: "Unsupervised Learning", definition: "A type of machine learning where a model learns patterns and relationships in unlabeled data without specific guidance or labels." },
+            { term: "Virtual Assistant", definition: "An AI-powered software program designed to assist users in completing tasks, answering questions, or providing information, typically through voice-based interactions." },
+            { term: "Weak AI", definition: "AI systems that are designed to perform a specific task or a limited set of tasks, rather than possessing general intelligence." },
+            { term: "XGBoost", definition: "An open-source software library that provides a gradient boosting framework for implementing machine learning algorithms." }
+        ];
+
+        const glossaryContainer = document.getElementById('glossary');
+        const searchInput = document.getElementById('search');
+        const resetButton = document.getElementById('reset-button');
+
+        function createGlossary() {
+            glossaryContainer.innerHTML = '';
+            glossaryTerms.forEach(item => {
+                const termElement = document.createElement('div');
+                termElement.className = 'term';
+                termElement.innerHTML = `
+                    <div class="term-header">
+                        <span>${item.term}</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="term-content">${item.definition}</div>
+                `;
+                glossaryContainer.appendChild(termElement);
+
+                termElement.querySelector('.term-header').addEventListener('click', () => {
+                    const header = termElement.querySelector('.term-header');
+                    const content = termElement.querySelector('.term-content');
+                    header.classList.toggle('active');
+                    content.classList.toggle('active');
+                });
+            });
+        }
+
+        function searchGlossary() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const terms = document.querySelectorAll('.term');
+            let hasResults = false;
+
+            terms.forEach(term => {
+                const header = term.querySelector('.term-header span');
+                const content = term.querySelector('.term-content');
+                const termText = header.textContent.toLowerCase();
+                const definitionText = content.textContent.toLowerCase();
+
+                if (termText.includes(searchTerm) || definitionText.includes(searchTerm)) {
+                    term.style.display = 'block';
+                    highlightText(header, searchTerm);
+                    highlightText(content, searchTerm);
+                    hasResults = true;
+                } else {
+                    term.style.display = 'none';
+                    header.innerHTML = header.textContent;
+                    content.innerHTML = content.textContent;
+                }
+            });
+
+            resetButton.style.display = searchTerm ? 'block' : 'none';
+
+            if (!hasResults && searchTerm) {
+                const noResultsMessage = document.createElement('div');
+                noResultsMessage.textContent = 'No results found.';
+                noResultsMessage.style.textAlign = 'center';
+                noResultsMessage.style.marginTop = '20px';
+                glossaryContainer.appendChild(noResultsMessage);
+            }
+        }
+
+        function highlightText(element, searchTerm) {
+            const text = element.textContent;
+            const regex = new RegExp(searchTerm, 'gi');
+            element.innerHTML = text.replace(regex, match => `<span class="highlight">${match}</span>`);
+        }
+
+        function resetGlossary() {
+            searchInput.value = '';
+            createGlossary();
+            resetButton.style.display = 'none';
+        }
+
+        createGlossary();
+        searchInput.addEventListener('input', searchGlossary);
+        resetButton.addEventListener('click', resetGlossary);
+    </script>
+</body>
+</html>
