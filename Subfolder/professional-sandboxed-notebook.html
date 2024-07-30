@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Interactive Notebook</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        #message {
+            color: #27ae60;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .saved-notes-container {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .saved-note {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        #printArea {
+            display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Professional Interactive Notebook</h1>
+        <textarea id="notepad" placeholder="Jot down your thoughts here..."></textarea>
+        <div class="button-group">
+            <button onclick="saveNote()">Save</button>
+            <button onclick="printNotes()">Print</button>
+            <button onclick="copyNotes()">Copy</button>
+            <button onclick="clearNotes()">Clear</button>
+        </div>
+        <p id="message"></p>
+        <h2>Saved Notes</h2>
+        <div class="saved-notes-container" id="saved-notes"></div>
+    </div>
+
+    <div id="printArea"></div>
+
+    <script>
+        let savedNotes = [];
+
+        function saveNote() {
+            const notepad = document.getElementById('notepad');
+            const note = notepad.value.trim();
+            if (note) {
+                savedNotes.push(note);
+                notepad.value = '';
+                displaySavedNotes();
+                showMessage('Note saved successfully!');
+            }
+        }
+
+        function printNotes() {
+            const printArea = document.getElementById('printArea');
+            printArea.innerHTML = '<h2>My Notes</h2>' + 
+                savedNotes.map(note => `<div class="saved-note">${note}</div>`).join('') +
+                `<div class="saved-note">${document.getElementById('notepad').value}</div>`;
+            window.print();
+        }
+
+        function copyNotes() {
+            const notepad = document.getElementById('notepad');
+            notepad.select();
+            document.execCommand('copy');
+            showMessage('Notes copied to clipboard!');
+        }
+
+        function clearNotes() {
+            document.getElementById('notepad').value = '';
+        }
+
+        function displaySavedNotes() {
+            const savedNotesDiv = document.getElementById('saved-notes');
+            savedNotesDiv.innerHTML = savedNotes.map(note => `<div class="saved-note">${note}</div>`).join('');
+        }
+
+        function showMessage(msg) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = msg;
+            setTimeout(() => {
+                messageElement.textContent = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
