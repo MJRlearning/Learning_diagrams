@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List Information</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .info-item {
+            cursor: pointer;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .info-item:hover {
+            background-color: #e8f4fd;
+            transform: translateX(5px);
+        }
+        .info-item::after {
+            content: '\25BC';
+            font-size: 12px;
+            color: #3498db;
+        }
+        .info-item.active::after {
+            content: '\25B2';
+        }
+        .details {
+            display: none;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #2980b9;
+            margin: 5px 0 15px 20px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+        .highlight {
+            background-color: #fffbcc;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patient List Information</h1>
+        <p>Click on each item to view more details. The options you see depend on your permissions and organisation.</p>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Tasks</div>
+        <div class="details">The number of open tasks is displayed to the right of the patient's name.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Time in ED</div>
+        <div class="details">The time a patient has been in ED is displayed to the right of the patient's name.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Seen By</div>
+        <div class="details">Shows the name of the clinician that saw the patient. This information comes from the clinical note <span class="highlight">'Seen By'</span>.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">DNACPR</div>
+        <div class="details">Shows if the patient is marked Do Not Attempt Cardio Pulmonary Resuscitation (DNACPR). This information comes from the clinical note <span class="highlight">'Resus Status'</span>.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Triage Category</div>
+        <div class="details">Shows the triage category score for the patient. This number comes from the clinical note <span class="highlight">'Triage Category Score'</span>.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Named Nurse</div>
+        <div class="details">Shows the initials of the named nurse for the patient. This name comes from the clinical note <span class="highlight">'Named Nurse'</span>.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Observations Due</div>
+        <div class="details">
+            The time a patient's observations are due is displayed to the right of the patient's name.<br>
+            • When observations are not due, the time is shown on a <span class="highlight">grey</span> background<br>
+            • When observations are due, the time is shown on a <span class="highlight">green</span> background<br>
+            • When observations are overdue, the time is shown on a <span class="highlight">red</span> background
+        </div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Fluid balance due</div>
+        <div class="details">
+            The time that the fluid balance entry is due is displayed to the right of the patient's name.<br>
+            • When fluid balance is not due, the time is shown on a <span class="highlight">grey</span> background<br>
+            • When fluid balance is due, the time is shown on a <span class="highlight">green</span> background<br>
+            • When fluid balance is overdue, the time is shown on a <span class="highlight">red</span> background
+        </div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Fluid Balance</div>
+        <div class="details">The input and output totals for the day are displayed to the right of the patient's name.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Assessments Due</div>
+        <div class="details">
+            If a patient has an assessment that is:<br>
+            • Due, <span class="highlight">⏰</span> is shown to the right of the patient's name<br>
+            • Overdue, <span class="highlight">⏰</span> is shown to the right of the patient's name
+        </div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Sign Off Assessments</div>
+        <div class="details">If a patient has an assessment that needs signing off, the number of assessments that need signing off is displayed to the right of the patient's name on a <span class="highlight">purple</span> background.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Meds review</div>
+        <div class="details">
+            If a patient has a prescription that has an upcoming soft or hard review, the review time is displayed to the right of the patient's name. 'Meds Review' is shown below the time.<br>
+            • If the review is due soon, the time is shown on an <span class="highlight">orange</span> background<br>
+            • If the review is overdue, the time is shown on a <span class="highlight">red</span> background
+        </div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Anticoagulant</div>
+        <div class="details">If the patient is prescribed an anticoagulant, <span class="highlight">💊</span> and <span class="highlight">COAG</span> are displayed to the right of the patient's name.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Meds Due</div>
+        <div class="details">
+            The time a dose is due is displayed to the right of the patient's name. 'Meds Due' is shown below the time.<br>
+            • When a dose is due, the time is shown on a <span class="highlight">green</span> background<br>
+            • When a dose is overdue or a dose has been missed, the time is shown on an <span class="highlight">orange</span> background<br>
+            When an infusion or fluid is being given, the time the infusion or fluid was started in shown on a <span class="highlight">grey</span> background.
+        </div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Investigation Collection</div>
+        <div class="details">If a patient has a sample that needs collecting, the time of the collection is displayed to the right of the patient's name.</div>
+        
+        <div class="info-item" onclick="toggleDetails(this)">Investigation Results</div>
+        <div class="details">If a patient has results that need signing off, the number of results that need signing off is displayed to the right of the patient's name on a <span class="highlight">red</span> background.</div>
+    </div>
+
+    <script>
+        function toggleDetails(element) {
+            element.classList.toggle('active');
+            var details = element.nextElementSibling;
+            if (details.style.display === "block") {
+                details.style.display = "none";
+            } else {
+                details.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
