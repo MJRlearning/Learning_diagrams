@@ -66,6 +66,16 @@
             padding: 2px 4px;
             border-radius: 3px;
         }
+        .clock-icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+        .clock-green {
+            color: #2ecc71;
+        }
+        .clock-red {
+            color: #e74c3c;
+        }
     </style>
 </head>
 <body>
@@ -113,8 +123,8 @@
         <div class="info-item" onclick="toggleDetails(this)">Assessments Due</div>
         <div class="details">
             If a patient has an assessment that is:<br>
-            • Due, <span class="highlight">⏰</span> is shown to the right of the patient's name<br>
-            • Overdue, <span class="highlight">⏰</span> is shown to the right of the patient's name
+            • Due, a <span class="clock-icon clock-green">green clock</span> is shown to the right of the patient's name<br>
+            • Overdue, a <span class="clock-icon clock-red">red clock</span> is shown to the right of the patient's name
         </div>
         
         <div class="info-item" onclick="toggleDetails(this)">Sign Off Assessments</div>
