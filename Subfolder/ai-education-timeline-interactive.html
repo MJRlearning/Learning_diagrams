@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Education Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #2196F3;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #FF9F55;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .left {
+            left: 0;
+        }
+        .right {
+            left: 50%;
+        }
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #2196F3;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #2196F3;
+        }
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #2196F3;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #2196F3 transparent transparent;
+        }
+        .right::after {
+            left: -16px;
+        }
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            border: 2px solid #2196F3;
+            cursor: pointer;
+        }
+        .content h2 {
+            margin-top: 0;
+        }
+        .details {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI in Education Timeline</h1>
+    <div class="timeline">
+        <div class="container left">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>1950</h2>
+                <p>Birth of AI</p>
+                <div class="details">
+                    <p>Early AI research, foundational algorithms, and the Turing Test mark the beginning of AI.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>1970</h2>
+                <p>Educational Software</p>
+                <div class="details">
+                    <p>Introduction of computer-based learning and educational games.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>1980</h2>
+                <p>Internet and Online Learning</p>
+                <div class="details">
+                    <p>Expansion of distance learning through the internet.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2000</h2>
+                <p>Adaptive Learning</p>
+                <div class="details">
+                    <p>AI begins to tailor learning experiences to individual student needs.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2010</h2>
+                <p>MOOCs and Big Data</p>
+                <div class="details">
+                    <p>Massive Open Online Courses (MOOCs) emerge, and big data analytics are applied to education.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2016</h2>
+                <p>Google DeepMind's AlphaGo</p>
+                <div class="details">
+                    <p>Demonstrates advanced AI problem-solving capabilities.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2019</h2>
+                <p>GPT 1 & 2</p>
+                <div class="details">
+                    <p>More advanced language models showing significant improvements in text generation.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2020</h2>
+                <p>GPT-3</p>
+                <div class="details">
+                    <p>Breakthrough in language models' capabilities, facilitating the creation of tutoring systems and educational chatbots.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container left">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2022</h2>
+                <p>AI Tutoring and Personalization</p>
+                <div class="details">
+                    <p>AI systems begin providing personalized tutoring and learning assessments.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container right">
+            <div class="content" onclick="toggleDetails(this)">
+                <h2>2023</h2>
+                <p>GPT-4 and Beyond</p>
+                <div class="details">
+                    <p>Introduction of GPT-4, with even more nuanced understanding and interaction, finding applications in creating educational content, personalized learning pathways, and interactive learning environments.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails(element) {
+            var details = element.querySelector('.details');
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
