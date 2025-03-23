@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to AI and AI Literacy Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+        }
+        .question h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .options label:hover {
+            background-color: #e8e8e8;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .next-btn, .submit-btn, .restart-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .next-btn:hover, .submit-btn:hover, .restart-btn:hover {
+            background-color: #3367d6;
+        }
+        .results {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e8f0fe;
+            border-radius: 5px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            width: 20%;
+            height: 10px;
+            background-color: #4285f4;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Introduction to AI and AI Literacy Quiz</h1>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div id="quiz">
+            <div class="question" id="q1">
+                <h3>Question 1: What does AI stand for?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="a"> Automated Intelligence</label>
+                    <label><input type="radio" name="q1" value="b"> Artificial Intelligence</label>
+                    <label><input type="radio" name="q1" value="c"> Advanced Internet</label>
+                    <label><input type="radio" name="q1" value="d"> Algorithmic Integration</label>
+                </div>
+                <div class="feedback" id="feedback1"></div>
+                <button class="next-btn" onclick="nextQuestion(1)">Next Question</button>
+            </div>
+            
+            <div class="question hidden" id="q2">
+                <h3>Question 2: Which of the following is NOT an example of AI technology?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="a"> Facial recognition software</label>
+                    <label><input type="radio" name="q2" value="b"> Basic calculator app</label>
+                    <label><input type="radio" name="q2" value="c"> Chatbots</label>
+                    <label><input type="radio" name="q2" value="d"> Recommendation systems on streaming platforms</label>
+                </div>
+                <div class="feedback" id="feedback2"></div>
+                <button class="next-btn" onclick="nextQuestion(2)">Next Question</button>
+            </div>
+            
+            <div class="question hidden" id="q3">
+                <h3>Question 3: What is "machine learning"?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="a"> The process of teaching humans about computers</label>
+                    <label><input type="radio" name="q3" value="b"> A subset of AI where computers learn from data without explicit programming</label>
+                    <label><input type="radio" name="q3" value="c"> Making computers that physically resemble humans</label>
+                    <label><input type="radio" name="q3" value="d"> Teaching robots to perform manufacturing tasks</label>
+                </div>
+                <div class="feedback" id="feedback3"></div>
+                <button class="next-btn" onclick="nextQuestion(3)">Next Question</button>
+            </div>
+            
+            <div class="question hidden" id="q4">
+                <h3>Question 4: What is an ethical concern related to AI?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="a"> AI systems use too much electricity</label>
+                    <label><input type="radio" name="q4" value="b"> AI makes computers run slower</label>
+                    <label><input type="radio" name="q4" value="c"> Bias and discrimination in AI decision-making</label>
+                    <label><input type="radio" name="q4" value="d"> AI systems are too expensive to develop</label>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+                <button class="next-btn" onclick="nextQuestion(4)">Next Question</button>
+            </div>
+            
+            <div class="question hidden" id="q5">
+                <h3>Question 5: What does AI literacy primarily involve?</h3>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="a"> Knowing how to code AI systems</label>
+                    <label><input type="radio" name="q5" value="b"> Understanding, critically evaluating, and responsibly using AI technologies</label>
+                    <label><input type="radio" name="q5" value="c"> Being able to build advanced robots</label>
+                    <label><input type="radio" name="q5" value="d"> Learning every technical detail about computer science</label>
+                </div>
+                <div class="feedback" id="feedback5"></div>
+                <button class="submit-btn" onclick="showResults()">Submit Quiz</button>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+            <div id="scoreMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let score = 0;
+        const totalQuestions = 5;
+        const correctAnswers = {
+            q1: "b",
+            q2: "b",
+            q3: "b",
+            q4: "c",
+            q5: "b"
+        };
+        
+        const feedback = {
+            q1: {
+                correct: "Correct! AI stands for Artificial Intelligence, which refers to machines designed to mimic human intelligence.",
+                incorrect: "Incorrect. AI stands for Artificial Intelligence, which refers to machines designed to mimic human intelligence."
+            },
+            q2: {
+                correct: "Correct! A basic calculator app follows fixed rules without learning or adapting, so it's not AI.",
+                incorrect: "Incorrect. A basic calculator app is not AI - it follows fixed rules without learning or adapting."
+            },
+            q3: {
+                correct: "Correct! Machine learning is a subset of AI where systems learn patterns from data without being explicitly programmed for each task.",
+                incorrect: "Incorrect. Machine learning is a subset of AI where systems learn patterns from data without being explicitly programmed for each task."
+            },
+            q4: {
+                correct: "Correct! Bias and discrimination in AI decision-making is a major ethical concern, as AI systems can perpetuate or amplify existing societal biases.",
+                incorrect: "Incorrect. Bias and discrimination in AI decision-making is a major ethical concern, as AI systems can perpetuate or amplify existing societal biases."
+            },
+            q5: {
+                correct: "Correct! AI literacy involves understanding how AI works, critically evaluating its outputs, and using AI responsibly.",
+                incorrect: "Incorrect. AI literacy involves understanding how AI works, critically evaluating its outputs, and using AI responsibly."
+            }
+        };
+        
+        function checkAnswer(questionNum) {
+            const selectedOption = document.querySelector(`input[name="q${questionNum}"]:checked`);
+            if (!selectedOption) return false;
+            
+            const feedbackElement = document.getElementById(`feedback${questionNum}`);
+            
+            if (selectedOption.value === correctAnswers[`q${questionNum}`]) {
+                feedbackElement.textContent = feedback[`q${questionNum}`].correct;
+                feedbackElement.className = "feedback correct";
+                score++;
+            } else {
+                feedbackElement.textContent = feedback[`q${questionNum}`].incorrect;
+                feedbackElement.className = "feedback incorrect";
+            }
+            
+            feedbackElement.style.display = "block";
+            return true;
+        }
+        
+        function nextQuestion(questionNum) {
+            if (!checkAnswer(questionNum)) {
+                alert("Please select an answer!");
+                return;
+            }
+            
+            document.getElementById(`q${questionNum}`).classList.add("hidden");
+            document.getElementById(`q${questionNum+1}`).classList.remove("hidden");
+            currentQuestion++;
+            
+            // Update progress bar
+            document.getElementById("progress").style.width = `${(currentQuestion/totalQuestions)*100}%`;
+        }
+        
+        function showResults() {
+            if (!checkAnswer(5)) {
+                alert("Please select an answer!");
+                return;
+            }
+            
+            document.getElementById("q5").classList.add("hidden");
+            document.getElementById("results").style.display = "block";
+            
+            const scorePercentage = (score / totalQuestions) * 100;
+            document.getElementById("score").textContent = `You scored ${score} out of ${totalQuestions} (${scorePercentage}%)`;
+            
+            const scoreMessage = document.getElementById("scoreMessage");
+            if (scorePercentage === 100) {
+                scoreMessage.innerHTML = "<p>Perfect score! You have an excellent understanding of AI literacy basics.</p>";
+            } else if (scorePercentage >= 80) {
+                scoreMessage.innerHTML = "<p>Great job! You have a good grasp of AI literacy basics.</p>";
+            } else if (scorePercentage >= 60) {
+                scoreMessage.innerHTML = "<p>Good effort! You know some AI basics, but there's room to learn more.</p>";
+            } else {
+                scoreMessage.innerHTML = "<p>You might want to review AI literacy basics. Don't worry, this is a great first step!</p>";
+            }
+        }
+        
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            
+            // Hide all questions except the first
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionElement = document.getElementById(`q${i}`);
+                if (i === 1) {
+                    questionElement.classList.remove("hidden");
+                } else {
+                    questionElement.classList.add("hidden");
+                }
+                
+                // Reset radio buttons
+                const radioButtons = document.querySelectorAll(`input[name="q${i}"]`);
+                radioButtons.forEach(radio => radio.checked = false);
+                
+                // Hide feedback
+                document.getElementById(`feedback${i}`).style.display = "none";
+            }
+            
+            // Reset progress bar
+            document.getElementById("progress").style.width = "20%";
+            
+            // Hide results
+            document.getElementById("results").style.display = "none";
+        }
+    </script>
+</body>
+</html>
