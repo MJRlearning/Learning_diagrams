@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everyday Problem-Solving Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        .intro {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .quiz-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            background-color: #f0f4f8;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .correct {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .explanation {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            height: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            background-color: #3498db;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        @media (min-width: 600px) {
+            .options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro">
+        <h1>Unraveling Everyday Problem-Solving Activities</h1>
+        <p>This quiz tests your understanding of how technology solves everyday problems. Read the case study carefully and answer the questions to see how well you understand these concepts.</p>
+        <p>There are questions covering all three problem scenarios from the case study.</p>
+    </div>
+    
+    <div class="quiz-container" id="quiz">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- Questions will be loaded dynamically -->
+        </div>
+        
+        <button class="btn" id="submit-btn">Submit Answer</button>
+        <button class="btn" id="next-btn" style="display: none;">Next Question</button>
+    </div>
+    
+    <div class="result-container" id="result">
+        <h2>Quiz Complete!</h2>
+        <div class="score" id="score-display"></div>
+        <p id="score-message"></p>
+        <button class="btn" id="restart-btn">Restart Quiz</button>
+    </div>
+    
+    <script>
+        // Quiz questions
+        const questions = [
+            {
+                question: "What is the primary data source streaming services use to recommend movies?",
+                options: [
+                    "Random selection of new releases",
+                    "Viewer's past viewing history and preferences",
+                    "Only what's trending globally",
+                    "Just movies from the same director"
+                ],
+                correctIndex: 1,
+                explanation: "Streaming services analyze your viewing history and preferences to identify patterns and recommend content aligned with your tastes, while also considering factors like time of day and trends among similar viewers."
+            },
+            {
+                question: "Beyond correcting spelling mistakes, what else does your phone's autocorrect feature do?",
+                options: [
+                    "It only fixes spelling errors",
+                    "It understands context and predicts what you'll say next",
+                    "It translates your messages to other languages",
+                    "It makes your messages more formal"
+                ],
+                correctIndex: 1,
+                explanation: "Autocorrect doesn't just fix spelling - it analyzes message context and predicts what you might say next, learning from your typing habits to adapt to your personal style over time."
+            },
+            {
+                question: "What technology enables virtual assistants to understand voice commands?",
+                options: [
+                    "Natural Language Processing (NLP)",
+                    "Simple audio recording",
+                    "Manual transcription by humans",
+                    "Basic keyword recognition only"
+                ],
+                correctIndex: 0,
+                explanation: "Virtual assistants rely on Natural Language Processing (NLP), an AI technology that converts speech to text, analyzes structure and intent, and retrieves information to provide coherent responses."
+            },
+            {
+                question: "Why do streaming services consider the time of day when recommending content?",
+                options: [
+                    "To save server bandwidth",
+                    "Because it's required by law",
+                    "To better match viewing patterns and habits",
+                    "It's just a random factor"
+                ],
+                correctIndex: 2,
+                explanation: "Time of day is considered because viewing preferences often change throughout the day - for example, people might prefer shorter content in the morning or different genres in the evening versus weekends."
+            },
+            {
+                question: "How does a virtual assistant process the question 'What's the weather today?'",
+                options: [
+                    "By searching for the exact phrase online",
+                    "By breaking down speech into text, analyzing intent, and retrieving weather data",
+                    "By playing a pre-recorded weather report",
+                    "By asking another virtual assistant"
+                ],
+                correctIndex: 1,
+                explanation: "The assistant converts your speech to text, identifies keywords like 'weather,' determines your intent, retrieves current weather data from databases, and synthesizes a coherent response."
+            },
+            {
+                question: "What happens when your autocorrect feature changes 'definately' to 'definitely'?",
+                options: [
+                    "It's simply using a dictionary lookup",
+                    "It's guessing based on common typos and language patterns",
+                    "It's asking you secretly if that's what you meant",
+                    "It's changing all words to their most common spelling"
+                ],
+                correctIndex: 1,
+                explanation: "Autocorrect identifies common misspellings like 'definately' and, using predictive algorithms trained on vast amounts of language data, determines that 'definitely' is the most likely intended word."
+            },
+            {
+                question: "What problem are streaming service recommendation algorithms primarily designed to solve?",
+                options: [
+                    "Promoting unpopular content",
+                    "Decision fatigue when selecting entertainment",
+                    "Increasing internet bandwidth usage",
+                    "Creating viewing schedules"
+                ],
+                correctIndex: 1,
+                explanation: "Recommendation algorithms address decision fatigue by narrowing down overwhelming choices to a manageable selection based on your preferences, saving you from scrolling through thousands of options."
+            },
+            {
+                question: "How does your phone's autocorrect improve over time?",
+                options: [
+                    "It doesn't improve - it stays the same",
+                    "Through software updates only",
+                    "By learning from your typing habits and adapting to your style",
+                    "By downloading new dictionaries"
+                ],
+                correctIndex: 2,
+                explanation: "Autocorrect continuously learns from your typing patterns, frequently used words, and writing style, becoming more personalized and accurate with use."
+            },
+            {
+                question: "What factors might a movie recommendation algorithm consider when suggesting content?",
+                options: [
+                    "Only the actors you prefer",
+                    "Only the last movie you watched",
+                    "Multiple factors including genre preferences, viewing history, time of day, and trending content",
+                    "Only the highest-rated movies overall"
+                ],
+                correctIndex: 2,
+                explanation: "Movie recommendation algorithms are sophisticated, considering multiple factors simultaneously: your viewing history, genre preferences, trending content, time patterns, and even what similar users enjoy."
+            },
+            {
+                question: "What's the key difference between how virtual assistants and humans understand language?",
+                options: [
+                    "Virtual assistants convert speech to text first, then analyze intent",
+                    "Virtual assistants don't understand language at all",
+                    "Virtual assistants only understand certain accents",
+                    "Virtual assistants understand every language perfectly"
+                ],
+                correctIndex: 0,
+                explanation: "Unlike humans who directly process speech, virtual assistants must first convert speech to text, then use NLP algorithms to analyze structure and intent before they can retrieve information and respond."
+            }
+        ];
+        
+        // Variables
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        
+        // DOM Elements
+        const questionsContainer = document.getElementById('questions-container');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultContainer = document.getElementById('result');
+        const scoreDisplay = document.getElementById('score-display');
+        const scoreMessage = document.getElementById('score-message');
+        const restartBtn = document.getElementById('restart-btn');
+        const progressBar = document.getElementById('progress');
+        
+        // Shuffle questions
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        const shuffledQuestions = shuffleArray([...questions]).slice(0, 7); // Take 7 random questions
+        
+        // Initialize quiz
+        function initQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            loadQuestion();
+            resultContainer.style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            updateProgressBar();
+        }
+        
+        // Load current question
+        function loadQuestion() {
+            answered = false;
+            const questionData = shuffledQuestions[currentQuestion];
+            
+            questionsContainer.innerHTML = `
+                <div class="question" id="question-${currentQuestion}">
+                    <h2>Question ${currentQuestion + 1} of ${shuffledQuestions.length}</h2>
+                    <p>${questionData.question}</p>
+                    <div class="options">
+                        ${questionData.options.map((option, index) => 
+                            `<div class="option" data-index="${index}">${option}</div>`
+                        ).join('')}
+                    </div>
+                    <div class="explanation" id="explanation-${currentQuestion}">
+                        ${questionData.explanation}
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+            
+            submitBtn.style.display = 'block';
+            nextBtn.style.display = 'none';
+            
+            // Update progress bar
+            updateProgressBar();
+        }
+        
+        // Select an option
+        function selectOption(e) {
+            if (answered) return;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            e.target.classList.add('selected');
+        }
+        
+        // Submit answer
+        function submitAnswer() {
+            const selectedOption = document.querySelector('.option.selected');
+            
+            if (!selectedOption && !answered) {
+                alert('Please select an option!');
+                return;
+            }
+            
+            if (!answered) {
+                answered = true;
+                
+                const selectedIndex = parseInt(selectedOption.dataset.index);
+                const correctIndex = shuffledQuestions[currentQuestion].correctIndex;
+                
+                if (selectedIndex === correctIndex) {
+                    selectedOption.classList.add('correct');
+                    score++;
+                } else {
+                    selectedOption.classList.add('incorrect');
+                    document.querySelectorAll('.option')[correctIndex].classList.add('correct');
+                }
+                
+                // Show explanation
+                document.getElementById(`explanation-${currentQuestion}`).style.display = 'block';
+                
+                // Update buttons
+                submitBtn.style.display = 'none';
+                
+                if (currentQuestion < shuffledQuestions.length - 1) {
+                    nextBtn.style.display = 'block';
+                } else {
+                    endQuiz();
+                }
+            }
+        }
+        
+        // Next question
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+        
+        // End quiz
+        function endQuiz() {
+            document.getElementById('quiz').style.display = 'none';
+            resultContainer.style.display = 'block';
+            
+            const percentage = Math.round((score / shuffledQuestions.length) * 100);
+            scoreDisplay.textContent = `You scored ${score} out of ${shuffledQuestions.length} (${percentage}%)`;
+            
+            // Set message based on score
+            if (percentage >= 90) {
+                scoreMessage.textContent = "Excellent! You have a strong understanding of everyday problem-solving technologies!";
+            } else if (percentage >= 70) {
+                scoreMessage.textContent = "Good job! You understand most of the concepts about everyday problem-solving technologies.";
+            } else if (percentage >= 50) {
+                scoreMessage.textContent = "You have a basic understanding of everyday problem-solving technologies. Review the case study to improve!";
+            } else {
+                scoreMessage.textContent = "You might want to review the case study to better understand how technology solves everyday problems.";
+            }
+        }
+        
+        // Update progress bar
+        function updateProgressBar() {
+            const progressPercentage = ((currentQuestion) / shuffledQuestions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        
+        // Event listeners
+        submitBtn.addEventListener('click', submitAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', initQuiz);
+        
+        // Start the quiz
+        initQuiz();
+    </script>
+</body>
+</html>
