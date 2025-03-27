@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding AI - Drag and Drop Activity</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .instructions {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #1565c0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .drag-container, .drop-container {
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            background-color: white;
+        }
+        .drop-container {
+            background-color: #ecf0f1;
+            position: relative;
+        }
+        .drop-container h3 {
+            margin-top: 0;
+        }
+        .drag-item {
+            padding: 10px;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: grab;
+            display: inline-block;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .drag-item:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        .drop-zone {
+            min-height: 50px;
+            margin-top: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px dashed #bdc3c7;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .drop-zone .drag-item {
+            margin: 5px;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #43a047;
+            display: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        .reset-btn {
+            background-color: #e74c3c;
+        }
+        .reset-btn:hover {
+            background-color: #c0392b;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .completion-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding Artificial Intelligence</h1>
+    <div class="instructions">
+        <h2>Drag and Drop Activity</h2>
+        <p>Match each AI concept with its correct category. Drag items from the pool below and drop them into the appropriate sections.</p>
+    </div>
+
+    <div class="container">
+        <div class="drag-container">
+            <h3>Concepts to Categorize:</h3>
+            <div id="drag-items">
+                <div class="drag-item" draggable="true" data-category="definition">Pattern recognition</div>
+                <div class="drag-item" draggable="true" data-category="applications">Facial recognition</div>
+                <div class="drag-item" draggable="true" data-category="misconceptions">AI will replace all human jobs</div>
+                <div class="drag-item" draggable="true" data-category="applications">Medical diagnostics</div>
+                <div class="drag-item" draggable="true" data-category="definition">Adaptive learning</div>
+                <div class="drag-item" draggable="true" data-category="misconceptions">AI is the same as robots</div>
+            </div>
+        </div>
+
+        <div class="drop-container">
+            <h3>What is AI?</h3>
+            <div class="drop-zone" id="definition"></div>
+        </div>
+
+        <div class="drop-container">
+            <h3>AI Applications in Everyday Life</h3>
+            <div class="drop-zone" id="applications"></div>
+        </div>
+
+        <div class="drop-container">
+            <h3>AI Misconceptions</h3>
+            <div class="drop-zone" id="misconceptions"></div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button id="check-btn">Check Answers</button>
+        <button id="reset-btn" class="reset-btn">Reset Activity</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="completion-message" id="completion-message">
+        <h3>Your Final Score: <span id="score">0</span>/6</h3>
+        <p>You now have a better understanding of what AI is, how it's used in our daily lives, and some common misconceptions about it.</p>
+        <div id="certificate" style="margin-top: 20px; border: 2px solid #2e7d32; padding: 15px; border-radius: 8px; text-align: center; display: none;">
+            <h2 style="color: #2e7d32;">Certificate of Completion</h2>
+            <p>This certifies that you have successfully completed the</p>
+            <h3>Understanding Artificial Intelligence</h3>
+            <p>learning activity with a score of <span id="cert-score">0</span>/6</p>
+            <p style="margin-top: 30px;">Date: <span id="current-date"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            const checkBtn = document.getElementById('check-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const feedback = document.getElementById('feedback');
+            const completionMessage = document.getElementById('completion-message');
+            
+            // Set up drag events for drag items
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', e.target.outerHTML);
+                    e.dataTransfer.setData('sourceId', e.target.parentElement.id);
+                    e.dataTransfer.effectAllowed = 'move';
+                    setTimeout(() => {
+                        e.target.style.opacity = '0.4';
+                    }, 0);
+                });
+                
+                item.addEventListener('dragend', function(e) {
+                    e.target.style.opacity = '1';
+                });
+            });
+            
+            // Set up drop events for drop zones
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    this.style.backgroundColor = 'rgba(189, 195, 199, 0.5)';
+                });
+                
+                zone.addEventListener('dragleave', function(e) {
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                    
+                    const data = e.dataTransfer.getData('text/plain');
+                    const sourceId = e.dataTransfer.getData('sourceId');
+                    const dragItem = document.createElement('div');
+                    dragItem.innerHTML = data;
+                    const item = dragItem.firstChild;
+                    
+                    // If coming from another drop zone, remove it from there
+                    if (sourceId && sourceId !== 'drag-items') {
+                        const sourceElement = document.getElementById(sourceId);
+                        const originalItem = sourceElement.querySelector(`[data-category="${item.dataset.category}"]`);
+                        if (originalItem) {
+                            sourceElement.removeChild(originalItem);
+                        }
+                    } else if (sourceId === 'drag-items') {
+                        // If coming from the drag items pool, remove it from there
+                        const originalItem = document.querySelector(`#drag-items [data-category="${item.dataset.category}"]`);
+                        if (originalItem) {
+                            originalItem.remove();
+                        }
+                    }
+                    
+                    this.appendChild(item);
+                    
+                    // Make the dropped item draggable again
+                    setupDraggableItem(item);
+                });
+            });
+            
+            // Function to set up draggable items
+            function setupDraggableItem(item) {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', e.target.outerHTML);
+                    e.dataTransfer.setData('sourceId', e.target.parentElement.id);
+                    e.dataTransfer.effectAllowed = 'move';
+                    setTimeout(() => {
+                        e.target.style.opacity = '0.4';
+                    }, 0);
+                });
+                
+                item.addEventListener('dragend', function(e) {
+                    e.target.style.opacity = '1';
+                });
+            }
+            
+            // Check answers
+            checkBtn.addEventListener('click', function() {
+                let correctCount = 0;
+                let totalPlaced = 0;
+                const totalItems = 6; // Total number of items to categorize
+                
+                dropZones.forEach(zone => {
+                    const items = zone.querySelectorAll('.drag-item');
+                    totalPlaced += items.length;
+                    
+                    items.forEach(item => {
+                        if (item.dataset.category === zone.id) {
+                            item.style.backgroundColor = '#27ae60';
+                            correctCount++;
+                        } else {
+                            item.style.backgroundColor = '#e74c3c';
+                        }
+                    });
+                });
+                
+                // Show feedback
+                feedback.style.display = 'block';
+                
+                // Update score elements
+                document.getElementById('score').textContent = correctCount;
+                document.getElementById('cert-score').textContent = correctCount;
+                
+                // Set current date for certificate
+                const date = new Date();
+                document.getElementById('current-date').textContent = date.toLocaleDateString();
+                
+                if (correctCount === totalPlaced && totalPlaced === totalItems) {
+                    feedback.innerHTML = `<strong>Perfect!</strong> Your final score is ${correctCount}/${totalItems} concepts.`;
+                    feedback.style.borderLeft = '5px solid #27ae60';
+                    completionMessage.style.display = 'block';
+                    
+                    // Show certificate if perfect score
+                    if (correctCount === totalItems) {
+                        document.getElementById('certificate').style.display = 'block';
+                    }
+                } else if (totalPlaced === totalItems) {
+                    feedback.innerHTML = `<strong>Submission complete!</strong> Your final score is ${correctCount}/${totalItems}. Some items are in the wrong category.`;
+                    feedback.style.borderLeft = '5px solid #f39c12';
+                    completionMessage.style.display = 'block';
+                } else {
+                    feedback.innerHTML = `<strong>Incomplete submission!</strong> You've placed ${correctCount} out of ${totalPlaced} concepts correctly, but you need to place all ${totalItems} items to receive your final score.`;
+                    feedback.style.borderLeft = '5px solid #e74c3c';
+                }
+                
+                // Scroll to feedback
+                feedback.scrollIntoView({ behavior: 'smooth' });
+                
+                // Disable check button after submission if all items are placed
+                if (totalPlaced === totalItems) {
+                    checkBtn.textContent = "Submitted";
+                    checkBtn.disabled = true;
+                    checkBtn.style.backgroundColor = "#95a5a6";
+                }
+            });
+            
+            // Reset activity
+            resetBtn.addEventListener('click', function() {
+                // Reset all items to the drag container
+                const allItems = document.querySelectorAll('.drag-item');
+                const dragItemsContainer = document.getElementById('drag-items');
+                
+                allItems.forEach(item => {
+                    // Reset color
+                    item.style.backgroundColor = '#3498db';
+                    
+                    // Move back to drag items container
+                    dragItemsContainer.appendChild(item);
+                });
+                
+                // Hide feedback and completion message
+                feedback.style.display = 'none';
+                completionMessage.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
