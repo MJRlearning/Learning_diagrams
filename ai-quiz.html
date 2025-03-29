@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is This AI or Not? Interactive Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #3498db;
+        }
+
+        .question h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+
+        button.ai-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        button.not-ai-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .feedback {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .correct {
+            border-left: 4px solid #2ecc71;
+        }
+
+        .incorrect {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .result {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .correct .result {
+            color: #2ecc71;
+        }
+
+        .incorrect .result {
+            color: #e74c3c;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .reset-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            height: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 10px;
+            background-color: #3498db;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz: Is This AI or Not?</h1>
+        <p>Test your knowledge about artificial intelligence by identifying whether each example is powered by AI or not.</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+        <div id="quiz-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <div class="score-container" id="score-container">
+            <h2>Quiz Complete!</h2>
+            <p>Your score:</p>
+            <div class="score" id="score">0/0</div>
+            <p id="score-message">Thanks for taking the quiz!</p>
+            <button class="reset-btn" onclick="resetQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions
+        const questions = [
+            {
+                question: "Spotify recommending music based on your listening history",
+                isAI: true,
+                explanation: "✅ This is AI. Spotify uses machine learning algorithms to analyze your listening patterns and preferences to recommend songs you might like. It continuously learns from user behavior to improve its recommendations."
+            },
+            {
+                question: "Calculator solving math problems",
+                isAI: false,
+                explanation: "❌ This is not AI. A calculator follows pre-programmed rules and formulas to solve problems. It doesn't learn or adapt based on usage patterns, which is a key characteristic of AI systems."
+            },
+            {
+                question: "Chatbot answering customer service questions",
+                isAI: true,
+                explanation: "✅ This is AI. Modern chatbots use natural language processing (a form of AI) to understand and respond to customer queries. Many can learn from past interactions to improve future responses."
+            },
+            {
+                question: "Traffic light changing from red to green on a timer",
+                isAI: false,
+                explanation: "❌ This is not AI. Traditional traffic lights operate on fixed timers or simple sensors. They don't learn or adapt to changing traffic patterns (though some newer smart traffic systems do use AI)."
+            },
+            {
+                question: "Email spam filter sorting your messages",
+                isAI: true,
+                explanation: "✅ This is AI. Spam filters use machine learning algorithms to identify patterns in emails that indicate spam. They continuously learn from new examples to improve accuracy."
+            },
+            {
+                question: "Microwave oven cooking food for a set time",
+                isAI: false,
+                explanation: "❌ This is not AI. A microwave follows simple programmed instructions to heat food for a specified time. It doesn't adapt or learn from past cooking experiences."
+            },
+            {
+                question: "Face recognition unlocking your smartphone",
+                isAI: true,
+                explanation: "✅ This is AI. Facial recognition systems use machine learning and computer vision (both AI technologies) to analyze facial features and match them to stored profiles."
+            },
+            {
+                question: "Thermostat turning on heat when temperature drops below a set point",
+                isAI: false,
+                explanation: "❌ This is not AI. A basic thermostat uses simple if-then logic (if temperature < threshold, turn on heat). It doesn't learn or adapt to your preferences over time. (Note: Smart thermostats like Nest do use AI to learn patterns.)"
+            },
+            {
+                question: "Netflix suggesting movies you might enjoy",
+                isAI: true,
+                explanation: "✅ This is AI. Like Spotify, Netflix uses recommendation algorithms that learn from viewing habits across their user base to suggest content tailored to your preferences."
+            },
+            {
+                question: "Automatic doors opening when someone approaches",
+                isAI: false,
+                explanation: "❌ This is not AI. Automatic doors use simple motion sensors to detect when someone is near. They don't learn or improve their detection capabilities over time."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answeredQuestions = 0;
+
+        // Initialize quiz
+        function initQuiz() {
+            displayQuestion(currentQuestion);
+        }
+
+        // Display current question
+        function displayQuestion(index) {
+            const quizContainer = document.getElementById('quiz-container');
+            const question = questions[index];
+            
+            quizContainer.innerHTML = `
+                <div class="question" id="question-${index}">
+                    <h3>Question ${index + 1} of ${questions.length}</h3>
+                    <p>${question.question}</p>
+                    <div class="options">
+                        <button onclick="checkAnswer(true, ${index})" class="ai-btn">AI</button>
+                        <button onclick="checkAnswer(false, ${index})" class="not-ai-btn">Not AI</button>
+                    </div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                </div>
+            `;
+        }
+
+        // Check the submitted answer
+        function checkAnswer(answer, index) {
+            const question = questions[index];
+            const feedbackDiv = document.getElementById(`feedback-${index}`);
+            const questionDiv = document.getElementById(`question-${index}`);
+            
+            answeredQuestions++;
+            updateProgress();
+            
+            if (answer === question.isAI) {
+                score++;
+                questionDiv.classList.add('correct');
+                feedbackDiv.innerHTML = `
+                    <p class="result">✓ Correct!</p>
+                    <p>${question.explanation}</p>
+                `;
+            } else {
+                questionDiv.classList.add('incorrect');
+                feedbackDiv.innerHTML = `
+                    <p class="result">✗ Incorrect</p>
+                    <p>${question.explanation}</p>
+                `;
+            }
+            
+            feedbackDiv.style.display = 'block';
+            
+            // Disable buttons after answering
+            const buttons = questionDiv.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.7';
+            });
+            
+            // Show next question or results after a delay
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    displayQuestion(currentQuestion);
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progressBar = document.getElementById('progress');
+            const percentage = (answeredQuestions / questions.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Display final results
+        function showResults() {
+            const quizContainer = document.getElementById('quiz-container');
+            const scoreContainer = document.getElementById('score-container');
+            const scoreElement = document.getElementById('score');
+            const scoreMessage = document.getElementById('score-message');
+            
+            quizContainer.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            scoreElement.textContent = `${score}/${questions.length}`;
+            
+            if (score === questions.length) {
+                scoreMessage.textContent = 'Perfect! You can clearly distinguish AI from non-AI technologies!';
+            } else if (score >= questions.length * 0.8) {
+                scoreMessage.textContent = 'Great job! You have a solid understanding of AI!';
+            } else if (score >= questions.length * 0.6) {
+                scoreMessage.textContent = 'Good effort! You understand the basics of AI technologies.';
+            } else {
+                scoreMessage.textContent = 'Keep learning! AI can be tricky to identify sometimes.';
+            }
+        }
+
+        // Reset quiz to start again
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answeredQuestions = 0;
+            
+            const quizContainer = document.getElementById('quiz-container');
+            const scoreContainer = document.getElementById('score-container');
+            const progressBar = document.getElementById('progress');
+            
+            quizContainer.style.display = 'block';
+            scoreContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+            
+            initQuiz();
+        }
+
+        // Start the quiz when page loads
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
