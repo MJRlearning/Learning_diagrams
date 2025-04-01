@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bias Learning Application</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .app-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .app-description {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            background-color: #f8f9fa;
+        }
+        .nav-tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom-color: white;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .poll-question {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .poll-options {
+            margin-bottom: 30px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            background-color: #f0f7ff;
+            cursor: pointer;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        .option-text {
+            margin-left: 15px;
+            font-size: 1.1em;
+        }
+        .feedback {
+            display: none;
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .check-answers {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 20px 0;
+        }
+        .check-answers:hover {
+            background-color: #2980b9;
+        }
+        .follow-up {
+            background-color: #eaf4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+        }
+        .follow-up h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+        .info-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .info-card h3 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .example-list {
+            padding-left: 20px;
+        }
+        .example-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .quiz-results {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .progress-container {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            margin: 10px 0;
+            height: 20px;
+        }
+        .progress-bar {
+            height: 20px;
+            border-radius: 10px;
+            width: 0%;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            transition: width 1s ease-in-out;
+        }
+        .resource-link {
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            color: #3498db;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .resource-link:hover {
+            background-color: #e3f2fd;
+        }
+        .challenge-container {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 100px;
+            margin-top: 10px;
+        }
+        .submit-response {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-response:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>AI Bias Learning Application</h1>
+            <p class="app-description">Understand how bias manifests in artificial intelligence systems</p>
+        </header>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="intro">Introduction</div>
+            <div class="nav-tab" data-tab="quiz">Quick Quiz</div>
+            <div class="nav-tab" data-tab="learn">Learn More</div>
+            <div class="nav-tab" data-tab="challenge">Challenge</div>
+        </div>
+
+        <!-- Introduction Tab -->
+        <div class="tab-content active" id="intro">
+            <div class="info-card">
+                <h3>What is AI Bias?</h3>
+                <p>AI bias occurs when an artificial intelligence system produces results that are systematically prejudiced due to erroneous assumptions in the machine learning process. These biases can reflect the implicit values of humans involved in coding, collecting, selecting, or using data to train the algorithm.</p>
+                
+                <h3>Why Does AI Bias Matter?</h3>
+                <p>As AI systems become more prevalent in making important decisions about our lives, biases in these systems can have significant real-world consequences, including:</p>
+                <ul class="example-list">
+                    <li>Unfair treatment in hiring, housing, and loan applications</li>
+                    <li>Disproportionate impacts on marginalised communities</li>
+                    <li>Reinforcement of existing societal stereotypes and discrimination</li>
+                    <li>Ethical and legal concerns around automated decision-making</li>
+                </ul>
+            </div>
+            <button class="check-answers" onclick="switchTab('quiz')">Continue to Quiz</button>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div class="tab-content" id="quiz">
+            <div class="poll-question">
+                <strong>Quick Poll:</strong> "Which of these AI systems could be biased?"
+            </div>
+            
+            <div class="poll-options">
+                <div class="option" data-correct="true">
+                    <input type="checkbox" id="option1" name="poll" value="facial">
+                    <label for="option1" class="option-text"><em>Facial recognition software</em></label>
+                    <div class="feedback correct">
+                        <strong>Correct!</strong> Facial recognition systems have shown higher error rates for women and people with darker skin tones, reflecting biases in their training data.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="false">
+                    <input type="checkbox" id="option2" name="poll" value="calculator">
+                    <label for="option2" class="option-text"><em>Calculator app</em></label>
+                    <div class="feedback incorrect">
+                        <strong>Incorrect.</strong> Basic calculator apps perform straightforward mathematical operations that are objective and don't rely on training data that could introduce bias.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="true">
+                    <input type="checkbox" id="option3" name="poll" value="job">
+                    <label for="option3" class="option-text"><em>Job application screening AI</em></label>
+                    <div class="feedback correct">
+                        <strong>Correct!</strong> Hiring algorithms can perpetuate historical biases present in their training data, potentially discriminating against certain applicants based on gender, race, or background.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="true">
+                    <input type="checkbox" id="option4" name="poll" value="car">
+                    <label for="option4" class="option-text"><em>Self-driving car decision-making</em></label>
+                    <div class="feedback correct">
+                        <strong>Correct!</strong> Self-driving cars make complex decisions about pedestrian detection and safety priorities that can reflect biases in their development and testing.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="true">
+                    <input type="checkbox" id="option5" name="poll" value="healthcare">
+                    <label for="option5" class="option-text"><em>Healthcare diagnostic systems</em></label>
+                    <div class="feedback correct">
+                        <strong>Correct!</strong> Healthcare AI can show bias when trained predominantly on data from certain demographic groups, leading to less accurate diagnoses for underrepresented populations.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="false">
+                    <input type="checkbox" id="option6" name="poll" value="weather">
+                    <label for="option6" class="option-text"><em>Weather prediction algorithm</em></label>
+                    <div class="feedback incorrect">
+                        <strong>Incorrect.</strong> Weather prediction algorithms are based on physical models and meteorological data that are generally not influenced by human social biases.
+                    </div>
+                </div>
+                
+                <div class="option" data-correct="true">
+                    <input type="checkbox" id="option7" name="poll" value="creditscoring">
+                    <label for="option7" class="option-text"><em>Credit scoring systems</em></label>
+                    <div class="feedback correct">
+                        <strong>Correct!</strong> Credit scoring algorithms can reflect historical financial inequalities, potentially disadvantaging people from lower socioeconomic backgrounds or certain geographical areas.
+                    </div>
+                </div>
+            </div>
+            
+            <button class="check-answers" id="check-quiz">Check Answers</button>
+            
+            <div class="quiz-results" id="quiz-results">
+                <h3>Your Score: <span id="score">0</span>/7</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar">0%</div>
+                </div>
+                <p id="result-message"></p>
+            </div>
+            
+            <div class="follow-up">
+                <h3>Discussion Question:</h3>
+                <p>"Why do you think some AI systems are more prone to bias than others?"</p>
+                <p><strong>Consider:</strong> What types of data are these systems trained on? How subjective are the decisions they're making? Who is creating these systems and for what purpose?</p>
+            </div>
+        </div>
+
+        <!-- Learn More Tab -->
+        <div class="tab-content" id="learn">
+            <div class="info-card">
+                <h3>Common Sources of AI Bias</h3>
+                <ol class="example-list">
+                    <li><strong>Training Data Bias:</strong> When the data used to train AI systems contains historical biases or is not representative of all groups.</li>
+                    <li><strong>Algorithmic Bias:</strong> When the mathematical models themselves contain assumptions that lead to unfair outcomes.</li>
+                    <li><strong>Interaction Bias:</strong> When the way humans interact with AI systems introduces or reinforces biases.</li>
+                    <li><strong>Deployment Bias:</strong> When AI systems are implemented in contexts where they may disadvantage certain groups.</li>
+                </ol>
+            </div>
+            
+            <div class="info-card">
+                <h3>Real-World Examples</h3>
+                <ul class="example-list">
+                    <li><strong>Facial Recognition:</strong> These systems often perform worse on women and people with darker skin tones due to non-diverse training datasets.</li>
+                    <li><strong>Hiring Algorithms:</strong> Some employment screening tools have been found to penalise applications from women's colleges or with activities that suggest the applicant is female.</li>
+                    <li><strong>Criminal Justice:</strong> Risk assessment algorithms used in bail and sentencing decisions have shown racial disparities in their predictions.</li>
+                    <li><strong>Healthcare:</strong> Algorithms used to identify patients for additional healthcare resources have underserved Black patients by using healthcare costs as a proxy for healthcare needs.</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>Mitigating AI Bias</h3>
+                <ul class="example-list">
+                    <li><strong>Diverse Training Data:</strong> Ensuring training data includes diverse representation across different demographics.</li>
+                    <li><strong>Algorithmic Fairness:</strong> Developing algorithms that explicitly account for and correct potential biases.</li>
+                    <li><strong>Diverse Development Teams:</strong> Including people from diverse backgrounds in AI development to identify potential biases.</li>
+                    <li><strong>Regular Auditing:</strong> Continuously monitoring AI systems for biased outcomes and making adjustments.</li>
+                    <li><strong>Transparency:</strong> Making AI systems interpretable so that biases can be more easily identified.</li>
+                </ul>
+            </div>
+            
+            <h3>Further Resources</h3>
+            <a href="#" class="resource-link">• Alan Turing Institute - AI Ethics and Governance</a>
+            <a href="#" class="resource-link">• UK Centre for Data Ethics and Innovation</a>
+            <a href="#" class="resource-link">• AI Fairness 360 - Open Source Toolkit for Detecting and Mitigating Bias</a>
+            <a href="#" class="resource-link">• Ethics of AI - Oxford Internet Institute</a>
+        </div>
+
+        <!-- Challenge Tab -->
+        <div class="tab-content" id="challenge">
+            <div class="challenge-container">
+                <h3>Critical Thinking Challenge</h3>
+                <p>Consider a social media content recommendation algorithm. These algorithms determine what posts, articles, videos, and advertisements users see in their feeds.</p>
+                <p><strong>Your task:</strong> Identify at least three ways this algorithm could exhibit bias, and propose solutions to address each potential bias.</p>
+                
+                <textarea id="challenge-response" placeholder="Type your response here..."></textarea>
+                <button class="submit-response">Submit Response</button>
+            </div>
+            
+            <div class="info-card">
+                <h3>Reflection Questions</h3>
+                <ul class="example-list">
+                    <li>How might AI biases affect your daily life without you realising it?</li>
+                    <li>Should AI systems be held to higher standards of fairness than human decision-makers?</li>
+                    <li>Who should be responsible for ensuring AI systems are fair and unbiased?</li>
+                    <li>How can we balance innovation in AI with ethical considerations about bias?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation tab functionality
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.nav-tab[data-tab="${tabId}"]`).classList.add('active');
+        }
+        
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+        
+        // Quiz functionality
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+                this.classList.toggle('selected');
+            });
+        });
+        
+        document.getElementById('check-quiz').addEventListener('click', function() {
+            let score = 0;
+            const total = document.querySelectorAll('.option').length;
+            
+            document.querySelectorAll('.option').forEach(option => {
+                const isCorrect = option.dataset.correct === 'true';
+                const isSelected = option.querySelector('input[type="checkbox"]').checked;
+                
+                // Show feedback
+                const feedback = option.querySelector('.feedback');
+                feedback.style.display = 'block';
+                
+                // Calculate score
+                if ((isCorrect && isSelected) || (!isCorrect && !isSelected)) {
+                    score++;
+                }
+            });
+            
+            // Display results
+            document.getElementById('score').textContent = score;
+            const percentage = (score / total) * 100;
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-bar').textContent = Math.round(percentage) + '%';
+            
+            // Show result message
+            const resultMessage = document.getElementById('result-message');
+            if (percentage >= 75) {
+                resultMessage.textContent = "Great job! You have a good understanding of AI bias.";
+            } else if (percentage >= 50) {
+                resultMessage.textContent = "Good effort! Review the explanations to learn more.";
+            } else {
+                resultMessage.textContent = "Keep learning! Check out the 'Learn More' section to deepen your understanding.";
+            }
+            
+            document.getElementById('quiz-results').style.display = 'block';
+        });
+        
+        // Submit response functionality
+        document.querySelector('.submit-response').addEventListener('click', function() {
+            const response = document.getElementById('challenge-response').value;
+            if (response.trim() !== '') {
+                alert("Thank you for your response! Your critical thinking on AI bias helps develop a deeper understanding of these important issues.");
+            } else {
+                alert("Please enter your response before submitting.");
+            }
+        });
+    </script>
+</body>
+</html>
