@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should This AI Be Used? - Ethics Decision-Making Activity</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .scenario {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .scenario-content {
+            margin-bottom: 15px;
+        }
+        .decision-section {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-yes {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-no {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-maybe {
+            background-color: #f39c12;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .next-btn {
+            background-color: #3498db;
+            color: white;
+            margin-top: 15px;
+        }
+        .ethical-principles {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .reflection-questions {
+            margin-top: 20px;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .results-container {
+            margin-top: 30px;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .feedback {
+            background-color: #e8f7f0;
+            border-left: 4px solid #2ecc71;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        .considerations {
+            background-color: #fff4e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f5f7fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 10px;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scenario-Based Decision-Making Activity: "Should This AI Be Used?"</h1>
+    
+    <div class="introduction">
+        <p>Welcome to this ethical decision-making activity. You'll be presented with real-world scenarios involving AI systems, and you'll need to decide whether these AI systems should be deployed, modified, or rejected based on ethical considerations.</p>
+        <p>For each scenario:</p>
+        <ol>
+            <li>Read the scenario carefully</li>
+            <li>Decide if the AI should be used (Yes, No, or Maybe with modifications)</li>
+            <li>Justify your decision using ethical reasoning principles</li>
+        </ol>
+    </div>
+
+    <div class="ethical-principles">
+        <h3>Ethical Principles to Consider:</h3>
+        <ul>
+            <li><strong>Fairness:</strong> Is the AI treating all people and groups equitably?</li>
+            <li><strong>Transparency:</strong> Is it clear how the AI makes decisions?</li>
+            <li><strong>Accountability:</strong> Who is responsible when the AI makes mistakes?</li>
+            <li><strong>Privacy:</strong> Does the AI respect people's personal information?</li>
+            <li><strong>Autonomy:</strong> Does the AI preserve human choice and agency?</li>
+            <li><strong>Beneficence:</strong> Does the AI do more good than harm?</li>
+        </ul>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div id="scenarios-container">
+        <!-- Scenarios will be dynamically loaded here -->
+    </div>
+
+    <div id="results-container" class="results-container hidden">
+        <h2>Your Decisions and Reasoning</h2>
+        
+        <div class="summary-stats" id="summary-stats">
+            <!-- Summary statistics will be added here -->
+        </div>
+        
+        <div id="results-list"></div>
+        
+        <div class="reflection-questions">
+            <h3>Final Reflection Questions:</h3>
+            <ol>
+                <li>What ethical principle did you find yourself prioritizing most often? Why?</li>
+                <li>How did you balance potential benefits against potential harms?</li>
+                <li>What additional information would have helped you make better decisions?</li>
+                <li>How could we improve the process of ethical evaluation for AI systems?</li>
+            </ol>
+            <textarea placeholder="Write your final reflections here..." id="final-reflection"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // AI Ethics Scenarios
+        const scenarios = [
+            {
+                id: 1,
+                title: "Banking Loan Approval AI",
+                content: "A major bank has implemented an AI system to evaluate loan applications. The AI analyzes credit history, income, and other factors to determine approval or rejection. After six months of use, data shows the AI denies loans to applicants from certain ZIP codes at significantly higher rates than others, even when controlling for financial factors. These ZIP codes correspond to neighborhoods predominantly populated by minority groups.",
+                questions: "Should the bank continue using this AI system? If not, what should they do instead? If yes, under what conditions?",
+                feedback: {
+                    "Yes": "While the AI may be efficient, continuing to use it without addressing the disparate impact on minority communities raises serious fairness and equity concerns. This could potentially violate fair lending laws and perpetuate systemic discrimination.",
+                    "No": "This decision prioritizes fairness and equity. The current system shows signs of algorithmic bias that could unfairly impact minority communities and potentially violate fair lending regulations.",
+                    "Maybe": "Modification is a balanced approach. The system may be salvageable if the bank can identify and correct the sources of bias, ensure more representative training data, and implement ongoing monitoring for fairness."
+                },
+                considerations: "Key considerations include fairness (is the AI treating all demographic groups equitably?), transparency (can we explain why certain applications are being rejected?), accountability (who is responsible for ensuring fair outcomes?), and the historical context of redlining and discriminatory lending practices in banking."
+            },
+            {
+                id: 2,
+                title: "Predictive Policing AI",
+                content: "A city police department is considering implementing an AI system that predicts where crimes are likely to occur, allowing them to allocate officers more efficiently. The AI was trained on historical crime data. Critics point out that this historical data reflects decades of biased policing practices, including over-policing in certain neighborhoods.",
+                questions: "Should the police department implement this AI system? Why or why not? What modifications or safeguards might be necessary?",
+                feedback: {
+                    "Yes": "Implementing the AI without addressing the biased historical data risks amplifying and perpetuating existing patterns of over-policing in certain communities, creating a self-reinforcing cycle of bias.",
+                    "No": "This decision acknowledges the risk of perpetuating historical biases. Predictive policing systems trained on biased data can create 'feedback loops' that reinforce discrimination rather than reducing crime.",
+                    "Maybe": "Proceeding with caution recognizes both potential benefits and risks. Modifications could include community oversight, complementing the AI with community-based approaches, and careful monitoring for disparate impacts."
+                },
+                considerations: "Consider justice and fairness (will this system affect communities equally?), the historical context of policing practices, potential feedback loops that reinforce bias, privacy implications, and questions of human judgment versus algorithmic recommendations in the sensitive context of law enforcement."
+            },
+            {
+                id: 3,
+                title: "Healthcare Diagnosis AI",
+                content: "A hospital has developed an AI system to help diagnose skin conditions from photographs. The system has a 95% accuracy rate overall, but testing reveals it has significantly lower accuracy for darker skin tones because the training data primarily included images of lighter-skinned patients.",
+                questions: "Should the hospital deploy this AI system? Under what circumstances? What ethical considerations are relevant here?",
+                feedback: {
+                    "Yes": "Deploying the system without addressing the accuracy disparity raises serious concerns about healthcare equity. Medical AI systems should work equally well for all patients regardless of skin color.",
+                    "No": "This decision prioritizes equal quality of care for all patients. The current accuracy disparity could lead to missed or incorrect diagnoses for patients with darker skin tones, potentially causing harm.",
+                    "Maybe": "Modification is reasonable if the hospital can expand the training data to include diverse skin tones, continue testing to ensure equal performance across demographic groups, and implement the system as a supportive tool rather than a replacement for clinical judgment."
+                },
+                considerations: "Consider healthcare equity (all patients deserve equal quality of care), non-maleficence (avoid causing harm through missed diagnoses), transparency with patients about the system's limitations, and the broader context of historical disparities in medical research and treatment across demographic groups."
+            },
+            {
+                id: 4,
+                title: "Hiring Assessment AI",
+                content: "A large corporation has implemented an AI system to screen job applications. The AI reviews resumes and ranks candidates based on their likelihood of success in the role. The AI was trained on data from current successful employees. The company's current workforce is 70% male, especially in higher-paying technical roles.",
+                questions: "Is this AI system appropriate for making hiring decisions? What potential issues might arise? How could the system be improved?",
+                feedback: {
+                    "Yes": "Using this system without addressing the skewed training data risks perpetuating gender imbalance. The AI may have 'learned' that being male is associated with success, potentially disadvantaging qualified female applicants.",
+                    "No": "This decision recognizes that the AI likely encodes gender bias from the imbalanced workforce data. Using such a system could perpetuate or worsen workplace gender disparities.",
+                    "Maybe": "Modifying the system could include rebalancing training data, removing gender-correlated features, auditing for bias, using the AI as just one component of hiring decisions, and implementing targeted recruitment for underrepresented groups."
+                },
+                considerations: "Consider workplace diversity and inclusion, fairness in opportunity, potential legal implications regarding employment discrimination, transparency in hiring processes, and the societal impact of reinforcing occupational gender segregation."
+            },
+            {
+                id: 5,
+                title: "Student Performance Prediction AI",
+                content: "A school district is considering an AI system that predicts which students are at risk of academic failure. The system would analyze factors including past grades, attendance, disciplinary records, and demographic information to identify students who might need additional support. Teachers would receive alerts about at-risk students.",
+                questions: "Should the school district implement this system? What benefits and risks might it create? What safeguards should be in place?",
+                feedback: {
+                    "Yes": "While well-intentioned, implementing without careful safeguards could lead to labeling and self-fulfilling prophecies, where students identified as 'at risk' are treated differently in ways that affect their educational outcomes.",
+                    "No": "This decision prioritizes concerns about labeling, privacy, and potential deterministic effects. Predictive systems in education can sometimes create 'tracking' that limits rather than expands student opportunities.",
+                    "Maybe": "With careful implementation, such a system could help target resources to students who need them most. Modifications should include privacy protections, avoiding student labeling, maintaining teacher autonomy, and focusing on actionable interventions rather than predictions alone."
+                },
+                considerations: "Consider student privacy and data protection, potential for stigmatization or self-fulfilling prophecies, teacher autonomy versus algorithmic recommendation, equity in resource allocation, and the broader purpose of education to provide opportunities rather than predict limitations."
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        const userResponses = [];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScenario(currentScenarioIndex);
+        });
+
+        function loadScenario(index) {
+            if (index >= scenarios.length) {
+                showResults();
+                return;
+            }
+
+            const scenario = scenarios[index];
+            const container = document.getElementById('scenarios-container');
+            
+            // Update progress bar
+            document.getElementById('progress').style.width = `${(index / scenarios.length) * 100}%`;
+            
+            // Create scenario HTML
+            container.innerHTML = `
+                <div class="scenario" id="scenario-${scenario.id}">
+                    <h2>${scenario.title}</h2>
+                    <div class="scenario-content">
+                        <p>${scenario.content}</p>
+                        <p><strong>${scenario.questions}</strong></p>
+                    </div>
+                    
+                    <div class="decision-section">
+                        <h3>Your Decision:</h3>
+                        <div class="btn-container">
+                            <button class="btn-yes" onclick="recordDecision(${index}, 'Yes')">Yes, Use the AI</button>
+                            <button class="btn-maybe" onclick="recordDecision(${index}, 'Maybe')">Maybe, with Modifications</button>
+                            <button class="btn-no" onclick="recordDecision(${index}, 'No')">No, Don't Use the AI</button>
+                        </div>
+                        
+                        <div id="feedback-container" class="hidden">
+                            <div class="feedback" id="decision-feedback"></div>
+                            <div class="considerations" id="decision-considerations"></div>
+                            <button class="next-btn" onclick="nextScenario()">Next Scenario</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function recordDecision(index, decision) {
+            // Store the selected decision
+            userResponses[index] = {
+                scenario: scenarios[index],
+                decision: decision
+            };
+            
+            // Show immediate feedback
+            const feedbackContainer = document.getElementById('feedback-container');
+            const decisionFeedback = document.getElementById('decision-feedback');
+            const decisionConsiderations = document.getElementById('decision-considerations');
+            
+            // Set the feedback content based on decision
+            decisionFeedback.innerHTML = `
+                <h3>Feedback on Your "${decision}" Decision:</h3>
+                <p>${scenarios[index].feedback[decision]}</p>
+            `;
+            
+            decisionConsiderations.innerHTML = `
+                <h3>Key Ethical Considerations:</h3>
+                <p>${scenarios[index].considerations}</p>
+            `;
+            
+            // Show feedback container
+            feedbackContainer.classList.remove('hidden');
+            
+            // Disable decision buttons after selection
+            const buttons = document.querySelectorAll('.btn-yes, .btn-no, .btn-maybe');
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.5';
+            });
+        }
+
+        function nextScenario() {
+            // Move to next scenario
+            currentScenarioIndex++;
+            loadScenario(currentScenarioIndex);
+        }
+
+        function showResults() {
+            // Hide scenarios, show results
+            document.getElementById('scenarios-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('progress').style.width = '100%';
+            
+            // Calculate summary statistics
+            const decisionCounts = {
+                'Yes': 0,
+                'No': 0,
+                'Maybe': 0
+            };
+            
+            userResponses.forEach(response => {
+                decisionCounts[response.decision]++;
+            });
+            
+            // Display summary statistics
+            const summaryStats = document.getElementById('summary-stats');
+            summaryStats.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-number">${decisionCounts['Yes']}</div>
+                    <div>Yes Decisions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${decisionCounts['Maybe']}</div>
+                    <div>Maybe Decisions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${decisionCounts['No']}</div>
+                    <div>No Decisions</div>
+                </div>
+            `;
+            
+            // Display all user responses with feedback
+            const resultsList = document.getElementById('results-list');
+            resultsList.innerHTML = '';
+            
+            userResponses.forEach((response, index) => {
+                resultsList.innerHTML += `
+                    <div class="result-item">
+                        <h3>${response.scenario.title}</h3>
+                        <p><strong>Your Decision:</strong> ${response.decision}</p>
+                        
+                        <div class="feedback">
+                            <h4>Feedback on Your Decision:</h4>
+                            <p>${response.scenario.feedback[response.decision]}</p>
+                        </div>
+                        
+                        <div class="considerations">
+                            <h4>Key Ethical Considerations:</h4>
+                            <p>${response.scenario.considerations}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Display overall feedback based on pattern of decisions
+            let overallFeedback = "";
+            
+            if (decisionCounts['No'] >= 3) {
+                overallFeedback = "You tend to take a cautious approach to AI ethics, prioritizing safety and fairness over potential benefits. This approach values avoiding harm and ensures technological implementations don't perpetuate biases or create new problems.";
+            } else if (decisionCounts['Yes'] >= 3) {
+                overallFeedback = "You tend to embrace AI's potential benefits while possibly accepting some risks. Consider whether sufficient safeguards are in place to prevent unintended consequences in these complex systems.";
+            } else if (decisionCounts['Maybe'] >= 3) {
+                overallFeedback = "You take a balanced approach, recognizing both AI's potential benefits and risks. This nuanced perspective allows for technological advancement with appropriate safeguards and modifications.";
+            } else {
+                overallFeedback = "You show a diverse approach to AI ethics, evaluating each scenario on its unique merits rather than applying a one-size-fits-all philosophy. This context-specific approach is valuable in the complex field of AI ethics.";
+            }
+            
+            resultsList.innerHTML += `
+                <div class="result-item">
+                    <h3>Overall Analysis</h3>
+                    <p>${overallFeedback}</p>
+                    <p>Remember that ethical AI deployment requires ongoing monitoring, adjustment, and stakeholder involvement - not just initial evaluation.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
