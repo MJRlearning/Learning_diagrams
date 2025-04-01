@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bias in Hiring: Interactive Simulation</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #ef4444;
+            --light-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .intro {
+            background-color: #dbeafe;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+        
+        .slider-label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.secondary {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        button.secondary:hover {
+            background-color: #d1d5db;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 1rem 0;
+        }
+        
+        .success {
+            color: var(--success-color);
+        }
+        
+        .warning {
+            color: var(--warning-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+        }
+        
+        th {
+            text-align: left;
+            background-color: #f9fafb;
+        }
+        
+        td.number {
+            text-align: right;
+        }
+        
+        .details {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Bias in Hiring: Interactive Simulation</h1>
+        
+        <div class="intro">
+            <p>This simulation demonstrates how training data affects AI bias in hiring scenarios. Adjust the parameters below to see how changes in the training data impact the AI's decisions.</p>
+            <p>The default setting starts with a perfectly balanced training dataset (50/50 gender distribution) and equal qualification rates (80%).</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h2>Training Data Configuration</h2>
+                
+                <div class="slider-container">
+                    <label class="slider-label">Male Resumes in Training Data: <span id="maleResumeValue">50</span></label>
+                    <input type="range" id="maleResumes" min="10" max="90" value="50">
+                </div>
+                
+                <div class="slider-container">
+                    <label class="slider-label">Female Resumes in Training Data: <span id="femaleResumeValue">50</span></label>
+                    <input type="range" id="femaleResumes" min="10" max="90" value="50">
+                </div>
+                
+                <hr>
+                
+                <h2>Actual Qualification Rates</h2>
+                <p>These represent the true qualification rates in the population, regardless of what the AI learns.</p>
+                
+                <div class="slider-container">
+                    <label class="slider-label">Male Qualification Rate: <span id="maleQualRateValue">80</span>%</label>
+                    <input type="range" id="maleQualRate" min="50" max="100" value="80">
+                </div>
+                
+                <div class="slider-container">
+                    <label class="slider-label">Female Qualification Rate: <span id="femaleQualRateValue">80</span>%</label>
+                    <input type="range" id="femaleQualRate" min="50" max="100" value="80">
+                </div>
+                
+                <button id="runSimulation">Run Simulation</button>
+            </div>
+            
+            <div class="card">
+                <h2>Simulation Results</h2>
+                
+                <div id="noResults">
+                    <p><em>Adjust parameters and run the simulation to see results.</em></p>
+                </div>
+                
+                <div id="results" style="display: none;">
+                    <div>
+                        <h3>AI Model's Learned Bias</h3>
+                        <p>Male qualification rate in training data: <span id="maleLearned">0</span>%</p>
+                        <p>Female qualification rate in training data: <span id="femaleLearned">0</span>%</p>
+                    </div>
+                    
+                    <div>
+                        <h3>AI's Hiring Decisions (Test Set)</h3>
+                        <p>Male selection rate: <span id="maleSelected">0</span>%</p>
+                        <p>Female selection rate: <span id="femaleSelected">0</span>%</p>
+                    </div>
+                    
+                    <div>
+                        <h3>Bias Metrics</h3>
+                        <p id="disparateImpact">Disparate Impact Ratio: 1.0</p>
+                        <p id="equalOpportunity">Equal Opportunity Difference: 0.0</p>
+                    </div>
+                    
+                    <button id="toggleDetails" class="secondary">Show Detailed Statistics</button>
+                    
+                    <div id="details" class="details">
+                        <h3>Detailed Performance Metrics</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Male</th>
+                                    <th>Female</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>True Positives</td>
+                                    <td class="number" id="maleTruePos">0</td>
+                                    <td class="number" id="femaleTruePos">0</td>
+                                </tr>
+                                <tr>
+                                    <td>False Positives</td>
+                                    <td class="number" id="maleFalsePos">0</td>
+                                    <td class="number" id="femaleFalsePos">0</td>
+                                </tr>
+                                <tr>
+                                    <td>False Negatives</td>
+                                    <td class="number" id="maleFalseNeg">0</td>
+                                    <td class="number" id="femaleFalseNeg">0</td>
+                                </tr>
+                                <tr>
+                                    <td>Actually Qualified</td>
+                                    <td class="number" id="maleActualQual">0</td>
+                                    <td class="number" id="femaleActualQual">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>How This Simulation Works</h2>
+            
+            <div>
+                <h3>Key Concepts</h3>
+                <ul>
+                    <li>The AI learns patterns from the training data, including any bias in the data distribution.</li>
+                    <li>Even when actual qualification rates are equal, imbalanced training data can lead to biased outcomes.</li>
+                    <li>The AI doesn't know the true qualification rates - it can only learn from the training examples it sees.</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3>Try These Experiments</h3>
+                <ol>
+                    <li>Start with balanced data (50/50) and equal qualification rates, then gradually reduce female resumes to see how representation affects outcomes.</li>
+                    <li>Try setting qualification rates to be different, but keep an equal number of resumes to see how the AI picks up on actual differences.</li>
+                    <li>Create a scenario where the minority group in the training data has a higher qualification rate, and observe the AI's behavior.</li>
+                </ol>
+            </div>
+            
+            <div>
+                <h3>Understanding Bias Metrics</h3>
+                <ul>
+                    <li><strong>Disparate Impact Ratio:</strong> A legal concept measuring if one group is disproportionately affected. Values above 1.2 or below 0.8 may indicate legally actionable bias.</li>
+                    <li><strong>Equal Opportunity Difference:</strong> Measures if qualified candidates have equal chances of being selected regardless of group membership.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const maleResumesSlider = document.getElementById('maleResumes');
+        const femaleResumesSlider = document.getElementById('femaleResumes');
+        const maleQualRateSlider = document.getElementById('maleQualRate');
+        const femaleQualRateSlider = document.getElementById('femaleQualRate');
+        const maleResumeValue = document.getElementById('maleResumeValue');
+        const femaleResumeValue = document.getElementById('femaleResumeValue');
+        const maleQualRateValue = document.getElementById('maleQualRateValue');
+        const femaleQualRateValue = document.getElementById('femaleQualRateValue');
+        const runButton = document.getElementById('runSimulation');
+        const noResults = document.getElementById('noResults');
+        const results = document.getElementById('results');
+        const toggleDetailsBtn = document.getElementById('toggleDetails');
+        const detailsSection = document.getElementById('details');
+        
+        // Simulation results elements
+        const maleLearnedEl = document.getElementById('maleLearned');
+        const femaleLearnedEl = document.getElementById('femaleLearned');
+        const maleSelectedEl = document.getElementById('maleSelected');
+        const femaleSelectedEl = document.getElementById('femaleSelected');
+        const disparateImpactEl = document.getElementById('disparateImpact');
+        const equalOpportunityEl = document.getElementById('equalOpportunity');
+        const maleTruePosEl = document.getElementById('maleTruePos');
+        const femaleTruePosEl = document.getElementById('femaleTruePos');
+        const maleFalsePosEl = document.getElementById('maleFalsePos');
+        const femaleFalsePosEl = document.getElementById('femaleFalsePos');
+        const maleFalseNegEl = document.getElementById('maleFalseNeg');
+        const femaleFalseNegEl = document.getElementById('femaleFalseNeg');
+        const maleActualQualEl = document.getElementById('maleActualQual');
+        const femaleActualQualEl = document.getElementById('femaleActualQual');
+        
+        // Update slider value displays
+        maleResumesSlider.addEventListener('input', () => {
+            maleResumeValue.textContent = maleResumesSlider.value;
+        });
+        
+        femaleResumesSlider.addEventListener('input', () => {
+            femaleResumeValue.textContent = femaleResumesSlider.value;
+        });
+        
+        maleQualRateSlider.addEventListener('input', () => {
+            maleQualRateValue.textContent = maleQualRateSlider.value;
+        });
+        
+        femaleQualRateSlider.addEventListener('input', () => {
+            femaleQualRateValue.textContent = femaleQualRateSlider.value;
+        });
+        
+        // Toggle details
+        toggleDetailsBtn.addEventListener('click', () => {
+            if (detailsSection.style.display === 'none' || !detailsSection.style.display) {
+                detailsSection.style.display = 'block';
+                toggleDetailsBtn.textContent = 'Hide Detailed Statistics';
+            } else {
+                detailsSection.style.display = 'none';
+                toggleDetailsBtn.textContent = 'Show Detailed Statistics';
+            }
+        });
+        
+        // Generate training data
+        function generateTrainingData(maleCount, femaleCount, maleQualRate, femaleQualRate) {
+            const data = [];
+            
+            // Generate male resumes
+            for (let i = 0; i < maleCount; i++) {
+                const isQualified = Math.random() * 100 < maleQualRate;
+                data.push({
+                    gender: 'male',
+                    isQualified
+                });
+            }
+            
+            // Generate female resumes
+            for (let i = 0; i < femaleCount; i++) {
+                const isQualified = Math.random() * 100 < femaleQualRate;
+                data.push({
+                    gender: 'female',
+                    isQualified
+                });
+            }
+            
+            return data;
+        }
+        
+        // Train model
+        function trainModel(trainingData) {
+            // Calculate how many males are qualified in the training data
+            const qualifiedMales = trainingData.filter(resume => 
+                resume.gender === 'male' && resume.isQualified).length;
+            
+            // Calculate how many females are qualified in the training data
+            const qualifiedFemales = trainingData.filter(resume => 
+                resume.gender === 'female' && resume.isQualified).length;
+            
+            // Calculate the total number of each gender
+            const totalMales = trainingData.filter(resume => resume.gender === 'male').length;
+            const totalFemales = trainingData.filter(resume => resume.gender === 'female').length;
+            
+            // Calculate qualification rates by gender in the training data
+            const maleQualificationRateInData = totalMales > 0 ? (qualifiedMales / totalMales) * 100 : 0;
+            const femaleQualificationRateInData = totalFemales > 0 ? (qualifiedFemales / totalFemales) * 100 : 0;
+            
+            // Our simple "model" just learns the probability of being qualified based on gender
+            return {
+                predictQualified: (gender) => {
+                    if (gender === 'male') {
+                        return Math.random() * 100 < maleQualificationRateInData;
+                    } else {
+                        return Math.random() * 100 < femaleQualificationRateInData;
+                    }
+                },
+                maleQualificationRateInData,
+                femaleQualificationRateInData,
+                qualifiedMales,
+                qualifiedFemales,
+                totalMales,
+                totalFemales
+            };
+        }
+        
+        // Test the model
+        function testModel(model, maleQualRate, femaleQualRate) {
+            // Create a balanced test set (50 males, 50 females)
+            const testData = [];
+            
+            // Generate 50 male test candidates with the true qualification rate
+            for (let i = 0; i < 50; i++) {
+                const actuallyQualified = Math.random() * 100 < maleQualRate;
+                testData.push({
+                    gender: 'male',
+                    actuallyQualified,
+                    predictedQualified: model.predictQualified('male')
+                });
+            }
+            
+            // Generate 50 female test candidates with the true qualification rate
+            for (let i = 0; i < 50; i++) {
+                const actuallyQualified = Math.random() * 100 < femaleQualRate;
+                testData.push({
+                    gender: 'female',
+                    actuallyQualified,
+                    predictedQualified: model.predictQualified('female')
+                });
+            }
+            
+            // Calculate statistics about the model's predictions
+            const malePositives = testData.filter(candidate => 
+                candidate.gender === 'male' && candidate.predictedQualified).length;
+            const femalePositives = testData.filter(candidate => 
+                candidate.gender === 'female' && candidate.predictedQualified).length;
+            
+            // Calculate accuracy statistics
+            const maleActuallyQualified = testData.filter(candidate => 
+                candidate.gender === 'male' && candidate.actuallyQualified).length;
+            const femaleActuallyQualified = testData.filter(candidate => 
+                candidate.gender === 'female' && candidate.actuallyQualified).length;
+            
+            // True positives and false positives by gender
+            const maleTruePositives = testData.filter(candidate => 
+                candidate.gender === 'male' && candidate.actuallyQualified && candidate.predictedQualified).length;
+            const femaleTruePositives = testData.filter(candidate => 
+                candidate.gender === 'female' && candidate.actuallyQualified && candidate.predictedQualified).length;
+            
+            const maleFalsePositives = testData.filter(candidate => 
+                candidate.gender === 'male' && !candidate.actuallyQualified && candidate.predictedQualified).length;
+            const femaleFalsePositives = testData.filter(candidate => 
+                candidate.gender === 'female' && !candidate.actuallyQualified && candidate.predictedQualified).length;
+            
+            // False negatives by gender (qualified but not selected)
+            const maleFalseNegatives = testData.filter(candidate => 
+                candidate.gender === 'male' && candidate.actuallyQualified && !candidate.predictedQualified).length;
+            const femaleFalseNegatives = testData.filter(candidate => 
+                candidate.gender === 'female' && candidate.actuallyQualified && !candidate.predictedQualified).length;
+            
+            return {
+                testData,
+                malePositiveRate: (malePositives / 50) * 100,
+                femalePositiveRate: (femalePositives / 50) * 100,
+                maleTruePositives,
+                femaleTruePositives,
+                maleFalsePositives,
+                femaleFalsePositives,
+                maleFalseNegatives,
+                femaleFalseNegatives,
+                maleActuallyQualified,
+                femaleActuallyQualified
+            };
+        }
+        
+        // Calculate bias metrics
+        function calculateBiasMetrics(model, testResults) {            
+            // Calculate disparate impact
+            const disparateImpact = testResults.femalePositiveRate > 0 ? 
+                testResults.malePositiveRate / testResults.femalePositiveRate : 
+                Infinity;
+            
+            // Calculate Equal Opportunity difference (difference in true positive rates)
+            const maleTruePositiveRate = testResults.maleActuallyQualified > 0 ? 
+                testResults.maleTruePositives / testResults.maleActuallyQualified : 0;
+            const femaleTruePositiveRate = testResults.femaleActuallyQualified > 0 ? 
+                testResults.femaleTruePositives / testResults.femaleActuallyQualified : 0;
+            
+            const equalOpportunityDiff = maleTruePositiveRate - femaleTruePositiveRate;
+            
+            return {
+                disparateImpact,
+                equalOpportunityDiff
+            };
+        }
+        
+        // Run the simulation and update the UI
+        function runSimulation() {
+            const maleResumes = parseInt(maleResumesSlider.value);
+            const femaleResumes = parseInt(femaleResumesSlider.value);
+            const maleQualRate = parseInt(maleQualRateSlider.value);
+            const femaleQualRate = parseInt(femaleQualRateSlider.value);
+            
+            const trainingData = generateTrainingData(maleResumes, femaleResumes, maleQualRate, femaleQualRate);
+            const model = trainModel(trainingData);
+            const testResults = testModel(model, maleQualRate, femaleQualRate);
+            const biasMetrics = calculateBiasMetrics(model, testResults);
+            
+            // Update the UI with results
+            noResults.style.display = 'none';
+            results.style.display = 'block';
+            
+            // Model's learned bias
+            maleLearnedEl.textContent = model.maleQualificationRateInData.toFixed(1);
+            femaleLearnedEl.textContent = model.femaleQualificationRateInData.toFixed(1);
+            
+            // AI's hiring decisions
+            maleSelectedEl.textContent = testResults.malePositiveRate.toFixed(1);
+            femaleSelectedEl.textContent = testResults.femalePositiveRate.toFixed(1);
+            
+            // Bias metrics
+            const disparateImpactText = `Disparate Impact Ratio: ${biasMetrics.disparateImpact.toFixed(2)}`;
+            const equalOpportunityText = `Equal Opportunity Difference: ${biasMetrics.equalOpportunityDiff.toFixed(2)}`;
+            
+            // Add warnings if bias exceeds thresholds
+            if (biasMetrics.disparateImpact > 1.2 || biasMetrics.disparateImpact < 0.8) {
+                disparateImpactEl.innerHTML = `${disparateImpactText} <span class="warning">⚠️ Potentially illegal bias</span>`;
+                disparateImpactEl.className = 'warning';
+            } else {
+                disparateImpactEl.innerHTML = `${disparateImpactText} <span class="success">✅ Within legal threshold</span>`;
+                disparateImpactEl.className = 'success';
+            }
+            
+            if (Math.abs(biasMetrics.equalOpportunityDiff) > 0.1) {
+                equalOpportunityEl.innerHTML = `${equalOpportunityText} <span class="warning">⚠️ Significant bias</span>`;
+                equalOpportunityEl.className = 'warning';
+            } else {
+                equalOpportunityEl.innerHTML = `${equalOpportunityText} <span class="success">✅ Minimal bias</span>`;
+                equalOpportunityEl.className = 'success';
+            }
+            
+            // Detailed metrics
+            maleTruePosEl.textContent = testResults.maleTruePositives;
+            femaleTruePosEl.textContent = testResults.femaleTruePositives;
+            maleFalsePosEl.textContent = testResults.maleFalsePositives;
+            femaleFalsePosEl.textContent = testResults.femaleFalsePositives;
+            maleFalseNegEl.textContent = testResults.maleFalseNegatives;
+            femaleFalseNegEl.textContent = testResults.femaleFalseNegatives;
+            maleActualQualEl.textContent = testResults.maleActuallyQualified;
+            femaleActualQualEl.textContent = testResults.femaleActuallyQualified;
+        }
+        
+        // Add event listener to the run button
+        runButton.addEventListener('click', runSimulation);
+    </script>
+</body>
+</html>
