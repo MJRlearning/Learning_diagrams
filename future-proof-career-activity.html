@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Reflection Activity: How Can I Future-Proof My Career?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .reflection-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .clear-btn {
+            background-color: #e74c3c;
+        }
+        
+        .clear-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .save-btn {
+            background-color: #2ecc71;
+        }
+        
+        .save-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .instructions {
+            background-color: #f8f4e5;
+            border-left: 4px solid #f1c40f;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .btn-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reflection-container">
+        <h1>✍️ Self-Reflection Activity:<br>How Can I Future-Proof My Career?</h1>
+        
+        <div class="instructions">
+            <p>This activity will help you reflect on your career resilience in the age of AI. Take your time to consider each question thoughtfully. Your responses will be saved locally on your device until you clear them.</p>
+        </div>
+        
+        <form id="reflection-form">
+            <div class="question">
+                <label for="ai-proof-skills">Which of my skills are AI-proof?</label>
+                <textarea id="ai-proof-skills" name="ai-proof-skills" placeholder="Consider skills involving creativity, emotional intelligence, complex problem-solving, ethical judgment, etc."></textarea>
+            </div>
+            
+            <div class="question">
+                <label for="new-skills">What new skills could I learn to stay competitive?</label>
+                <textarea id="new-skills" name="new-skills" placeholder="Think about technical skills, soft skills, industry-specific knowledge, etc."></textarea>
+            </div>
+            
+            <div class="question">
+                <label for="ai-as-tool">How can I use AI as a tool rather than compete with it?</label>
+                <textarea id="ai-as-tool" name="ai-as-tool" placeholder="Consider how AI could enhance your productivity, creativity, or help you in your specific role."></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button type="button" class="clear-btn" id="clear-btn">Clear All Responses</button>
+                <button type="button" id="save-btn" class="save-btn">Save Responses</button>
+                <button type="button" id="download-btn">Download Responses</button>
+            </div>
+        </form>
+    </div>
+    
+    <footer>
+        <p>Your responses are stored locally on your device and are not sent to any server.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved responses if they exist
+            loadSavedResponses();
+            
+            // Save responses whenever they change
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', saveResponses);
+            });
+            
+            // Clear button functionality
+            document.getElementById('clear-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all your responses?')) {
+                    document.querySelectorAll('textarea').forEach(textarea => {
+                        textarea.value = '';
+                    });
+                    localStorage.removeItem('careerReflectionResponses');
+                }
+            });
+            
+            // Save button functionality with confirmation
+            document.getElementById('save-btn').addEventListener('click', function() {
+                saveResponses();
+                alert('Your responses have been saved in your browser\'s local storage.');
+            });
+            
+            // Download button functionality
+            document.getElementById('download-btn').addEventListener('click', downloadResponses);
+        });
+        
+        function saveResponses() {
+            const responses = {
+                aiProofSkills: document.getElementById('ai-proof-skills').value,
+                newSkills: document.getElementById('new-skills').value,
+                aiAsTool: document.getElementById('ai-as-tool').value,
+                lastSaved: new Date().toLocaleString()
+            };
+            
+            localStorage.setItem('careerReflectionResponses', JSON.stringify(responses));
+        }
+        
+        function loadSavedResponses() {
+            const savedResponses = localStorage.getItem('careerReflectionResponses');
+            
+            if (savedResponses) {
+                const responses = JSON.parse(savedResponses);
+                
+                document.getElementById('ai-proof-skills').value = responses.aiProofSkills || '';
+                document.getElementById('new-skills').value = responses.newSkills || '';
+                document.getElementById('ai-as-tool').value = responses.aiAsTool || '';
+            }
+        }
+        
+        function downloadResponses() {
+            // Get current values
+            const aiProofSkills = document.getElementById('ai-proof-skills').value;
+            const newSkills = document.getElementById('new-skills').value;
+            const aiAsTool = document.getElementById('ai-as-tool').value;
+            
+            // Format the content
+            const content = `# Self-Reflection Activity: How Can I Future-Proof My Career?
+Date: ${new Date().toLocaleString()}
+
+## Which of my skills are AI-proof?
+${aiProofSkills}
+
+## What new skills could I learn to stay competitive?
+${newSkills}
+
+## How can I use AI as a tool rather than compete with it?
+${aiAsTool}
+`;
+            
+            // Create a blob and download link
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = 'Career_Reflection_' + new Date().toISOString().split('T')[0] + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    </script>
+</body>
+</html>
