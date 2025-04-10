@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How AI-Literate Are You?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question p {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            background-color: white;
+            color: #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        .option-btn:hover {
+            background-color: #edf7fd;
+        }
+        .option-btn.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #27ae60;
+        }
+        .submit-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .result-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .literacy-level {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        .retry-btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .answer-explanation {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .answer-explanation h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .answer-explanation p {
+            margin-bottom: 10px;
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .incorrect {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quick Self-Assessment:<br>How AI-Literate Are You?</h1>
+    
+    <div class="quiz-container">
+        <div class="question" id="q1">
+            <p>1. Can AI create realistic images and videos?</p>
+            <div class="options">
+                <button class="option-btn" data-question="1" data-option="yes">Yes</button>
+                <button class="option-btn" data-question="1" data-option="no">No</button>
+            </div>
+        </div>
+        
+        <div class="question" id="q2">
+            <p>2. Is AI always unbiased?</p>
+            <div class="options">
+                <button class="option-btn" data-question="2" data-option="yes">Yes</button>
+                <button class="option-btn" data-question="2" data-option="no">No</button>
+            </div>
+        </div>
+        
+        <div class="question" id="q3">
+            <p>3. Can AI be tricked into giving false information?</p>
+            <div class="options">
+                <button class="option-btn" data-question="3" data-option="yes">Yes</button>
+                <button class="option-btn" data-question="3" data-option="no">No</button>
+            </div>
+        </div>
+        
+        <div class="question" id="q4">
+            <p>4. Do AI systems understand the meaning of the content they generate?</p>
+            <div class="options">
+                <button class="option-btn" data-question="4" data-option="yes">Yes</button>
+                <button class="option-btn" data-question="4" data-option="no">No</button>
+            </div>
+        </div>
+        
+        <div class="question" id="q5">
+            <p>5. Can AI replace human judgment in all decision-making processes?</p>
+            <div class="options">
+                <button class="option-btn" data-question="5" data-option="yes">Yes</button>
+                <button class="option-btn" data-question="5" data-option="no">No</button>
+            </div>
+        </div>
+        
+        <button id="submit-btn" class="submit-btn" disabled>Check Your Results</button>
+    </div>
+    
+    <div class="result-container" id="results">
+        <div class="score">Your Score: <span id="score-value">0</span>/5</div>
+        <div class="literacy-level">Your AI Literacy Level: <span id="literacy-level">Beginner</span></div>
+        <div class="answer-explanation" id="answer-explanation"></div>
+        <button class="retry-btn" id="retry-btn">Try Again</button>
+    </div>
+    
+    <script>
+        const correctAnswers = {
+            1: "yes",
+            2: "no",
+            3: "yes",
+            4: "no",
+            5: "no"
+        };
+        
+        const explanations = {
+            1: {
+                yes: "<span class='correct'>Correct!</span> Modern AI can indeed create highly realistic images and videos. Technologies like GANs (Generative Adversarial Networks) and diffusion models power tools like DALL-E, Midjourney, and Stable Diffusion, which can generate photorealistic content from text descriptions.",
+                no: "<span class='incorrect'>Not quite.</span> Today's AI systems like DALL-E, Midjourney, and Stable Diffusion can create remarkably realistic images and videos that are sometimes indistinguishable from real photographs or footage. This technology has advanced rapidly in recent years."
+            },
+            2: {
+                yes: "<span class='incorrect'>Not quite.</span> AI systems are trained on human-created data, which often contains biases. These biases can be reflected and sometimes amplified in AI outputs. Addressing bias in AI is an active area of research and development.",
+                no: "<span class='correct'>Correct!</span> AI systems learn from data created by humans, which often contains historical and social biases. These biases can be reflected in AI outputs. For example, facial recognition systems have shown higher error rates for certain demographic groups, and language models can perpetuate stereotypes present in their training data."
+            },
+            3: {
+                yes: "<span class='correct'>Correct!</span> AI systems can be manipulated through techniques like prompt engineering, adversarial attacks, or by exploiting patterns in their training data. This is why critical thinking remains essential when evaluating AI-generated information.",
+                no: "<span class='incorrect'>Not quite.</span> AI systems can be manipulated to produce false or misleading information. Techniques like prompt engineering, adversarial examples, or deliberately feeding misleading context can cause AI to generate incorrect outputs. This is why human oversight and critical thinking remain important."
+            },
+            4: {
+                yes: "<span class='incorrect'>Not quite.</span> Current AI systems don't truly understand meaning in the human sense. They process patterns in data and generate outputs based on statistical relationships, without genuine comprehension of concepts, context, or real-world implications.",
+                no: "<span class='correct'>Correct!</span> Today's AI systems, including large language models, don't possess true understanding of the content they generate. They recognize patterns and statistical relationships in their training data rather than having semantic comprehension. They can produce convincing text without grasping its meaning, context, or implications."
+            },
+            5: {
+                yes: "<span class='incorrect'>Not quite.</span> AI has limitations in handling subjective values, ethical considerations, and novel situations that haven't been represented in training data. Human judgment remains essential for many complex decisions, especially those involving empathy, creative problem-solving, and ethical trade-offs.",
+                no: "<span class='correct'>Correct!</span> While AI can assist with many decisions, it cannot fully replace human judgment in all contexts. AI lacks human qualities like empathy, moral reasoning, and contextual understanding. Complex decisions involving ethical considerations, unique circumstances, or creative problem-solving still require human oversight and judgment."
+            }
+        };
+        
+        let selectedAnswers = {};
+        const optionButtons = document.querySelectorAll('.option-btn');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results');
+        const scoreValue = document.getElementById('score-value');
+        const literacyLevel = document.getElementById('literacy-level');
+        const retryButton = document.getElementById('retry-btn');
+        const answerExplanation = document.getElementById('answer-explanation');
+        
+        // Handle option selection
+        optionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const questionNum = this.getAttribute('data-question');
+                const selectedOption = this.getAttribute('data-option');
+                
+                // Clear previous selection for this question
+                document.querySelectorAll(`.option-btn[data-question="${questionNum}"]`).forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Mark this option as selected
+                this.classList.add('selected');
+                
+                // Store the selection
+                selectedAnswers[questionNum] = selectedOption;
+                
+                // Enable submit button if all questions are answered
+                if (Object.keys(selectedAnswers).length === 5) {
+                    submitButton.disabled = false;
+                }
+            });
+        });
+        
+        // Handle form submission
+        submitButton.addEventListener('click', function() {
+            let score = 0;
+            let explanationHTML = "<h3>Your Answers Explained:</h3>";
+            
+            // Calculate score and create explanations
+            for (let questionNum = 1; questionNum <= 5; questionNum++) {
+                const userAnswer = selectedAnswers[questionNum];
+                const correctAnswer = correctAnswers[questionNum];
+                
+                if (userAnswer === correctAnswer) {
+                    score++;
+                }
+                
+                explanationHTML += `<p><strong>Question ${questionNum}:</strong> ${explanations[questionNum][userAnswer]}</p>`;
+            }
+            
+            // Display score
+            scoreValue.textContent = score;
+            
+            // Set literacy level based on score
+            if (score === 5) {
+                literacyLevel.textContent = "Advanced";
+            } else if (score >= 3) {
+                literacyLevel.textContent = "Intermediate";
+            } else {
+                literacyLevel.textContent = "Beginner";
+            }
+            
+            // Display explanations
+            answerExplanation.innerHTML = explanationHTML;
+            
+            // Show results
+            resultsContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Handle retry button
+        retryButton.addEventListener('click', function() {
+            // Reset selections
+            selectedAnswers = {};
+            optionButtons.forEach(button => {
+                button.classList.remove('selected');
+            });
+            
+            // Disable submit button
+            submitButton.disabled = true;
+            
+            // Hide results
+            resultsContainer.style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
