@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Prediction Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .text-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .prediction-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .ai-prediction {
+            background-color: #e2f0fb;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .score-container {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .explanation {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        
+        .next-round-btn {
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .instructions {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Text Prediction Game</h1>
+    
+    <div class="instructions">
+        <h2>How It Works</h2>
+        <p>This activity simulates how AI language models predict text. You'll see the beginning of a sentence, and your task is to predict what words might naturally come next.</p>
+        <p>After you make your prediction, you'll see what an AI might predict, along with an explanation of how it made its decision. This helps demonstrate how AI models analyze patterns in text.</p>
+        <ol>
+            <li>Read the prompt text carefully</li>
+            <li>Type in what you think would naturally come next (3-5 words)</li>
+            <li>Compare your prediction with the AI's prediction</li>
+            <li>Learn about the patterns the AI recognized to make its prediction</li>
+        </ol>
+    </div>
+    
+    <div class="score-container">
+        <p>Your Score: <span id="score">0</span> / <span id="total">0</span></p>
+    </div>
+    
+    <div class="game-container">
+        <h2>Predict the Next Words</h2>
+        <div class="text-container" id="prompt-text"></div>
+        
+        <input type="text" class="prediction-input" id="user-prediction" placeholder="Type your prediction here (3-5 words)...">
+        <button class="btn" id="submit-btn">Submit Prediction</button>
+        
+        <div class="result" id="result"></div>
+        <div class="ai-prediction" id="ai-prediction"></div>
+        
+        <button class="btn next-round-btn" id="next-btn" style="display: none;">Next Round</button>
+    </div>
+    
+    <div class="explanation">
+        <h2>What You're Learning</h2>
+        <p>This activity demonstrates how AI language models work with probabilities to predict text. Key concepts illustrated:</p>
+        <ul>
+            <li><strong>Pattern Recognition:</strong> AI models analyze vast amounts of text to recognize patterns</li>
+            <li><strong>Context Understanding:</strong> Models use surrounding words to predict what comes next</li>
+            <li><strong>Probability-Based Predictions:</strong> Multiple possible outputs exist, each with different likelihood</li>
+            <li><strong>Limitations:</strong> AI predictions are based on patterns in training data, not true understanding</li>
+        </ul>
+        <p>This is a simplified version of how models like ChatGPT generate text, helping you understand the foundation of modern AI language tools.</p>
+    </div>
+
+    <script>
+        // Game prompts with expected completions and explanations
+        const gameData = [
+            {
+                prompt: "The weather today is very",
+                likelyCompletions: ["sunny", "cold", "hot", "nice", "pleasant", "rainy"],
+                explanation: "The AI recognizes that after 'The weather today is very', a descriptive adjective about weather conditions typically follows. Words like 'sunny', 'cold', 'hot', 'rainy', etc. have high probability in this context based on common weather descriptions in the AI's training data."
+            },
+            {
+                prompt: "Please remember to bring your",
+                likelyCompletions: ["passport", "ID", "phone", "keys", "wallet", "bag", "umbrella"],
+                explanation: "Following 'Please remember to bring your', the AI expects a noun representing an object that can be carried or brought. Personal items like 'passport', 'phone', and 'keys' have high probability based on common phrases in the training data about remembering important possessions."
+            },
+            {
+                prompt: "To make pancakes, first mix the flour and",
+                likelyCompletions: ["eggs", "milk", "sugar", "baking powder", "butter", "water"],
+                explanation: "After 'To make pancakes, first mix the flour and', the AI predicts another ingredient commonly used in pancake recipes. The model has seen many recipes in its training data where flour is combined with ingredients like eggs, milk, and sugar."
+            },
+            {
+                prompt: "The meeting has been rescheduled for",
+                likelyCompletions: ["tomorrow", "Monday", "next week", "3 PM", "a later date", "Friday"],
+                explanation: "Following 'The meeting has been rescheduled for', the AI expects a time expression. Based on patterns in business communications, words indicating future times like 'tomorrow', specific days, or clock times have high probability in this context."
+            },
+            {
+                prompt: "Despite the challenges, the team managed to",
+                likelyCompletions: ["win", "succeed", "overcome", "complete", "finish", "achieve their goal"],
+                explanation: "After 'Despite the challenges, the team managed to', the AI expects a positive verb indicating achievement. The phrase sets up a contrast between obstacles and eventual success, so words like 'win', 'succeed', and 'overcome' have high probability based on narrative patterns."
+            }
+        ];
+
+        // Game variables
+        let currentRound = 0;
+        let score = 0;
+        let totalRounds = 0;
+
+        // DOM elements
+        const promptText = document.getElementById('prompt-text');
+        const userPrediction = document.getElementById('user-prediction');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultDiv = document.getElementById('result');
+        const aiPredictionDiv = document.getElementById('ai-prediction');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreSpan = document.getElementById('score');
+        const totalSpan = document.getElementById('total');
+
+        // Initialize game
+        function initGame() {
+            loadRound(currentRound);
+            totalSpan.textContent = gameData.length;
+        }
+
+        // Load a round
+        function loadRound(roundIndex) {
+            if (roundIndex >= gameData.length) {
+                endGame();
+                return;
+            }
+            
+            const roundData = gameData[roundIndex];
+            promptText.textContent = roundData.prompt + "...";
+            
+            userPrediction.value = '';
+            resultDiv.style.display = 'none';
+            aiPredictionDiv.style.display = 'none';
+            nextBtn.style.display = 'none';
+            
+            userPrediction.focus();
+        }
+
+        // Check user prediction
+        function checkPrediction() {
+            totalRounds++;
+            const userInput = userPrediction.value.trim().toLowerCase();
+            const roundData = gameData[currentRound];
+            
+            // Check if any of the likely completions are contained in the user input
+            const isCorrect = roundData.likelyCompletions.some(completion => 
+                userInput.includes(completion.toLowerCase())
+            );
+            
+            if (isCorrect) {
+                score++;
+                resultDiv.className = 'result correct';
+                resultDiv.innerHTML = '<strong>Great prediction!</strong> Your answer matches one of the likely AI predictions.';
+            } else {
+                resultDiv.className = 'result incorrect';
+                resultDiv.innerHTML = '<strong>Interesting prediction!</strong> Your answer was different from what most AI models would predict.';
+            }
+            
+            // Display random AI completion from the list
+            const randomCompletion = roundData.likelyCompletions[Math.floor(Math.random() * roundData.likelyCompletions.length)];
+            aiPredictionDiv.innerHTML = `<strong>Likely AI Prediction:</strong> "${roundData.prompt} <strong>${randomCompletion}</strong>"
+                <p><strong>How the AI decided:</strong> ${roundData.explanation}</p>`;
+            
+            resultDiv.style.display = 'block';
+            aiPredictionDiv.style.display = 'block';
+            nextBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            scoreSpan.textContent = score;
+        }
+
+        // Move to next round
+        function nextRound() {
+            currentRound++;
+            submitBtn.disabled = false;
+            loadRound(currentRound);
+        }
+
+        // End game
+        function endGame() {
+            promptText.textContent = "Game completed!";
+            userPrediction.style.display = 'none';
+            submitBtn.style.display = 'none';
+            
+            resultDiv.className = 'result correct';
+            resultDiv.innerHTML = `<strong>Final Score:</strong> ${score} out of ${gameData.length}<br><br>
+                <p>You've completed the AI Text Prediction Game! Now you have a better understanding of how AI language models predict text based on patterns they've learned.</p>
+                <p>This activity demonstrates a simplified version of the probability-based approach that powers sophisticated AI systems like ChatGPT.</p>
+                <button class="btn" onclick="resetGame()">Play Again</button>`;
+            
+            resultDiv.style.display = 'block';
+            aiPredictionDiv.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        // Reset game
+        function resetGame() {
+            currentRound = 0;
+            score = 0;
+            totalRounds = 0;
+            userPrediction.style.display = 'block';
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = false;
+            scoreSpan.textContent = score;
+            initGame();
+        }
+
+        // Event listeners
+        submitBtn.addEventListener('click', checkPrediction);
+        nextBtn.addEventListener('click', nextRound);
+        userPrediction.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !submitBtn.disabled) {
+                checkPrediction();
+            }
+        });
+
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>
