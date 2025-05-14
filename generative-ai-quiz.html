@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Generative AI Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .definition {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .question {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            position: relative;
+        }
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option:hover {
+            border-color: #3498db;
+        }
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .option input {
+            margin-right: 10px;
+        }
+        .submit-q-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .submit-q-btn:hover {
+            background: #2980b9;
+        }
+        .submit-q-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .feedback.opinion {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .next-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+        .next-btn:hover {
+            background: #218838;
+        }
+        .final-score {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #3498db;
+            display: none;
+        }
+        .try-again {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            margin: 20px auto;
+        }
+        .try-again:hover {
+            background: #5a6268;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Understanding Generative AI</h1>
+        
+        <div class="definition">
+            <h2>What does "generative" mean in the context of AI?</h2>
+            <p>In AI context, "generative" refers to artificial intelligence systems that can create new content rather than just analyzing or classifying existing data. These AI models learn patterns from training data and use that knowledge to generate entirely new outputs that didn't exist before - whether that's text, images, music, code, or other content.</p>
+        </div>
+
+        <div id="question1" class="question">
+            <h3>1. Which of these is NOT a generative AI tool?</h3>
+            <label class="option">
+                <input type="radio" name="q1" value="A">
+                A. ChatGPT
+            </label>
+            <label class="option">
+                <input type="radio" name="q1" value="B">
+                B. Google Search
+            </label>
+            <label class="option">
+                <input type="radio" name="q1" value="C">
+                C. DALL·E
+            </label>
+            <label class="option">
+                <input type="radio" name="q1" value="D">
+                D. Copilot
+            </label>
+            <button class="submit-q-btn" onclick="checkQuestion(1)">Submit Answer</button>
+            <div id="feedback1" class="feedback"></div>
+            <button class="next-btn" onclick="showQuestion(2)">Next Question →</button>
+        </div>
+
+        <div id="question2" class="question hidden">
+            <h3>2. Have you ever used AI tools in your work or teaching?</h3>
+            <label class="option">
+                <input type="radio" name="q2" value="Yes">
+                Yes
+            </label>
+            <label class="option">
+                <input type="radio" name="q2" value="No">
+                No
+            </label>
+            <button class="submit-q-btn" onclick="checkQuestion(2)">Submit Answer</button>
+            <div id="feedback2" class="feedback"></div>
+            <button class="next-btn" onclick="showQuestion(3)">Next Question →</button>
+        </div>
+
+        <div id="question3" class="question hidden">
+            <h3>3. Which statement best describes what generative AI does?</h3>
+            <label class="option">
+                <input type="radio" name="q3" value="A">
+                A. Searches and retrieves existing information
+            </label>
+            <label class="option">
+                <input type="radio" name="q3" value="B">
+                B. Creates new content based on learned patterns
+            </label>
+            <label class="option">
+                <input type="radio" name="q3" value="C">
+                C. Only classifies and categorizes data
+            </label>
+            <label class="option">
+                <input type="radio" name="q3" value="D">
+                D. Stores and organizes information
+            </label>
+            <button class="submit-q-btn" onclick="checkQuestion(3)">Submit Answer</button>
+            <div id="feedback3" class="feedback"></div>
+            <button class="next-btn" onclick="showQuestion(4)">Next Question →</button>
+        </div>
+
+        <div id="question4" class="question hidden">
+            <h3>4. Which of these tasks would typically require generative AI?</h3>
+            <label class="option">
+                <input type="radio" name="q4" value="A">
+                A. Finding a specific email in your inbox
+            </label>
+            <label class="option">
+                <input type="radio" name="q4" value="B">
+                B. Writing an original story
+            </label>
+            <label class="option">
+                <input type="radio" name="q4" value="C">
+                C. Checking spelling errors
+            </label>
+            <label class="option">
+                <input type="radio" name="q4" value="D">
+                D. Identifying objects in a photo
+            </label>
+            <button class="submit-q-btn" onclick="checkQuestion(4)">Submit Answer</button>
+            <div id="feedback4" class="feedback"></div>
+            <button class="next-btn" onclick="showQuestion(5)">Next Question →</button>
+        </div>
+
+        <div id="question5" class="question hidden">
+            <h3>5. What was the first major public generative AI tool that gained widespread attention?</h3>
+            <label class="option">
+                <input type="radio" name="q5" value="A">
+                A. Google Translate
+            </label>
+            <label class="option">
+                <input type="radio" name="q5" value="B">
+                B. ChatGPT
+            </label>
+            <label class="option">
+                <input type="radio" name="q5" value="C">
+                C. Siri
+            </label>
+            <label class="option">
+                <input type="radio" name="q5" value="D">
+                D. Microsoft Word
+            </label>
+            <button class="submit-q-btn" onclick="checkQuestion(5)">Submit Answer</button>
+            <div id="feedback5" class="feedback"></div>
+            <button class="next-btn" onclick="showFinalScore()">Show Final Score →</button>
+        </div>
+
+        <div id="finalScore" class="final-score"></div>
+        <button class="try-again" onclick="location.reload()">Try Again</button>
+    </div>
+
+    <script>
+        let score = 0;
+        const correctAnswers = {
+            q1: 'B',
+            q3: 'B',
+            q4: 'B',
+            q5: 'B'
+        };
+        
+        const options = {
+            q1: {
+                A: 'ChatGPT',
+                B: 'Google Search',
+                C: 'DALL·E',
+                D: 'Copilot'
+            },
+            q3: {
+                A: 'Searches and retrieves existing information',
+                B: 'Creates new content based on learned patterns',
+                C: 'Only classifies and categorizes data',
+                D: 'Stores and organizes information'
+            },
+            q4: {
+                A: 'Finding a specific email in your inbox',
+                B: 'Writing an original story',
+                C: 'Checking spelling errors',
+                D: 'Identifying objects in a photo'
+            },
+            q5: {
+                A: 'Google Translate',
+                B: 'ChatGPT',
+                C: 'Siri',
+                D: 'Microsoft Word'
+            }
+        };
+        
+        const explanations = {
+            q1: 'Google Search is not a generative AI tool. It retrieves existing information rather than generating new content.',
+            q3: 'Generative AI creates new content based on patterns learned from training data.',
+            q4: 'Writing an original story requires generating new content, which is what generative AI does.',
+            q5: 'ChatGPT was the first major generative AI tool to gain widespread public attention in late 2022.'
+        };
+
+        function checkQuestion(qNum) {
+            const selected = document.querySelector(`input[name="q${qNum}"]:checked`);
+            
+            if (!selected) {
+                alert('Please select an answer before submitting.');
+                return;
+            }
+            
+            const answer = selected.value;
+            const feedbackDiv = document.getElementById(`feedback${qNum}`);
+            const submitBtn = document.querySelector(`#question${qNum} .submit-q-btn`);
+            const nextBtn = document.querySelector(`#question${qNum} .next-btn`);
+            const optionElements = document.querySelectorAll(`#question${qNum} .option`);
+            
+            // Disable all options and submit button
+            optionElements.forEach(opt => opt.classList.add('disabled'));
+            submitBtn.disabled = true;
+            
+            // Show feedback
+            if (qNum === 2) {
+                // Opinion question
+                feedbackDiv.className = 'feedback opinion';
+                feedbackDiv.innerHTML = `
+                    <strong>Thank you for your response!</strong><br>
+                    You answered: ${answer}<br>
+                    <em>We appreciate you sharing your experience with AI tools.</em>
+                `;
+            } else {
+                // Regular questions
+                const correct = correctAnswers[`q${qNum}`];
+                const isCorrect = answer === correct;
+                const questionOptions = options[`q${qNum}`];
+                
+                if (isCorrect) score++;
+                
+                feedbackDiv.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+                feedbackDiv.innerHTML = `
+                    <strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>
+                    Your answer: <strong>${answer}. ${questionOptions[answer]}</strong><br>
+                    ${!isCorrect ? `Correct answer: <strong>${correct}. ${questionOptions[correct]}</strong><br>` : ''}
+                    <em>Explanation: ${explanations[`q${qNum}`]}</em>
+                `;
+            }
+            
+            feedbackDiv.style.display = 'block';
+            nextBtn.style.display = 'inline-block';
+        }
+
+        function showQuestion(qNum) {
+            // Hide all questions
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`question${i}`).classList.add('hidden');
+            }
+            // Show current question
+            document.getElementById(`question${qNum}`).classList.remove('hidden');
+        }
+
+        function showFinalScore() {
+            // Hide all questions
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`question${i}`).classList.add('hidden');
+            }
+            
+            // Show final score
+            const finalScoreDiv = document.getElementById('finalScore');
+            finalScoreDiv.innerHTML = `
+                <h2>Quiz Complete!</h2>
+                Your Score: ${score}/4<br><br>
+                ${score === 4 ? 'Excellent! Perfect score!' : 
+                  score >= 2 ? 'Good job! Keep learning!' : 
+                  'Review the material and try again!'}
+            `;
+            finalScoreDiv.style.display = 'block';
+            document.querySelector('.try-again').style.display = 'block';
+        }
+        
+        // Add visual feedback for option selection
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    // Clear previous selections in the same question
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
