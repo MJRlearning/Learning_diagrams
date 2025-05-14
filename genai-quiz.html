@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Knowledge Check Quiz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            line-height: 1.6;
+        }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .question h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .question-number {
+            background: #3182ce;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option:hover {
+            border-color: #3182ce;
+            background-color: #ebf8ff;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            flex: 1;
+            margin: 0;
+        }
+        
+        /* Drag and Drop Styles */
+        .drag-drop-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .drag-source, .drop-targets {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .draggable-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .draggable {
+            background: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .draggable:hover {
+            background: #cbd5e0;
+        }
+        
+        .draggable.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        .drop-zone {
+            min-height: 120px;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .drop-zone h4 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+            font-size: 16px;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #3182ce;
+            background: #ebf8ff;
+        }
+        
+        .dropped-item {
+            background: #3182ce;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 4px;
+            display: inline-block;
+            cursor: grab;
+        }
+        
+        .dropped-item:hover {
+            background: #2c5282;
+        }
+        
+        .textarea-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+        
+        .submit-btn {
+            background: #3182ce;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background: #2c5282;
+        }
+        
+        .submit-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in;
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+        
+        .feedback.partial {
+            background: #feebc8;
+            color: #744210;
+            border: 1px solid #fbd38d;
+        }
+        
+        .next-question {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .next-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .next-btn:hover {
+            background: #38a169;
+        }
+        
+        .question.hidden {
+            display: none;
+        }
+        
+        .overall-feedback {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            border-radius: 12px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .reset-btn {
+            background: #718096;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .reset-btn:hover {
+            background: #4a5568;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .drag-drop-container {
+                flex-direction: column;
+            }
+            
+            .drag-source, .drop-targets {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>🧠 Generative AI Knowledge Check Quiz</h1>
+        
+        <!-- Question 1 -->
+        <div id="question1" class="question">
+            <h3>
+                <span class="question-number">1</span>
+                Which AI tool is best for generating custom images?
+            </h3>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="q1a" name="q1" value="a">
+                    <label for="q1a">ChatGPT</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="q1b" name="q1" value="b">
+                    <label for="q1b">DALL-E / Midjourney / Stable Diffusion</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="q1c" name="q1" value="c">
+                    <label for="q1c">GitHub Copilot</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="q1d" name="q1" value="d">
+                    <label for="q1d">Claude</label>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="checkQuestion1()">Submit Answer</button>
+            <div id="feedback1" class="feedback"></div>
+            <div class="next-question">
+                <button class="next-btn" onclick="showQuestion(2)">Next Question →</button>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div id="question2" class="question hidden">
+            <h3>
+                <span class="question-number">2</span>
+                Drag and drop to categorize benefits and risks of using generative AI
+            </h3>
+            <p style="color: #718096; margin-bottom: 20px;">Drag each item to the appropriate category:</p>
+            
+            <div class="drag-drop-container">
+                <div class="drag-source">
+                    <div class="section-title">Items to Sort:</div>
+                    <div class="draggable-items" id="itemsToSort">
+                        <div class="draggable" draggable="true" data-value="benefit1">Increases productivity and efficiency</div>
+                        <div class="draggable" draggable="true" data-value="risk1">Can generate inaccurate or biased information</div>
+                        <div class="draggable" draggable="true" data-value="benefit2">Enables creative content generation</div>
+                        <div class="draggable" draggable="true" data-value="risk2">Privacy and data security concerns</div>
+                        <div class="draggable" draggable="true" data-value="benefit3">24/7 availability and scalability</div>
+                        <div class="draggable" draggable="true" data-value="risk3">Potential job displacement</div>
+                    </div>
+                </div>
+                
+                <div class="drop-targets">
+                    <div class="drop-zone" id="benefitsZone">
+                        <h4>Benefits</h4>
+                    </div>
+                    <div class="drop-zone" id="risksZone">
+                        <h4>Risks</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="submit-btn" onclick="checkQuestion2()">Submit Answer</button>
+            <div id="feedback2" class="feedback"></div>
+            <div class="next-question">
+                <button class="next-btn" onclick="showQuestion(3)">Next Question →</button>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div id="question3" class="question hidden">
+            <h3>
+                <span class="question-number">3</span>
+                Scenario: You need to train staff on compliance. What generative AI tools would help and how?
+            </h3>
+            <div class="textarea-container">
+                <textarea id="q3answer" placeholder="Type your answer here..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="checkQuestion3()">Submit Answer</button>
+            <div id="feedback3" class="feedback"></div>
+            <div class="next-question">
+                <button class="next-btn" onclick="showResults()">View Results →</button>
+            </div>
+        </div>
+        
+        <!-- Overall Results -->
+        <div id="overallResults" class="overall-feedback">
+            <div class="score" id="finalScore"></div>
+            <p id="resultMessage"></p>
+            <button class="reset-btn" onclick="resetQuiz()">Retake Quiz</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentQuestion = 1;
+        let scores = {1: 0, 2: 0, 3: 0};
+        
+        // Add click functionality to radio buttons
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+            });
+        });
+        
+        // Drag and Drop functionality
+        let draggedElement = null;
+        
+        document.querySelectorAll('.draggable').forEach(item => {
+            item.addEventListener('dragstart', dragStart);
+            item.addEventListener('dragend', dragEnd);
+        });
+        
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', dragOver);
+            zone.addEventListener('drop', dragDrop);
+            zone.addEventListener('dragleave', dragLeave);
+        });
+        
+        function dragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+        
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+        
+        function dragDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                const droppedItem = document.createElement('div');
+                droppedItem.className = 'dropped-item';
+                droppedItem.textContent = draggedElement.textContent;
+                droppedItem.setAttribute('data-value', draggedElement.getAttribute('data-value'));
+                droppedItem.draggable = true;
+                
+                droppedItem.addEventListener('dragstart', dragStart);
+                droppedItem.addEventListener('dragend', dragEnd);
+                
+                e.currentTarget.appendChild(droppedItem);
+                draggedElement.remove();
+                draggedElement = null;
+            }
+        }
+        
+        // Question checking functions
+        function checkQuestion1() {
+            const answer = document.querySelector('input[name="q1"]:checked');
+            const feedback = document.getElementById('feedback1');
+            const submitBtn = document.querySelector('#question1 .submit-btn');
+            
+            if (!answer) {
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = 'Please select an answer.';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            
+            if (answer.value === 'b') {
+                scores[1] = 1;
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = '<strong>Correct!</strong> DALL-E, Midjourney, and Stable Diffusion are specifically designed for generating images, while the other tools are primarily text-based.';
+            } else {
+                scores[1] = 0;
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = '<strong>Incorrect.</strong> The correct answer is DALL-E / Midjourney / Stable Diffusion. These are AI tools specifically designed for image generation, while ChatGPT, Claude, and GitHub Copilot are primarily focused on text generation and code assistance.';
+            }
+            
+            document.querySelector('#question1 .next-question').style.display = 'block';
+        }
+        
+        function checkQuestion2() {
+            const benefitsZone = document.getElementById('benefitsZone');
+            const risksZone = document.getElementById('risksZone');
+            const feedback = document.getElementById('feedback2');
+            const submitBtn = document.querySelector('#question2 .submit-btn');
+            
+            const benefitItems = benefitsZone.querySelectorAll('.dropped-item');
+            const riskItems = risksZone.querySelectorAll('.dropped-item');
+            
+            if (benefitItems.length === 0 && riskItems.length === 0) {
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = 'Please drag items to the appropriate categories.';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            
+            let correctBenefits = 0;
+            let correctRisks = 0;
+            let wronglyPlaced = [];
+            
+            benefitItems.forEach(item => {
+                const value = item.getAttribute('data-value');
+                if (value.startsWith('benefit')) {
+                    correctBenefits++;
+                } else {
+                    wronglyPlaced.push(item.textContent);
+                }
+            });
+            
+            riskItems.forEach(item => {
+                const value = item.getAttribute('data-value');
+                if (value.startsWith('risk')) {
+                    correctRisks++;
+                } else {
+                    wronglyPlaced.push(item.textContent);
+                }
+            });
+            
+            const totalCorrect = correctBenefits + correctRisks;
+            
+            if (totalCorrect === 6) {
+                scores[2] = 1;
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = '<strong>Perfect!</strong> You correctly identified all benefits and risks of generative AI.';
+            } else if (totalCorrect >= 4) {
+                scores[2] = 0.5;
+                feedback.className = 'feedback partial show';
+                feedback.innerHTML = `<strong>Good effort!</strong> You correctly placed ${totalCorrect} out of 6 items. ${wronglyPlaced.length > 0 ? 'These were misplaced: ' + wronglyPlaced.join(', ') : ''}`;
+            } else {
+                scores[2] = 0;
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = `<strong>Keep trying!</strong> You correctly placed ${totalCorrect} out of 6 items. Remember: Benefits include increased productivity, creative content generation, and 24/7 availability. Risks include inaccuracy/bias, privacy concerns, and job displacement.`;
+            }
+            
+            document.querySelector('#question2 .next-question').style.display = 'block';
+        }
+        
+        function checkQuestion3() {
+            const answer = document.getElementById('q3answer').value.trim();
+            const feedback = document.getElementById('feedback3');
+            const submitBtn = document.querySelector('#question3 .submit-btn');
+            
+            if (answer.length < 20) {
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = 'Please provide a more detailed answer (at least 20 characters).';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            
+            const lowerAnswer = answer.toLowerCase();
+            const hasTools = lowerAnswer.includes('chatgpt') || lowerAnswer.includes('claude') || 
+                           lowerAnswer.includes('gemini') || lowerAnswer.includes('ai') || 
+                           lowerAnswer.includes('generative');
+            const hasUsage = lowerAnswer.includes('content') || lowerAnswer.includes('train') || 
+                           lowerAnswer.includes('quiz') || lowerAnswer.includes('scenario') ||
+                           lowerAnswer.includes('document') || lowerAnswer.includes('material') ||
+                           lowerAnswer.includes('presentation') || lowerAnswer.includes('course');
+            
+            if (hasTools && hasUsage) {
+                scores[3] = 1;
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = '<strong>Excellent answer!</strong> You mentioned specific AI tools and explained how they could be used for compliance training. Key applications include generating training materials, creating interactive scenarios, and developing assessment quizzes.';
+            } else if (hasTools || hasUsage) {
+                scores[3] = 0.5;
+                feedback.className = 'feedback partial show';
+                feedback.innerHTML = '<strong>Good start!</strong> Your answer could be improved by ' + 
+                    (hasTools ? 'explaining how the AI tools would specifically help with compliance training.' : 'mentioning specific AI tools like ChatGPT or Claude.') +
+                    ' Consider how AI can create personalized training content, generate realistic scenarios, and assess understanding.';
+            } else {
+                scores[3] = 0;
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = '<strong>Needs improvement.</strong> A stronger answer would mention specific AI tools (like ChatGPT, Claude, or Gemini) and explain how they could help create training materials, generate compliance scenarios, develop quizzes, or personalize learning experiences for staff.';
+            }
+            
+            document.querySelector('#question3 .next-question').style.display = 'block';
+        }
+        
+        function showQuestion(num) {
+            document.getElementById(`question${currentQuestion}`).classList.add('hidden');
+            document.getElementById(`question${num}`).classList.remove('hidden');
+            currentQuestion = num;
+        }
+        
+        function showResults() {
+            document.getElementById('question3').classList.add('hidden');
+            document.getElementById('overallResults').style.display = 'block';
+            
+            const totalScore = scores[1] + scores[2] + scores[3];
+            const percentage = Math.round((totalScore / 3) * 100);
+            
+            document.getElementById('finalScore').textContent = `${percentage}%`;
+            
+            let message;
+            if (percentage >= 90) {
+                message = "Outstanding! You have an excellent understanding of generative AI tools and their applications.";
+            } else if (percentage >= 70) {
+                message = "Great job! You have a good grasp of generative AI concepts. Review any areas where you didn't get full marks.";
+            } else if (percentage >= 50) {
+                message = "Good effort! Consider reviewing the material on generative AI tools and their practical applications.";
+            } else {
+                message = "Keep learning! Take some time to review the course material on generative AI before retaking the quiz.";
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+        }
+        
+        function resetQuiz() {
+            // Reset scores
+            scores = {1: 0, 2: 0, 3: 0};
+            currentQuestion = 1;
+            
+            // Reset all questions
+            document.querySelectorAll('.question').forEach(q => q.classList.add('hidden'));
+            document.getElementById('question1').classList.remove('hidden');
+            
+            // Reset feedback and buttons
+            document.querySelectorAll('.feedback').forEach(f => {
+                f.classList.remove('show');
+                f.textContent = '';
+            });
+            
+            document.querySelectorAll('.submit-btn').forEach(btn => btn.disabled = false);
+            document.querySelectorAll('.next-question').forEach(nq => nq.style.display = 'none');
+            
+            // Reset question 1
+            document.querySelectorAll('input[name="q1"]').forEach(input => input.checked = false);
+            
+            // Reset question 2 drag and drop
+            const itemsToSort = document.getElementById('itemsToSort');
+            itemsToSort.innerHTML = `
+                <div class="draggable" draggable="true" data-value="benefit1">Increases productivity and efficiency</div>
+                <div class="draggable" draggable="true" data-value="risk1">Can generate inaccurate or biased information</div>
+                <div class="draggable" draggable="true" data-value="benefit2">Enables creative content generation</div>
+                <div class="draggable" draggable="true" data-value="risk2">Privacy and data security concerns</div>
+                <div class="draggable" draggable="true" data-value="benefit3">24/7 availability and scalability</div>
+                <div class="draggable" draggable="true" data-value="risk3">Potential job displacement</div>
+            `;
+            
+            // Re-attach drag event listeners
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('dragend', dragEnd);
+            });
+            
+            // Clear drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const items = zone.querySelectorAll('.dropped-item');
+                items.forEach(item => item.remove());
+            });
+            
+            // Reset question 3
+            document.getElementById('q3answer').value = '';
+            
+            // Hide results
+            document.getElementById('overallResults').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
