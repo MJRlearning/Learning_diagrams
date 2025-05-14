@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Matching Activity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .matching-area {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .column {
+            flex: 1;
+            min-width: 280px;
+        }
+        
+        .column h3 {
+            text-align: center;
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .tool, .function {
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: move;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tool {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .tool:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .function {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 2px dashed #bdc3c7;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .function.has-tool {
+            border-style: solid;
+            border-color: #95a5a6;
+            background: #f8f9fa;
+        }
+        
+        .function.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            animation: correctPulse 0.5s ease;
+        }
+        
+        .function.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .check-btn {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .check-btn:hover {
+            background: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .dragging {
+            opacity: 0.5;
+        }
+        
+        .drag-over {
+            border-color: #3498db;
+            background: #e8f4f9;
+        }
+        
+        @media (max-width: 768px) {
+            .matching-area {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 AI Tools Matching Activity</h1>
+        <p class="subtitle">Drag and drop each tool to match it with its function</p>
+        
+        <div class="matching-area">
+            <div class="column">
+                <h3>AI Tools</h3>
+                <div class="tool" draggable="true" data-tool="chatgpt">ChatGPT</div>
+                <div class="tool" draggable="true" data-tool="dalle">DALL·E 3</div>
+                <div class="tool" draggable="true" data-tool="copilot">GitHub Copilot</div>
+                <div class="tool" draggable="true" data-tool="grammarly">Grammarly</div>
+                <div class="tool" draggable="true" data-tool="canva">Canva Magic Studio</div>
+            </div>
+            
+            <div class="column">
+                <h3>Functions</h3>
+                <div class="function" data-expects="chatgpt">Text generation</div>
+                <div class="function" data-expects="dalle">Image creation</div>
+                <div class="function" data-expects="copilot">Code generation</div>
+                <div class="function" data-expects="grammarly">Writing assistance</div>
+                <div class="function" data-expects="canva">Design with AI</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetActivity()">Reset</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+    
+    <script>
+        let draggedElement = null;
+        
+        // Add event listeners to draggable tools
+        document.querySelectorAll('.tool').forEach(tool => {
+            tool.addEventListener('dragstart', dragStart);
+            tool.addEventListener('dragend', dragEnd);
+        });
+        
+        // Add event listeners to drop zones
+        document.querySelectorAll('.function').forEach(func => {
+            func.addEventListener('dragover', dragOver);
+            func.addEventListener('drop', dragDrop);
+            func.addEventListener('dragleave', dragLeave);
+        });
+        
+        function dragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+        
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+        
+        function dragDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                // Remove any existing tool from this function slot
+                const existingTool = e.currentTarget.querySelector('.tool');
+                if (existingTool) {
+                    document.querySelector('.column:first-child').appendChild(existingTool);
+                }
+                
+                // Add the dragged tool to this function slot
+                e.currentTarget.appendChild(draggedElement);
+                e.currentTarget.classList.add('has-tool');
+                
+                // Clear any previous feedback
+                e.currentTarget.classList.remove('correct', 'incorrect');
+                draggedElement = null;
+            }
+        }
+        
+        // Allow tools to be dragged back to the tools column
+        document.querySelector('.column:first-child').addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        
+        document.querySelector('.column:first-child').addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedElement && draggedElement.classList.contains('tool')) {
+                e.currentTarget.appendChild(draggedElement);
+                draggedElement = null;
+            }
+        });
+        
+        function checkAnswers() {
+            const functions = document.querySelectorAll('.function');
+            let correct = 0;
+            let total = 0;
+            
+            functions.forEach(func => {
+                const tool = func.querySelector('.tool');
+                if (tool) {
+                    total++;
+                    const expected = func.dataset.expects;
+                    const actual = tool.dataset.tool;
+                    
+                    if (expected === actual) {
+                        func.classList.add('correct');
+                        func.classList.remove('incorrect');
+                        correct++;
+                    } else {
+                        func.classList.add('incorrect');
+                        func.classList.remove('correct');
+                    }
+                }
+            });
+            
+            const message = document.getElementById('message');
+            if (total === 0) {
+                message.textContent = 'Please match at least one tool before checking answers!';
+                message.className = 'message error';
+            } else if (correct === 5) {
+                message.textContent = '🎉 Perfect! All matches are correct!';
+                message.className = 'message success';
+            } else {
+                message.textContent = `You got ${correct} out of ${total} matches correct. Keep trying!`;
+                message.className = 'message error';
+            }
+        }
+        
+        function resetActivity() {
+            // Move all tools back to the tools column
+            const toolsColumn = document.querySelector('.column:first-child');
+            document.querySelectorAll('.tool').forEach(tool => {
+                toolsColumn.appendChild(tool);
+            });
+            
+            // Clear all function slots
+            document.querySelectorAll('.function').forEach(func => {
+                func.classList.remove('has-tool', 'correct', 'incorrect');
+            });
+            
+            // Clear message
+            document.getElementById('message').className = 'message';
+        }
+    </script>
+</body>
+</html>
