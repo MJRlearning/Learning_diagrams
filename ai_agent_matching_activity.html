@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents vs Automation - Matching Activity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .activity-area {
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .tasks-column, .categories-column {
+            flex: 1;
+        }
+
+        .column-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .task-item.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .category-box {
+            background: #ffffff;
+            border: 3px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .category-box.automation {
+            border-color: #28a745;
+        }
+
+        .category-box.agent {
+            border-color: #dc3545;
+        }
+
+        .category-box.drop-target {
+            background: #f8f9fa;
+            border-style: solid;
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .automation .category-title {
+            color: #28a745;
+        }
+
+        .agent .category-title {
+            color: #dc3545;
+        }
+
+        .category-description {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .matched-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .matched-task {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.9em;
+            color: #2e7d32;
+        }
+
+        .control-buttons {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.partial {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .score {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .activity-area {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .activity-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agents vs Automation</h1>
+            <p>Match each scenario with the appropriate classification</p>
+        </div>
+
+        <div class="activity-area">
+            <div class="tasks-column">
+                <div class="column-title">📋 Scenarios</div>
+                <div class="task-item" data-task="form-response" data-answer="automation">
+                    Send a form response
+                </div>
+                <div class="task-item" data-task="complaints" data-answer="agent">
+                    Summarise multiple user complaints and route to a manager
+                </div>
+                <div class="task-item" data-task="calendar" data-answer="automation">
+                    Create calendar invite
+                </div>
+                <div class="task-item" data-task="legal" data-answer="agent">
+                    Interpret legal text to identify risks
+                </div>
+            </div>
+
+            <div class="categories-column">
+                <div class="column-title">🎯 Classifications</div>
+                
+                <div class="category-box automation" data-category="automation">
+                    <div class="category-title">⚙️ Basic Automation</div>
+                    <div class="category-description">Rule-based, predictable tasks following programmed workflows</div>
+                    <div class="matched-tasks" id="automation-matches"></div>
+                </div>
+
+                <div class="category-box agent" data-category="agent">
+                    <div class="category-title">🧠 AI Agent</div>
+                    <div class="category-description">Reasoning, decision-making, and dynamic problem-solving capabilities</div>
+                    <div class="matched-tasks" id="agent-matches"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="btn secondary" onclick="resetActivity()">Reset</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        let selectedTask = null;
+        let matches = {};
+
+        // Add click event listeners to tasks
+        document.querySelectorAll('.task-item').forEach(task => {
+            task.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.task-item').forEach(t => t.classList.remove('selected'));
+                
+                // Select current task
+                this.classList.add('selected');
+                selectedTask = this.dataset.task;
+            });
+        });
+
+        // Add click event listeners to categories
+        document.querySelectorAll('.category-box').forEach(category => {
+            category.addEventListener('click', function() {
+                if (selectedTask) {
+                    const taskText = document.querySelector(`[data-task="${selectedTask}"]`).textContent;
+                    const categoryType = this.dataset.category;
+                    
+                    // Remove from previous category if exists
+                    Object.keys(matches).forEach(cat => {
+                        matches[cat] = matches[cat]?.filter(task => task.id !== selectedTask) || [];
+                    });
+                    
+                    // Add to new category
+                    if (!matches[categoryType]) matches[categoryType] = [];
+                    matches[categoryType].push({
+                        id: selectedTask,
+                        text: taskText,
+                        answer: document.querySelector(`[data-task="${selectedTask}"]`).dataset.answer
+                    });
+                    
+                    // Update display
+                    updateMatchDisplay();
+                    
+                    // Clear selection
+                    document.querySelectorAll('.task-item').forEach(t => t.classList.remove('selected'));
+                    selectedTask = null;
+                }
+            });
+        });
+
+        function updateMatchDisplay() {
+            // Clear all match displays
+            document.getElementById('automation-matches').innerHTML = '';
+            document.getElementById('agent-matches').innerHTML = '';
+            
+            // Add matches to appropriate categories
+            Object.keys(matches).forEach(category => {
+                const container = document.getElementById(`${category}-matches`);
+                matches[category].forEach(match => {
+                    const div = document.createElement('div');
+                    div.className = 'matched-task';
+                    div.textContent = match.text;
+                    container.appendChild(div);
+                });
+            });
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+            
+            Object.keys(matches).forEach(category => {
+                matches[category].forEach(match => {
+                    total++;
+                    if (match.answer === category) {
+                        correct++;
+                    }
+                });
+            });
+            
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (total === 0) {
+                feedback.className = 'feedback partial';
+                feedback.innerHTML = `<div>Please make some matches first!</div>`;
+            } else if (correct === total && total === 4) {
+                feedback.className = 'feedback success';
+                feedback.innerHTML = `
+                    <div>🎉 Excellent! Perfect score!</div>
+                    <div class="score">${correct}/${total} correct</div>
+                    <div style="margin-top: 15px; font-size: 0.9em;">
+                        You correctly identified that form responses and calendar invites are basic automation tasks,
+                        while complaint analysis and legal text interpretation require AI agent capabilities.
+                    </div>
+                `;
+            } else {
+                feedback.className = 'feedback partial';
+                feedback.innerHTML = `
+                    <div>Good effort! Some matches need review.</div>
+                    <div class="score">${correct}/${total} correct</div>
+                    <div style="margin-top: 15px; font-size: 0.9em;">
+                        Think about which tasks require reasoning and decision-making (AI Agents) 
+                        versus those that follow simple rules (Basic Automation).
+                    </div>
+                `;
+            }
+        }
+
+        function resetActivity() {
+            matches = {};
+            selectedTask = null;
+            document.querySelectorAll('.task-item').forEach(t => t.classList.remove('selected'));
+            updateMatchDisplay();
+            document.getElementById('feedback').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
