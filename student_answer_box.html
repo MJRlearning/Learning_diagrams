@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Answer Box</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        .answer-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .answer-header {
+            margin-bottom: 15px;
+        }
+        
+        .answer-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .answer-instructions {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        
+        .answer-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            resize: vertical;
+            background-color: white;
+            display: block;
+        }
+        
+        .answer-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        
+        .answer-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: Arial, sans-serif;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-download {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-download:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        
+        .btn-clear {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-clear:hover:not(:disabled) {
+            background-color: #da190b;
+        }
+        
+        .btn-copy {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .btn-copy:hover:not(:disabled) {
+            background-color: #1976D2;
+        }
+        
+        .word-count {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 600px) {
+            .answer-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="answer-container">
+        <div class="answer-header">
+            <h2 class="answer-title">Your Answer</h2>
+            <p class="answer-instructions">
+                Type your answer in the text box below. You can download your response as a text file, copy it to clipboard, or clear it to start over.
+            </p>
+        </div>
+        
+        <textarea 
+            id="studentAnswer" 
+            class="answer-textarea" 
+            placeholder="Type your answer here..."
+            autocomplete="off"
+            spellcheck="true"
+        ></textarea>
+        
+        <div class="answer-controls">
+            <button type="button" id="downloadBtn" class="btn btn-download">Download Answer</button>
+            <button type="button" id="copyBtn" class="btn btn-copy">Copy to Clipboard</button>
+            <button type="button" id="clearBtn" class="btn btn-clear">Clear Text</button>
+        </div>
+        
+        <div class="word-count">
+            Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span>
+        </div>
+        
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            var textarea = document.getElementById('studentAnswer');
+            var downloadBtn = document.getElementById('downloadBtn');
+            var copyBtn = document.getElementById('copyBtn');
+            var clearBtn = document.getElementById('clearBtn');
+            var wordCountSpan = document.getElementById('wordCount');
+            var charCountSpan = document.getElementById('charCount');
+            var statusMessage = document.getElementById('statusMessage');
+            
+            // Check if all elements exist
+            if (!textarea || !downloadBtn || !copyBtn || !clearBtn || !wordCountSpan || !charCountSpan || !statusMessage) {
+                console.error('One or more required elements not found');
+                return;
+            }
+            
+            // Update word and character count
+            function updateCounts() {
+                try {
+                    var text = textarea.value || '';
+                    var words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+                    var chars = text.length;
+                    
+                    wordCountSpan.textContent = words.toString();
+                    charCountSpan.textContent = chars.toString();
+                } catch (error) {
+                    console.error('Error updating counts:', error);
+                }
+            }
+            
+            // Show status message
+            function showStatus(message, isSuccess) {
+                if (typeof isSuccess === 'undefined') isSuccess = true;
+                
+                try {
+                    statusMessage.textContent = message;
+                    statusMessage.className = 'status-message ' + (isSuccess ? 'status-success' : 'status-error');
+                    statusMessage.style.display = 'block';
+                    
+                    setTimeout(function() {
+                        statusMessage.style.display = 'none';
+                    }, 4000);
+                } catch (error) {
+                    console.error('Error showing status:', error);
+                    // Fallback to alert if status message fails
+                    alert(message);
+                }
+            }
+            
+            // Download function with fallback
+            function downloadAnswer() {
+                try {
+                    var answer = textarea.value || '';
+                    
+                    if (answer.trim() === '') {
+                        showStatus('Please enter some text before downloading.', false);
+                        return;
+                    }
+                    
+                    // Create filename with current date
+                    var now = new Date();
+                    var year = now.getFullYear();
+                    var month = String(now.getMonth() + 1).padStart(2, '0');
+                    var day = String(now.getDate()).padStart(2, '0');
+                    var hours = String(now.getHours()).padStart(2, '0');
+                    var minutes = String(now.getMinutes()).padStart(2, '0');
+                    var seconds = String(now.getSeconds()).padStart(2, '0');
+                    
+                    var timestamp = year + '-' + month + '-' + day + '_' + hours + '-' + minutes + '-' + seconds;
+                    var filename = 'student-answer-' + timestamp + '.txt';
+                    
+                    // Try modern download method
+                    if (window.Blob && window.URL && window.URL.createObjectURL) {
+                        var blob = new Blob([answer], { type: 'text/plain;charset=utf-8' });
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement('a');
+                        link.href = url;
+                        link.download = filename;
+                        link.style.display = 'none';
+                        
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Clean up
+                        setTimeout(function() {
+                            window.URL.revokeObjectURL(url);
+                        }, 100);
+                        
+                        showStatus('Answer downloaded successfully!');
+                    } else {
+                        // Fallback: open in new window for manual save
+                        var dataUri = 'data:text/plain;charset=utf-8,' + encodeURIComponent(answer);
+                        var newWindow = window.open(dataUri, '_blank');
+                        if (newWindow) {
+                            showStatus('File opened in new window. Please save manually.');
+                        } else {
+                            showStatus('Please enable popups and try again.', false);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Download error:', error);
+                    showStatus('Download failed. Please try copying the text instead.', false);
+                }
+            }
+            
+            // Copy to clipboard with fallback
+            function copyToClipboard() {
+                try {
+                    var answer = textarea.value || '';
+                    
+                    if (answer.trim() === '') {
+                        showStatus('Please enter some text before copying.', false);
+                        return;
+                    }
+                    
+                    // Try modern clipboard API
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(answer).then(function() {
+                            showStatus('Answer copied to clipboard!');
+                        }).catch(function(err) {
+                            console.error('Clipboard API failed:', err);
+                            fallbackCopy();
+                        });
+                    } else {
+                        fallbackCopy();
+                    }
+                    
+                    function fallbackCopy() {
+                        try {
+                            textarea.select();
+                            textarea.setSelectionRange(0, 99999); // For mobile devices
+                            var successful = document.execCommand('copy');
+                            if (successful) {
+                                showStatus('Answer copied to clipboard!');
+                            } else {
+                                showStatus('Copy failed. Please select and copy manually.', false);
+                            }
+                        } catch (err) {
+                            console.error('Fallback copy failed:', err);
+                            showStatus('Copy not supported. Please select and copy manually.', false);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Copy error:', error);
+                    showStatus('Copy failed. Please try selecting and copying manually.', false);
+                }
+            }
+            
+            // Clear text function
+            function clearText() {
+                try {
+                    if (!textarea.value || textarea.value.trim() === '') {
+                        showStatus('Text area is already empty.', false);
+                        return;
+                    }
+                    
+                    if (confirm('Are you sure you want to clear all text? This action cannot be undone.')) {
+                        textarea.value = '';
+                        updateCounts();
+                        showStatus('Text cleared successfully!');
+                        textarea.focus();
+                        saveToLocalStorage();
+                    }
+                } catch (error) {
+                    console.error('Clear error:', error);
+                    showStatus('Clear failed.', false);
+                }
+            }
+            
+            // Local storage functions
+            function saveToLocalStorage() {
+                try {
+                    if (window.localStorage) {
+                        localStorage.setItem('studentAnswer', textarea.value || '');
+                    }
+                } catch (error) {
+                    console.error('LocalStorage save error:', error);
+                }
+            }
+            
+            function loadFromLocalStorage() {
+                try {
+                    if (window.localStorage) {
+                        var saved = localStorage.getItem('studentAnswer');
+                        if (saved) {
+                            textarea.value = saved;
+                            updateCounts();
+                        }
+                    }
+                } catch (error) {
+                    console.error('LocalStorage load error:', error);
+                }
+            }
+            
+            // Event listeners with error handling
+            function addEventListenerSafe(element, event, handler) {
+                try {
+                    if (element && element.addEventListener) {
+                        element.addEventListener(event, handler);
+                    }
+                } catch (error) {
+                    console.error('Error adding event listener:', error);
+                }
+            }
+            
+            // Add event listeners
+            addEventListenerSafe(textarea, 'input', function() {
+                updateCounts();
+                saveToLocalStorage();
+            });
+            
+            addEventListenerSafe(textarea, 'keyup', function() {
+                updateCounts();
+            });
+            
+            addEventListenerSafe(downloadBtn, 'click', downloadAnswer);
+            addEventListenerSafe(copyBtn, 'click', copyToClipboard);
+            addEventListenerSafe(clearBtn, 'click', clearText);
+            
+            // Keyboard shortcuts
+            addEventListenerSafe(document, 'keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+                    switch(e.key.toLowerCase()) {
+                        case 's':
+                            e.preventDefault();
+                            downloadAnswer();
+                            break;
+                        case 'd':
+                            e.preventDefault();
+                            downloadAnswer();
+                            break;
+                    }
+                }
+            });
+            
+            // Initialize
+            try {
+                loadFromLocalStorage();
+                updateCounts();
+                textarea.focus();
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
+            
+            // Periodic save (every 30 seconds)
+            setInterval(function() {
+                saveToLocalStorage();
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
