@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Engineering for Educators</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-button:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .tab-button.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            line-height: 1.6;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .module-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .module-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .example-box {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .prompt-example {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .prompt-bad {
+            background: #fce8e8;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .practice-area {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .practice-area h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            color: #28a745;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .tip-box::before {
+            content: "💡 ";
+            font-size: 1.2em;
+        }
+        
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box::before {
+            content: "⚠️ ";
+            font-size: 1.2em;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 AI Prompt Engineering for Educators</h1>
+            <p>Master the art of communicating with AI to enhance your teaching</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('basics')">Module 1: Basics</button>
+            <button class="tab-button" onclick="showTab('techniques')">Module 2: Techniques</button>
+            <button class="tab-button" onclick="showTab('classroom')">Module 3: Classroom Use</button>
+            <button class="tab-button" onclick="showTab('advanced')">Module 4: Advanced</button>
+            <button class="tab-button" onclick="showTab('practice')">Module 5: Practice</button>
+        </div>
+        
+        <div id="basics" class="tab-content active">
+            <h2>Module 1: Prompt Engineering Basics</h2>
+            
+            <div class="module-section">
+                <h3>What is Prompt Engineering?</h3>
+                <p>Prompt engineering is the skill of crafting clear, specific instructions for AI tools to get the best possible responses. Think of it as learning a new language to communicate effectively with your AI teaching assistant.</p>
+                
+                <div class="tip-box">
+                    <strong>Key Principle:</strong> The clearer and more specific your prompt, the better the AI's response will be.
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Basic Prompt Structure</h3>
+                <p>Every good prompt should include:</p>
+                <ul class="checklist">
+                    <li><strong>Role:</strong> Tell the AI what role to play</li>
+                    <li><strong>Task:</strong> Clearly state what you want</li>
+                    <li><strong>Context:</strong> Provide relevant background information</li>
+                    <li><strong>Format:</strong> Specify how you want the output</li>
+                </ul>
+                
+                <div class="example-box">
+                    <h4>Example: Basic vs. Improved Prompt</h4>
+                    
+                    <div class="prompt-bad">
+                        <strong>Basic Prompt:</strong><br>
+                        "Help me with a math lesson."
+                    </div>
+                    
+                    <div class="prompt-example">
+                        <strong>Improved Prompt:</strong><br>
+                        "Act as a 5th-grade math teacher. Create a 20-minute lesson plan on fractions for students who are just learning the concept. Include 3 hands-on activities and provide a simple worksheet. Format this as a structured lesson plan with timing for each section."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Common Mistakes to Avoid</h3>
+                <div class="warning-box">
+                    <strong>Avoid these common pitfalls:</strong>
+                    <ul>
+                        <li>Being too vague or general</li>
+                        <li>Assuming the AI knows your context</li>
+                        <li>Not specifying the desired format</li>
+                        <li>Forgetting to mention your audience (age, level, etc.)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="techniques" class="tab-content">
+            <h2>Module 2: Essential Techniques for Educators</h2>
+            
+            <div class="module-section">
+                <h3>The CLEAR Framework</h3>
+                <p>Use this framework for education-focused prompts:</p>
+                <ul class="checklist">
+                    <li><strong>C</strong>ontext - What subject, grade level, student needs?</li>
+                    <li><strong>L</strong>earning Objective - What should students achieve?</li>
+                    <li><strong>E</strong>xpectations - What format, style, or constraints?</li>
+                    <li><strong>A</strong>udience - Who are your students specifically?</li>
+                    <li><strong>R</strong>esources - What materials or time do you have?</li>
+                </ul>
+            </div>
+            
+            <div class="module-section">
+                <h3>Technique 1: Role Playing</h3>
+                <p>Start your prompts by assigning the AI a specific educational role:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "Act as an experienced high school biology teacher..."<br>
+                        "You are a patient elementary school reading specialist..."<br>
+                        "Take on the role of a special education coordinator..."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Technique 2: Step-by-Step Instructions</h3>
+                <p>Break complex requests into numbered steps:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "Create a science lesson following these steps:<br>
+                        1. Start with a hook question about weather<br>
+                        2. Explain the water cycle in simple terms<br>
+                        3. Include a hands-on experiment<br>
+                        4. End with assessment questions<br>
+                        5. Provide extension activities for advanced students"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Technique 3: Providing Examples</h3>
+                <p>Show the AI what you want by providing examples:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "Create math word problems similar to this example:<br>
+                        'Sarah has 24 stickers. She gives 1/3 to her brother and 1/4 to her sister. How many stickers does Sarah have left?'<br>
+                        <br>
+                        Make 5 more problems with the same structure but different scenarios and numbers."
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="classroom" class="tab-content">
+            <h2>Module 3: Classroom Applications</h2>
+            
+            <div class="module-section">
+                <h3>lesson Planning</h3>
+                <div class="example-box">
+                    <h4>Template Prompt for Lesson Plans:</h4>
+                    <div class="prompt-example">
+                        "Act as a [GRADE LEVEL] [SUBJECT] teacher. Create a [DURATION] lesson plan on [TOPIC] for students who [PRIOR KNOWLEDGE LEVEL]. The lesson should include:<br>
+                        - Learning objectives<br>
+                        - Materials needed<br>
+                        - Step-by-step activities with timing<br>
+                        - Assessment strategies<br>
+                        - Differentiation for [SPECIFIC NEEDS]<br>
+                        <br>
+                        Format as a structured lesson plan that I can follow easily."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Creating Assessments</h3>
+                <div class="example-box">
+                    <h4>Assessment Creation Template:</h4>
+                    <div class="prompt-example">
+                        "Create a [TYPE OF ASSESSMENT] for [GRADE LEVEL] students on [TOPIC]. Include:<br>
+                        - [NUMBER] multiple choice questions with 4 options each<br>
+                        - [NUMBER] short answer questions<br>
+                        - 1 extended response question<br>
+                        - Answer key with explanations<br>
+                        - Rubric for the extended response<br>
+                        <br>
+                        Align with [SPECIFIC STANDARDS] and ensure questions range from basic recall to higher-order thinking."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Differentiation Support</h3>
+                <div class="example-box">
+                    <h4>Differentiation Prompt:</h4>
+                    <div class="prompt-example">
+                        "Take this lesson activity: [DESCRIBE ACTIVITY]<br>
+                        <br>
+                        Create 3 versions:<br>
+                        1. Simplified version for struggling learners<br>
+                        2. Standard version for grade-level students<br>
+                        3. Extended version for advanced students<br>
+                        <br>
+                        Maintain the same learning objective but adjust complexity, support, and expectations."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Parent Communication</h3>
+                <div class="example-box">
+                    <h4>Parent Email Template:</h4>
+                    <div class="prompt-example">
+                        "Help me write a professional email to parents about [SITUATION/TOPIC]. The tone should be [TONE - supportive/informative/collaborative]. Include:<br>
+                        - Clear explanation of the situation<br>
+                        - Specific examples<br>
+                        - Action steps for parents<br>
+                        - Invitation for follow-up discussion<br>
+                        <br>
+                        Keep it concise but thorough, and maintain a positive, solution-focused approach."
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="advanced" class="tab-content">
+            <h2>Module 4: Advanced Strategies</h2>
+            
+            <div class="module-section">
+                <h3>Chain of Thought Prompting</h3>
+                <p>Ask the AI to show its thinking process, especially for complex educational problems:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "A student is struggling with reading comprehension. Walk me through your thinking process to identify possible causes and solutions. Start with 'Let me think through this step by step:' and show your reasoning at each stage."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Iterative Refinement</h3>
+                <p>Use follow-up prompts to improve responses:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        <strong>Initial prompt:</strong> "Create a science activity about plants."<br><br>
+                        <strong>Follow-up:</strong> "Make this more hands-on and include a data collection component."<br><br>
+                        <strong>Further refinement:</strong> "Adapt this for students with limited mobility."
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Constraint-Based Prompting</h3>
+                <p>Set specific limitations to get more targeted results:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "Create a vocabulary activity with these constraints:<br>
+                        - Must use only materials found in a typical classroom<br>
+                        - Should take exactly 15 minutes<br>
+                        - Must accommodate students with dyslexia<br>
+                        - Should incorporate movement<br>
+                        - Must assess understanding without written work"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Perspective Taking</h3>
+                <p>Ask the AI to consider multiple viewpoints:</p>
+                
+                <div class="example-box">
+                    <div class="prompt-example">
+                        "Analyze this classroom management situation from three perspectives:<br>
+                        1. The teacher's perspective<br>
+                        2. The student's perspective<br>
+                        3. The parent's perspective<br>
+                        <br>
+                        Then suggest a solution that addresses all three viewpoints."
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="practice" class="tab-content">
+            <h2>Module 5: Practice & Application</h2>
+            
+            <div class="module-section">
+                <h3>Practice Exercise 1: Lesson Planning</h3>
+                <div class="practice-area">
+                    <h4>Your Task:</h4>
+                    <p>Write a prompt to create a lesson plan for teaching persuasive writing to 8th graders. Include all the elements we've learned.</p>
+                    <textarea placeholder="Write your prompt here..." id="practice1"></textarea>
+                    <button class="btn" onclick="checkPractice('practice1', 'lesson')">Check My Prompt</button>
+                    <div id="feedback1" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Practice Exercise 2: Assessment Creation</h3>
+                <div class="practice-area">
+                    <h4>Your Task:</h4>
+                    <p>Create a prompt for generating a quiz on the Revolutionary War for 5th grade students, including differentiation.</p>
+                    <textarea placeholder="Write your prompt here..." id="practice2"></textarea>
+                    <button class="btn" onclick="checkPractice('practice2', 'assessment')">Check My Prompt</button>
+                    <div id="feedback2" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Quick Reference Checklist</h3>
+                <div class="tip-box">
+                    <strong>Before submitting any prompt, check:</strong>
+                    <ul class="checklist">
+                        <li>Did I specify the AI's role?</li>
+                        <li>Is my task clearly stated?</li>
+                        <li>Did I provide enough context?</li>
+                        <li>Did I specify the target audience?</li>
+                        <li>Did I mention the desired format?</li>
+                        <li>Are there any constraints or special requirements?</li>
+                        <li>Would a colleague understand what I'm asking for?</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="module-section">
+                <h3>Next Steps</h3>
+                <p><strong>To continue improving your prompt engineering skills:</strong></p>
+                <ul>
+                    <li>Practice with different AI tools (ChatGPT, Bard, Claude, etc.)</li>
+                    <li>Start a prompt library for reusable templates</li>
+                    <li>Share successful prompts with colleagues</li>
+                    <li>Experiment with different approaches for the same task</li>
+                    <li>Join educator communities focused on AI integration</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentModule = 1;
+        const totalModules = 5;
+        
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update progress
+            const tabIds = ['basics', 'techniques', 'classroom', 'advanced', 'practice'];
+            currentModule = tabIds.indexOf(tabId) + 1;
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progress = (currentModule / totalModules) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function checkPractice(textareaId, type) {
+            const prompt = document.getElementById(textareaId).value;
+            const feedbackDiv = document.getElementById('feedback' + textareaId.slice(-1));
+            
+            if (!prompt.trim()) {
+                feedbackDiv.innerHTML = '<div style="color: #dc3545;">Please write a prompt first!</div>';
+                return;
+            }
+            
+            let feedback = '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-top: 10px;">';
+            feedback += '<strong>Feedback on your prompt:</strong><br>';
+            
+            // Check for key elements
+            const hasRole = /act as|you are|take on the role|as a/i.test(prompt);
+            const hasContext = /grade|level|student|class/i.test(prompt);
+            const hasFormat = /format|structure|include|should have/i.test(prompt);
+            const hasSpecificTask = prompt.length > 50;
+            
+            if (hasRole) {
+                feedback += '✅ Good! You specified a role for the AI.<br>';
+            } else {
+                feedback += '❌ Try adding a role (e.g., "Act as a 5th grade teacher...").<br>';
+            }
+            
+            if (hasContext) {
+                feedback += '✅ Nice! You provided context about the audience.<br>';
+            } else {
+                feedback += '❌ Add more context about grade level or student needs.<br>';
+            }
+            
+            if (hasFormat) {
+                feedback += '✅ Great! You specified the desired format.<br>';
+            } else {
+                feedback += '❌ Specify how you want the output formatted.<br>';
+            }
+            
+            if (hasSpecificTask) {
+                feedback += '✅ Your prompt is detailed and specific.<br>';
+            } else {
+                feedback += '❌ Try to be more specific and detailed.<br>';
+            }
+            
+            const score = [hasRole, hasContext, hasFormat, hasSpecificTask].filter(Boolean).length;
+            feedback += '<br><strong>Score: ' + score + '/4</strong>';
+            
+            if (score === 4) {
+                feedback += ' - Excellent prompt! 🎉';
+            } else if (score >= 2) {
+                feedback += ' - Good start, keep refining! 👍';
+            } else {
+                feedback += ' - Keep practicing, you\'ll get there! 💪';
+            }
+            
+            feedback += '</div>';
+            feedbackDiv.innerHTML = feedback;
+        }
+        
+        // Initialize progress
+        updateProgress();
+    </script>
+</body>
+</html>
