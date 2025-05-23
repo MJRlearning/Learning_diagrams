@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Workflow - Icon Placement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .instructions {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        /* Workflow Area */
+        .workflow-area {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #fafbfc;
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Hotspots */
+        .hotspot {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px dashed #cbd5e1;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .hotspot.trigger-spot {
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-color: #ff9800;
+        }
+
+        .hotspot.agent-spot {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-color: #6b7280;
+        }
+
+        .hotspot.model-spot {
+            bottom: 50px;
+            left: 25%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            border-color: #7c3aed;
+        }
+
+        .hotspot.memory-spot {
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            border-color: #3b82f6;
+        }
+
+        .hotspot.tool-spot {
+            bottom: 50px;
+            left: 75%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            border-color: #10b981;
+        }
+
+        .hotspot.filled {
+            background: white;
+            border-style: solid;
+            border-width: 2px;
+        }
+
+        .hotspot.correct {
+            animation: correctPulse 0.6s ease;
+        }
+
+        .hotspot.incorrect {
+            animation: shake 0.5s ease;
+        }
+
+        /* Icon Bank */
+        .icon-bank {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .draggable-icon {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            cursor: move;
+            transition: all 0.3s ease;
+            touch-action: none;
+        }
+
+        .draggable-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .draggable-icon.dragging {
+            opacity: 0.5;
+            transform: scale(1.2);
+        }
+
+        .draggable-icon.placed {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Labels */
+        .label {
+            position: absolute;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            width: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .trigger-label {
+            left: 50px;
+            top: calc(50% + 50px);
+            transform: translateX(-50%);
+        }
+
+        .agent-label {
+            top: calc(50% + 60px);
+        }
+
+        .model-label {
+            bottom: -5px;
+            left: 25%;
+        }
+
+        .memory-label {
+            bottom: -5px;
+            left: 50%;
+        }
+
+        .tool-label {
+            bottom: -5px;
+            left: 75%;
+        }
+
+        /* Buttons */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .check-btn:hover {
+            background: #45a049;
+        }
+
+        .reset-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #da190b;
+        }
+
+        /* Result Message */
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            min-height: 30px;
+        }
+
+        .result.success {
+            color: #4CAF50;
+        }
+
+        .result.error {
+            color: #f44336;
+        }
+
+        /* Animations */
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .workflow-area {
+                height: 350px;
+            }
+
+            .hotspot {
+                width: 60px;
+                height: 60px;
+            }
+
+            .hotspot.agent-spot {
+                width: 70px;
+                height: 70px;
+            }
+
+            .draggable-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+            }
+
+            .label {
+                font-size: 10px;
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Agent Workflow Builder</h1>
+        <p class="instructions">Drag and drop the icons to their correct positions in the workflow</p>
+
+        <div class="workflow-area">
+            <!-- Hotspots -->
+            <div class="hotspot trigger-spot" data-correct="💬"></div>
+            <div class="hotspot agent-spot" data-correct="🤖"></div>
+            <div class="hotspot model-spot" data-correct="🌀"></div>
+            <div class="hotspot memory-spot" data-correct="💾"></div>
+            <div class="hotspot tool-spot" data-correct="🌤️"></div>
+
+            <!-- Labels -->
+            <div class="label trigger-label">Trigger</div>
+            <div class="label agent-label">AI Agent</div>
+            <div class="label model-label">Chat Model</div>
+            <div class="label memory-label">Memory</div>
+            <div class="label tool-label">Weather Tool</div>
+        </div>
+
+        <div class="icon-bank">
+            <div class="draggable-icon" draggable="true" data-icon="💬">💬</div>
+            <div class="draggable-icon" draggable="true" data-icon="🤖">🤖</div>
+            <div class="draggable-icon" draggable="true" data-icon="🌀">🌀</div>
+            <div class="draggable-icon" draggable="true" data-icon="💾">💾</div>
+            <div class="draggable-icon" draggable="true" data-icon="🌤️">🌤️</div>
+        </div>
+
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">Check Answers</button>
+            <button class="reset-btn" onclick="resetPuzzle()">Reset</button>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let draggedElement = null;
+
+        // Initialize drag and drop
+        document.querySelectorAll('.draggable-icon').forEach(icon => {
+            icon.addEventListener('dragstart', handleDragStart);
+            icon.addEventListener('dragend', handleDragEnd);
+            
+            // Touch events for mobile
+            icon.addEventListener('touchstart', handleTouchStart, {passive: false});
+            icon.addEventListener('touchmove', handleTouchMove, {passive: false});
+            icon.addEventListener('touchend', handleTouchEnd);
+        });
+
+        document.querySelectorAll('.hotspot').forEach(hotspot => {
+            hotspot.addEventListener('dragover', handleDragOver);
+            hotspot.addEventListener('drop', handleDrop);
+            hotspot.addEventListener('dragleave', handleDragLeave);
+        });
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            e.target.style.background = 'rgba(76, 175, 80, 0.1)';
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            e.target.style.background = '';
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+
+            e.target.style.background = '';
+            
+            if (draggedElement && !e.target.hasChildNodes()) {
+                const icon = draggedElement.getAttribute('data-icon');
+                e.target.innerHTML = icon;
+                e.target.classList.add('filled');
+                draggedElement.classList.add('placed');
+                draggedElement.draggable = false;
+            }
+
+            return false;
+        }
+
+        // Touch events for mobile
+        let touchItem = null;
+        let touchOffset = {x: 0, y: 0};
+
+        function handleTouchStart(e) {
+            touchItem = e.target;
+            const touch = e.touches[0];
+            const rect = touchItem.getBoundingClientRect();
+            touchOffset.x = touch.clientX - rect.left;
+            touchOffset.y = touch.clientY - rect.top;
+            touchItem.style.position = 'fixed';
+            touchItem.style.zIndex = '1000';
+            touchItem.classList.add('dragging');
+        }
+
+        function handleTouchMove(e) {
+            if (!touchItem) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            touchItem.style.left = (touch.clientX - touchOffset.x) + 'px';
+            touchItem.style.top = (touch.clientY - touchOffset.y) + 'px';
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchItem) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            if (elementBelow && elementBelow.classList.contains('hotspot') && !elementBelow.hasChildNodes()) {
+                const icon = touchItem.getAttribute('data-icon');
+                elementBelow.innerHTML = icon;
+                elementBelow.classList.add('filled');
+                touchItem.classList.add('placed');
+                touchItem.style.position = '';
+                touchItem.style.zIndex = '';
+                touchItem.style.left = '';
+                touchItem.style.top = '';
+            } else {
+                touchItem.style.position = '';
+                touchItem.style.zIndex = '';
+                touchItem.style.left = '';
+                touchItem.style.top = '';
+            }
+            
+            touchItem.classList.remove('dragging');
+            touchItem = null;
+        }
+
+        function checkAnswers() {
+            const hotspots = document.querySelectorAll('.hotspot');
+            let correct = 0;
+            let total = 0;
+
+            hotspots.forEach(hotspot => {
+                if (hotspot.innerHTML) {
+                    total++;
+                    const expectedIcon = hotspot.getAttribute('data-correct');
+                    const placedIcon = hotspot.innerHTML.trim();
+                    
+                    if (placedIcon === expectedIcon) {
+                        correct++;
+                        hotspot.classList.add('correct');
+                        setTimeout(() => hotspot.classList.remove('correct'), 600);
+                    } else {
+                        hotspot.classList.add('incorrect');
+                        setTimeout(() => hotspot.classList.remove('incorrect'), 500);
+                    }
+                }
+            });
+
+            const result = document.getElementById('result');
+            if (total === 0) {
+                result.textContent = 'Please place some icons first!';
+                result.className = 'result error';
+            } else if (correct === 5) {
+                result.textContent = '🎉 Perfect! All icons are in the correct positions!';
+                result.className = 'result success';
+            } else {
+                result.textContent = `${correct} out of ${total} correct. Keep trying!`;
+                result.className = 'result error';
+            }
+        }
+
+        function resetPuzzle() {
+            document.querySelectorAll('.hotspot').forEach(hotspot => {
+                hotspot.innerHTML = '';
+                hotspot.classList.remove('filled', 'correct', 'incorrect');
+            });
+
+            document.querySelectorAll('.draggable-icon').forEach(icon => {
+                icon.classList.remove('placed');
+                icon.draggable = true;
+                icon.style.position = '';
+                icon.style.left = '';
+                icon.style.top = '';
+            });
+
+            document.getElementById('result').textContent = '';
+        }
+    </script>
+</body>
+</html>
