@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents vs AI Automation - Interactive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            overflow-x: auto;
+        }
+        
+        .nav-button {
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-button:hover {
+            background: #e5e7eb;
+        }
+        
+        .nav-button.active {
+            background: white;
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .hero-card {
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid;
+        }
+        
+        .hero-card.agent {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+        
+        .hero-card.automation {
+            background: #faf5ff;
+            border-color: #d8b4fe;
+        }
+        
+        .hero-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .comparison-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .comparison-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            background: #f9fafb;
+            transition: background 0.3s;
+        }
+        
+        .comparison-header:hover {
+            background: #f3f4f6;
+        }
+        
+        .comparison-content {
+            display: none;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        
+        .comparison-content.active {
+            display: block;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .comparison-card {
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .comparison-card.agent {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+        
+        .comparison-card.automation {
+            background: #faf5ff;
+            border-left-color: #8b5cf6;
+        }
+        
+        .example-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .example-card {
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+        
+        .example-card.agent {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+        
+        .example-card.automation {
+            background: #faf5ff;
+            border-color: #d8b4fe;
+        }
+        
+        .example-card h4 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .assessment-question {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .assessment-question h4 {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .option-button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .option-button:hover {
+            background: #f3f4f6;
+        }
+        
+        .option-button.selected {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .radio-dot {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .option-button.selected .radio-dot {
+            border-color: #3b82f6;
+            background: #3b82f6;
+            position: relative;
+        }
+        
+        .option-button.selected .radio-dot::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+            border: 2px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .recommendation h3 {
+            color: #065f46;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recommendation-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .reset-button {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .reset-button:hover {
+            background: #047857;
+        }
+        
+        .intro-card {
+            background: linear-gradient(135deg, #eff6ff, #faf5ff);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .definition-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .definition-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .definition-content {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .definition-content.agent {
+            background: #eff6ff;
+        }
+        
+        .definition-content.automation {
+            background: #faf5ff;
+        }
+        
+        .characteristics-list {
+            list-style: disc;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .characteristics-list li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .navigation {
+                flex-wrap: wrap;
+            }
+            
+            .nav-button {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <div class="header">
+                <h1>AI Agents vs AI Automation</h1>
+                <p>Interactive Guide for Adult Educators</p>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-button active" onclick="showSection('overview')">
+                    📚 Overview
+                </button>
+                <button class="nav-button" onclick="showSection('definitions')">
+                    🤖 Definitions
+                </button>
+                <button class="nav-button" onclick="showSection('comparison')">
+                    ⚡ Comparison
+                </button>
+                <button class="nav-button" onclick="showSection('examples')">
+                    👥 Examples
+                </button>
+                <button class="nav-button" onclick="showSection('assessment')">
+                    ✅ Assessment
+                </button>
+            </div>
+            
+            <div class="content">
+                <!-- Overview Section -->
+                <div id="overview" class="section active">
+                    <div class="intro-card">
+                        <h3 style="margin-bottom: 15px; font-size: 1.25rem;">Welcome, Educators!</h3>
+                        <p style="margin-bottom: 15px;">
+                            As AI becomes more prevalent in education, it's crucial to understand the difference between 
+                            <strong style="color: #3b82f6;">AI Agents</strong> and 
+                            <strong style="color: #8b5cf6;">AI Automation</strong>.
+                        </p>
+                        <p>
+                            This interactive guide will help you understand both concepts and determine which approach 
+                            best fits your educational needs.
+                        </p>
+                    </div>
+                    
+                    <div class="hero-grid">
+                        <div class="hero-card agent">
+                            <h3 style="color: #1e40af;">🤖 AI Agents</h3>
+                            <p style="color: #1e40af;">
+                                Intelligent systems that can think, learn, and make decisions independently. 
+                                They interact naturally and adapt to different situations.
+                            </p>
+                        </div>
+                        
+                        <div class="hero-card automation">
+                            <h3 style="color: #7c3aed;">⚡ AI Automation</h3>
+                            <p style="color: #7c3aed;">
+                                Systems that execute predefined tasks automatically when triggered. 
+                                They're consistent, reliable, and perfect for repetitive work.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Definitions Section -->
+                <div id="definitions" class="section">
+                    <div class="definition-card">
+                        <div class="definition-header">
+                            <span style="font-size: 2rem;">🤖</span>
+                            <h3 style="color: #1e40af; font-size: 1.25rem;">AI Agents</h3>
+                        </div>
+                        <div class="definition-content agent">
+                            <p style="margin-bottom: 15px;">
+                                <strong>Definition:</strong> AI Agents are autonomous systems that can perceive their environment, 
+                                make decisions, and take actions to achieve specific goals.
+                            </p>
+                            <h4 style="color: #1e40af; margin-bottom: 10px;">Key Characteristics:</h4>
+                            <ul class="characteristics-list">
+                                <li>Goal-oriented behavior</li>
+                                <li>Learning and adaptation capabilities</li>
+                                <li>Natural language interaction</li>
+                                <li>Context awareness</li>
+                                <li>Independent decision-making</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="definition-header">
+                            <span style="font-size: 2rem;">⚡</span>
+                            <h3 style="color: #7c3aed; font-size: 1.25rem;">AI Automation</h3>
+                        </div>
+                        <div class="definition-content automation">
+                            <p style="margin-bottom: 15px;">
+                                <strong>Definition:</strong> AI Automation uses artificial intelligence to perform specific tasks 
+                                or processes without human intervention, following predetermined rules and workflows.
+                            </p>
+                            <h4 style="color: #7c3aed; margin-bottom: 10px;">Key Characteristics:</h4>
+                            <ul class="characteristics-list">
+                                <li>Rule-based execution</li>
+                                <li>Consistent, predictable results</li>
+                                <li>Trigger-based activation</li>
+                                <li>High efficiency for repetitive tasks</li>
+                                <li>Minimal human oversight needed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comparison Section -->
+                <div id="comparison" class="section">
+                    <p style="text-align: center; margin-bottom: 25px; color: #6b7280;">
+                        Click on each aspect below to see detailed comparisons
+                    </p>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header" onclick="toggleComparison('decision-making')">
+                            <h4>Decision Making</h4>
+                            <span id="decision-making-icon">▶</span>
+                        </div>
+                        <div id="decision-making-content" class="comparison-content">
+                            <div class="comparison-grid">
+                                <div class="comparison-card agent">
+                                    <h5 style="color: #1e40af; margin-bottom: 10px;">🤖 AI Agents</h5>
+                                    <p style="color: #1e40af;">Makes independent decisions based on goals and context</p>
+                                </div>
+                                <div class="comparison-card automation">
+                                    <h5 style="color: #7c3aed; margin-bottom: 10px;">⚡ AI Automation</h5>
+                                    <p style="color: #7c3aed;">Follows predetermined rules and triggers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header" onclick="toggleComparison('adaptability')">
+                            <h4>Adaptability</h4>
+                            <span id="adaptability-icon">▶</span>
+                        </div>
+                        <div id="adaptability-content" class="comparison-content">
+                            <div class="comparison-grid">
+                                <div class="comparison-card agent">
+                                    <h5 style="color: #1e40af; margin-bottom: 10px;">🤖 AI Agents</h5>
+                                    <p style="color: #1e40af;">Learns and adapts to new situations over time</p>
+                                </div>
+                                <div class="comparison-card automation">
+                                    <h5 style="color: #7c3aed; margin-bottom: 10px;">⚡ AI Automation</h5>
+                                    <p style="color: #7c3aed;">Executes the same process consistently</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header" onclick="toggleComparison('complexity')">
+                            <h4>Task Complexity</h4>
+                            <span id="complexity-icon">▶</span>
+                        </div>
+                        <div id="complexity-content" class="comparison-content">
+                            <div class="comparison-grid">
+                                <div class="comparison-card agent">
+                                    <h5 style="color: #1e40af; margin-bottom: 10px;">🤖 AI Agents</h5>
+                                    <p style="color: #1e40af;">Handles complex, multi-step, contextual tasks</p>
+                                </div>
+                                <div class="comparison-card automation">
+                                    <h5 style="color: #7c3aed; margin-bottom: 10px;">⚡ AI Automation</h5>
+                                    <p style="color: #7c3aed;">Excels at repetitive, well-defined tasks</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header" onclick="toggleComparison('interaction')">
+                            <h4>Human Interaction</h4>
+                            <span id="interaction-icon">▶</span>
+                        </div>
+                        <div id="interaction-content" class="comparison-content">
+                            <div class="comparison-grid">
+                                <div class="comparison-card agent">
+                                    <h5 style="color: #1e40af; margin-bottom: 10px;">🤖 AI Agents</h5>
+                                    <p style="color: #1e40af;">Engages in dynamic conversations and interactions</p>
+                                </div>
+                                <div class="comparison-card automation">
+                                    <h5 style="color: #7c3aed; margin-bottom: 10px;">⚡ AI Automation</h5>
+                                    <p style="color: #7c3aed;">Minimal interaction, mostly status updates</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Examples Section -->
+                <div id="examples" class="section">
+                    <div class="definition-card">
+                        <div class="definition-header">
+                            <span style="font-size: 1.5rem;">🤖</span>
+                            <h3 style="color: #1e40af;">AI Agent Examples in Education</h3>
+                        </div>
+                        <div class="example-grid">
+                            <div class="example-card agent">
+                                <h4 style="color: #1e40af;">AI Teaching Assistant</h4>
+                                <p style="color: #1e40af;">Answers student questions, provides personalized feedback, and adapts teaching style based on individual learning patterns.</p>
+                            </div>
+                            <div class="example-card agent">
+                                <h4 style="color: #1e40af;">Curriculum Planning Agent</h4>
+                                <p style="color: #1e40af;">Analyzes student performance data to suggest curriculum adjustments and personalized learning paths.</p>
+                            </div>
+                            <div class="example-card agent">
+                                <h4 style="color: #1e40af;">Student Support Agent</h4>
+                                <p style="color: #1e40af;">Provides 24/7 academic support, identifies struggling students, and connects them with appropriate resources.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="definition-header">
+                            <span style="font-size: 1.5rem;">⚡</span>
+                            <h3 style="color: #7c3aed;">AI Automation Examples in Education</h3>
+                        </div>
+                        <div class="example-grid">
+                            <div class="example-card automation">
+                                <h4 style="color: #7c3aed;">Grade Book Updates</h4>
+                                <p style="color: #7c3aed;">Automatically transfers quiz scores from learning management system to gradebook when assignments are completed.</p>
+                            </div>
+                            <div class="example-card automation">
+                                <h4 style="color: #7c3aed;">Attendance Tracking</h4>
+                                <p style="color: #7c3aed;">Sends automated reminders to students with poor attendance and generates weekly reports for administrators.</p>
+                            </div>
+                            <div class="example-card automation">
+                                <h4 style="color: #7c3aed;">Assignment Distribution</h4>
+                                <p style="color: #7c3aed;">Automatically releases assignments based on schedule and sends submission reminder emails.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Assessment Section -->
+                <div id="assessment" class="section">
+                    <div class="intro-card">
+                        <h3 style="margin-bottom: 10px; font-size: 1.25rem;">Find Your Best Fit</h3>
+                        <p>Answer these questions to get a personalized recommendation for your educational needs.</p>
+                    </div>
+                    
+                    <div class="assessment-question">
+                        <h4>1. What type of tasks do you need help with?</h4>
+                        <button class="option-button" onclick="selectOption('task-type', 'repetitive', {automation: 2, agent: 0})">
+                            <div class="radio-dot"></div>
+                            Repetitive, predictable tasks
+                        </button>
+                        <button class="option-button" onclick="selectOption('task-type', 'complex', {automation: 0, agent: 2})">
+                            <div class="radio-dot"></div>
+                            Complex problem-solving tasks
+                        </button>
+                        <button class="option-button" onclick="selectOption('task-type', 'mixed', {automation: 1, agent: 1})">
+                            <div class="radio-dot"></div>
+                            A mix of both
+                        </button>
+                    </div>
+                    
+                    <div class="assessment-question">
+                        <h4>2. How much human interaction is needed?</h4>
+                        <button class="option-button" onclick="selectOption('interaction', 'minimal', {automation: 2, agent: 0})">
+                            <div class="radio-dot"></div>
+                            Minimal - mostly background work
+                        </button>
+                        <button class="option-button" onclick="selectOption('interaction', 'conversational', {automation: 0, agent: 2})">
+                            <div class="radio-dot"></div>
+                            Frequent conversations and responses
+                        </button>
+                        <button class="option-button" onclick="selectOption('interaction', 'moderate', {automation: 1, agent: 1})">
+                            <div class="radio-dot"></div>
+                            Some interaction, but not constant
+                        </button>
+                    </div>
+                    
+                    <div class="assessment-question">
+                        <h4>3. Do you need the system to learn and adapt?</h4>
+                        <button class="option-button" onclick="selectOption('adaptability', 'consistent', {automation: 2, agent: 0})">
+                            <div class="radio-dot"></div>
+                            No, I want consistent, predictable results
+                        </button>
+                        <button class="option-button" onclick="selectOption('adaptability', 'adaptive', {automation: 0, agent: 2})">
+                            <div class="radio-dot"></div>
+                            Yes, it should learn and improve over time
+                        </button>
+                        <button class="option-button" onclick="selectOption('adaptability', 'some', {automation: 1, agent: 1})">
+                            <div class="radio-dot"></div>
+                            Some learning would be helpful
+                        </button>
+                    </div>
+                    
+                    <div id="recommendation-section" style="display: none;">
+                        <div class="recommendation">
+                            <h3>✅ Your Recommendation</h3>
+                            <div class="recommendation-content">
+                                <h4 id="recommendation-title">Best Fit: <span id="recommendation-type"></span></h4>
+                                <p id="recommendation-reason"></p>
+                                <h5 style="margin: 15px 0 10px 0;">Recommended Next Steps:</h5>
+                                <ul id="recommendation-steps"></ul>
+                            </div>
+                            <button class="reset-button" onclick="resetAssessment()">🔄 Take Assessment Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let assessmentAnswers = {};
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show target section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function toggleComparison(id) {
+            const content = document.getElementById(id + '-content');
+            const icon = document.getElementById(id + '-icon');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.textContent = '▶';
+            } else {
+                content.classList.add('active');
+                icon.textContent = '▼';
+            }
+        }
+        
+        function selectOption(questionId, value, points) {
+            // Remove selected class from all options in this question
+            const questionDiv = event.target.closest('.assessment-question');
+            const options = questionDiv.querySelectorAll('.option-button');
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            event.target.classList.add('selected');
+            
+            // Store answer
+            assessmentAnswers[questionId] = { value, points };
+            
+            // Check if all questions answered
+            if (Object.keys(assessmentAnswers).length === 3) {
+                showRecommendation();
+            }
+        }
+        
+        function showRecommendation() {
+            const scores = { automation: 0, agent: 0 };
+            Object.values(assessmentAnswers).forEach(answer => {
+                scores.automation += answer.points.automation;
+                scores.agent += answer.points.agent;
+            });
+            
+            let recommendation;
+            if (scores.automation > scores.agent) {
+                recommendation = {
+                    type: 'AI Automation',
+                    reason: 'Your needs align well with automated solutions that handle repetitive tasks consistently.',
+                    steps: [
+                        'Start with simple workflow automation',
+                        'Focus on time-saving repetitive tasks',
+                        'Consider tools like Zapier or built-in LMS automation'
+                    ]
+                };
+            } else if (scores.agent > scores.automation) {
+                recommendation = {
+                    type: 'AI Agents',
+                    reason: 'Your needs require intelligent, adaptive solutions that can handle complex interactions.',
+                    steps: [
+                        'Explore AI assistant platforms',
+                        'Consider conversational AI tools',
+                        'Look into adaptive learning systems'
+                    ]
+                };
+            } else {
+                recommendation = {
+                    type: 'Hybrid Approach',
+                    reason: 'You could benefit from both automation for routine tasks and agents for complex interactions.',
+                    steps: [
+                        'Start with automation for simple tasks',
+                        'Gradually introduce AI agents for complex needs',
+                        'Consider platforms that offer both capabilities'
+                    ]
+                };
+            }
+            
+            document.getElementById('recommendation-type').textContent = recommendation.type;
+            document.getElementById('recommendation-reason').textContent = recommendation.reason;
+            
+            const stepsList = document.getElementById('recommendation-steps');
+            stepsList.innerHTML = '';
+            recommendation.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                stepsList.appendChild(li);
+            });
+            
+            document.getElementById('recommendation-section').style.display = 'block';
+        }
+        
+        function resetAssessment() {
+            assessmentAnswers = {};
+            
+            // Remove selected class from all options
+            const options = document.querySelectorAll('.option-button');
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Hide recommendation
+            document.getElementById('recommendation-section').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
