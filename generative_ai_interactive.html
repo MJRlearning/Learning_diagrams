@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Examples - Interactive Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .examples-list {
+            display: none;
+            margin-top: 15px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .examples-list.active {
+            display: block;
+        }
+
+        .example-item {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4ecdc4;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .example-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .example-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .example-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+
+
+        .interactive-demo {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .demo-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .demo-result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Generative AI Universe</h1>
+            <p>Explore the fascinating world of AI that creates, innovates, and inspires</p>
+        </div>
+
+        <div class="categories-grid">
+            <div class="category-card" onclick="toggleExamples('text')">
+                <span class="category-icon">📝</span>
+                <h3 class="category-title">Text Generation</h3>
+                <p>AI that writes, composes, and communicates like humans</p>
+                <div class="examples-list" id="text-examples">
+                    <div class="example-item">
+                        <div class="example-name">ChatGPT & Claude</div>
+                        <div class="example-description">Conversational AI for writing, analysis, and problem-solving</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">GPT Models</div>
+                        <div class="example-description">Advanced language models for content creation</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Copy.ai & Jasper</div>
+                        <div class="example-description">Marketing copy and content generation tools</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Grammarly GO</div>
+                        <div class="example-description">AI-powered writing assistant and editor</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="toggleExamples('image')">
+                <span class="category-icon">🎨</span>
+                <h3 class="category-title">Image Generation</h3>
+                <p>AI that creates stunning visuals from imagination</p>
+                <div class="examples-list" id="image-examples">
+                    <div class="example-item">
+                        <div class="example-name">DALL-E 3</div>
+                        <div class="example-description">OpenAI's advanced image generation from text prompts</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Midjourney</div>
+                        <div class="example-description">Artistic AI for creating detailed, stylized images</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Stable Diffusion</div>
+                        <div class="example-description">Open-source image generation with fine control</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Adobe Firefly</div>
+                        <div class="example-description">Commercial-safe AI art integrated with Creative Suite</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="toggleExamples('code')">
+                <span class="category-icon">💻</span>
+                <h3 class="category-title">Code Generation</h3>
+                <p>AI that writes, debugs, and optimizes code</p>
+                <div class="examples-list" id="code-examples">
+                    <div class="example-item">
+                        <div class="example-name">GitHub Copilot</div>
+                        <div class="example-description">AI pair programmer that suggests code completions</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Replit Ghostwriter</div>
+                        <div class="example-description">AI coding assistant for web development</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">CodeWhisperer</div>
+                        <div class="example-description">Amazon's AI coding companion</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Tabnine</div>
+                        <div class="example-description">AI autocompletion for multiple programming languages</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="toggleExamples('audio')">
+                <span class="category-icon">🎵</span>
+                <h3 class="category-title">Audio & Music</h3>
+                <p>AI that composes, synthesizes, and transforms sound</p>
+                <div class="examples-list" id="audio-examples">
+                    <div class="example-item">
+                        <div class="example-name">AIVA</div>
+                        <div class="example-description">AI composer for emotional soundtrack music</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">ElevenLabs</div>
+                        <div class="example-description">Realistic voice synthesis and cloning</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Mubert</div>
+                        <div class="example-description">AI-generated music for any mood or activity</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Podcast.ai</div>
+                        <div class="example-description">AI-generated podcast conversations</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="toggleExamples('video')">
+                <span class="category-icon">🎬</span>
+                <h3 class="category-title">Video Generation</h3>
+                <p>AI that creates and edits dynamic visual content</p>
+                <div class="examples-list" id="video-examples">
+                    <div class="example-item">
+                        <div class="example-name">RunwayML</div>
+                        <div class="example-description">AI video editing and generation platform</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Synthesia</div>
+                        <div class="example-description">AI avatar videos from text scripts</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Pika Labs</div>
+                        <div class="example-description">Text-to-video generation tool</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">D-ID</div>
+                        <div class="example-description">AI-powered talking avatars</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="toggleExamples('other')">
+                <span class="category-icon">🚀</span>
+                <h3 class="category-title">Specialized AI</h3>
+                <p>AI for specific industries and unique applications</p>
+                <div class="examples-list" id="other-examples">
+                    <div class="example-item">
+                        <div class="example-name">AlphaFold</div>
+                        <div class="example-description">Protein structure prediction for drug discovery</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">NVIDIA Omniverse</div>
+                        <div class="example-description">AI for 3D world and simulation generation</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">AI Dungeon</div>
+                        <div class="example-description">Infinite text-based adventure game generation</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-name">Figma AI</div>
+                        <div class="example-description">Design assistance and automated layouts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="interactive-demo">
+            <h2 class="demo-title">✨ AI Capability Simulator</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: #6c757d;">
+                Click buttons to see what different types of generative AI can create
+            </p>
+            <div class="demo-controls">
+                <button class="demo-button" onclick="simulateAI('text')">Generate Text</button>
+                <button class="demo-button" onclick="simulateAI('image')">Create Image</button>
+                <button class="demo-button" onclick="simulateAI('code')">Write Code</button>
+                <button class="demo-button" onclick="simulateAI('music')">Compose Music</button>
+            </div>
+            <div class="demo-result" id="demo-result">
+                Click any button above to see AI in action!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleExamples(category) {
+            const examplesList = document.getElementById(category + '-examples');
+            const isActive = examplesList.classList.contains('active');
+            
+            // Close all other examples
+            document.querySelectorAll('.examples-list').forEach(list => {
+                list.classList.remove('active');
+            });
+            
+            // Toggle current examples
+            if (!isActive) {
+                examplesList.classList.add('active');
+            }
+        }
+
+        function simulateAI(type) {
+            const resultDiv = document.getElementById('demo-result');
+            resultDiv.innerHTML = '<div style="color: #667eea;">🤖 AI is thinking...</div>';
+            
+            const responses = {
+                text: [
+                    "✍️ <strong>Generated Story:</strong><br>'The quantum coffee shop existed in seventeen dimensions simultaneously, serving lattes that tasted like memories and espresso shots that predicted the future...'",
+                    "📧 <strong>Email Draft:</strong><br>'Subject: Exciting Partnership Opportunity<br><br>Dear Valued Partner,<br><br>I hope this message finds you well. I wanted to reach out regarding an innovative collaboration...'",
+                    "🎯 <strong>Marketing Copy:</strong><br>'Revolutionise your workflow with AI-powered solutions that adapt, learn, and grow with your business. Experience the future today!'"
+                ],
+                image: [
+                    "🎨 <strong>Digital Artwork:</strong><br>'A majestic cyberpunk cityscape at sunset, with neon lights reflecting off wet streets and flying cars weaving between towering holographic billboards'",
+                    "🖼️ <strong>Product Mockup:</strong><br>'Professional headshot of a confident business leader against a modern office backdrop, perfect lighting, corporate photography style'",
+                    "🌟 <strong>Fantasy Scene:</strong><br>'An enchanted forest with bioluminescent flowers, crystal-clear streams, and magical creatures dancing in beams of ethereal moonlight'"
+                ],
+                code: [
+                    "💻 <strong>Python Function:</strong><br><code>def generate_password(length=12):<br>&nbsp;&nbsp;&nbsp;&nbsp;import random, string<br>&nbsp;&nbsp;&nbsp;&nbsp;chars = string.ascii_letters + string.digits + '!@#$%'<br>&nbsp;&nbsp;&nbsp;&nbsp;return ''.join(random.choice(chars) for _ in range(length))</code>",
+                    "🌐 <strong>React Component:</strong><br><code>const UserProfile = ({ user }) => {<br>&nbsp;&nbsp;&nbsp;&nbsp;return (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className='profile-card'&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;{user.name}&lt;/h2&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;);<br>};</code>",
+                    "📊 <strong>SQL Query:</strong><br><code>SELECT customer_name, SUM(order_total) as total_spent<br>FROM orders o<br>JOIN customers c ON o.customer_id = c.id<br>WHERE order_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR)<br>GROUP BY customer_name<br>ORDER BY total_spent DESC;</code>"
+                ],
+                music: [
+                    "🎵 <strong>Ambient Soundtrack:</strong><br>'Gentle piano melody in C major, accompanied by soft strings and subtle nature sounds, perfect for meditation and focus (4:32 duration)'",
+                    "🎸 <strong>Rock Anthem:</strong><br>'High-energy guitar riffs in E minor, driving drums at 140 BPM, with soaring vocal melodies that build to an epic chorus'",
+                    "🎺 <strong>Jazz Composition:</strong><br>'Smooth saxophone lead with walking bass line, brushed drums, and sophisticated chord progressions featuring diminished sevenths'"
+                ]
+            };
+            
+            setTimeout(() => {
+                const randomResponse = responses[type][Math.floor(Math.random() * responses[type].length)];
+                resultDiv.innerHTML = randomResponse;
+                resultDiv.style.textAlign = 'left';
+            }, 1500);
+        }
+
+            // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to category cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
