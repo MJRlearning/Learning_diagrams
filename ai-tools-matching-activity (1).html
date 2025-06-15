@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Matching Activity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            min-height: 100vh;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+        
+        .matching-area {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .column {
+            flex: 1;
+            min-width: 320px;
+        }
+        
+        .column h3 {
+            text-align: center;
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        
+        .tool, .function {
+            padding: 20px 25px;
+            margin: 12px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            touch-action: manipulation;
+        }
+        
+        .tool {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            border: 3px solid transparent;
+        }
+        
+        .tool:hover, .tool:active {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(52, 152, 219, 0.4);
+        }
+        
+        .tool.selected {
+            background: #e74c3c;
+            border-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(231, 76, 60, 0.4);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-3px) scale(1); }
+            50% { transform: translateY(-3px) scale(1.02); }
+        }
+        
+        .function {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 3px dashed #bdc3c7;
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .function.has-tool {
+            border-style: solid;
+            border-color: #95a5a6;
+            background: #f8f9fa;
+        }
+        
+        .function.selectable {
+            border-color: #3498db;
+            background: #e8f4f9;
+            animation: glow 1s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { border-color: #3498db; }
+            50% { border-color: #2980b9; }
+        }
+        
+        .function.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            animation: correctPulse 0.6s ease;
+        }
+        
+        .function.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.6s ease;
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            min-width: 140px;
+        }
+        
+        .check-btn {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .check-btn:hover, .check-btn:active {
+            background: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover, .reset-btn:active {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .message {
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .instructions {
+            background: #e8f4f9;
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        
+        .instructions strong {
+            color: #3498db;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .matching-area {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .subtitle {
+                font-size: 1.1em;
+            }
+            
+            .tool, .function {
+                padding: 18px 20px;
+                font-size: 1.05em;
+                margin: 10px 0;
+            }
+            
+            button {
+                padding: 14px 28px;
+                font-size: 16px;
+                min-width: 120px;
+            }
+        }
+        
+        /* iPad specific optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .tool, .function {
+                padding: 22px 30px;
+                font-size: 1.15em;
+            }
+            
+            button {
+                padding: 18px 36px;
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 AI Tools Matching Activity</h1>
+        <p class="subtitle">Tap a tool, then tap its matching function</p>
+        
+        <div class="instructions">
+            <strong>How to play:</strong> Tap on an AI tool to select it, then tap on the function you think it matches. Tap "Check Answers" when you're done!
+        </div>
+        
+        <div class="matching-area">
+            <div class="column">
+                <h3>🤖 AI Tools</h3>
+                <div class="tool" data-tool="chatgpt">ChatGPT</div>
+                <div class="tool" data-tool="dalle">DALL·E 3</div>
+                <div class="tool" data-tool="copilot">GitHub Copilot</div>
+                <div class="tool" data-tool="grammarly">Grammarly</div>
+                <div class="tool" data-tool="canva">Canva Magic Studio</div>
+            </div>
+            
+            <div class="column">
+                <h3>⚡ Functions</h3>
+                <div class="function" data-expects="chatgpt">Text generation</div>
+                <div class="function" data-expects="dalle">Image creation</div>
+                <div class="function" data-expects="copilot">Code generation</div>
+                <div class="function" data-expects="grammarly">Writing assistance</div>
+                <div class="function" data-expects="canva">Design with AI</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="check-btn" onclick="checkAnswers()">✅ Check Answers</button>
+            <button class="reset-btn" onclick="resetActivity()">🔄 Reset</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+    
+    <script>
+        let selectedTool = null;
+        let matches = {};
+        
+        // Add click/touch event listeners to tools
+        document.querySelectorAll('.tool').forEach(tool => {
+            tool.addEventListener('click', selectTool);
+            tool.addEventListener('touchend', handleTouch);
+        });
+        
+        // Add click/touch event listeners to functions
+        document.querySelectorAll('.function').forEach(func => {
+            func.addEventListener('click', selectFunction);
+            func.addEventListener('touchend', handleTouch);
+        });
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (e.target.classList.contains('tool')) {
+                selectTool(e);
+            } else if (e.target.classList.contains('function')) {
+                selectFunction(e);
+            }
+        }
+        
+        function selectTool(e) {
+            e.preventDefault();
+            
+            // Clear previous selection
+            document.querySelectorAll('.tool').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('.function').forEach(f => f.classList.remove('selectable'));
+            
+            // Select current tool
+            selectedTool = e.target;
+            selectedTool.classList.add('selected');
+            
+            // Make functions selectable
+            document.querySelectorAll('.function').forEach(f => {
+                if (!f.querySelector('.tool')) {
+                    f.classList.add('selectable');
+                }
+            });
+            
+            // Update message
+            const message = document.getElementById('message');
+            message.textContent = `Selected: ${selectedTool.textContent}. Now tap a function to match it!`;
+            message.className = 'message';
+            message.style.display = 'block';
+            message.style.background = '#fff3cd';
+            message.style.color = '#856404';
+        }
+        
+        function selectFunction(e) {
+            e.preventDefault();
+            
+            if (!selectedTool) {
+                const message = document.getElementById('message');
+                message.textContent = 'Please select a tool first by tapping on it!';
+                message.className = 'message error';
+                return;
+            }
+            
+            const functionElement = e.target;
+            
+            // Remove any existing tool from this function
+            const existingTool = functionElement.querySelector('.tool');
+            if (existingTool) {
+                document.querySelector('.column:first-child').appendChild(existingTool);
+            }
+            
+            // Remove the tool from any other function it might be in
+            Object.keys(matches).forEach(key => {
+                if (matches[key] === selectedTool.dataset.tool) {
+                    const oldFunction = document.querySelector(`[data-expects="${key}"]`);
+                    if (oldFunction) {
+                        oldFunction.classList.remove('has-tool');
+                        const toolInFunction = oldFunction.querySelector('.tool');
+                        if (toolInFunction) {
+                            document.querySelector('.column:first-child').appendChild(toolInFunction);
+                        }
+                    }
+                    delete matches[key];
+                }
+            });
+            
+            // Add the selected tool to this function
+            functionElement.appendChild(selectedTool);
+            functionElement.classList.add('has-tool');
+            
+            // Record the match
+            matches[functionElement.dataset.expects] = selectedTool.dataset.tool;
+            
+            // Clear selection state
+            selectedTool.classList.remove('selected');
+            document.querySelectorAll('.function').forEach(f => f.classList.remove('selectable'));
+            selectedTool = null;
+            
+            // Clear any previous feedback
+            functionElement.classList.remove('correct', 'incorrect');
+            
+            // Update message
+            const message = document.getElementById('message');
+            message.textContent = 'Great! Select another tool to continue matching.';
+            message.className = 'message';
+            message.style.display = 'block';
+            message.style.background = '#d1ecf1';
+            message.style.color = '#0c5460';
+        }
+        
+        function checkAnswers() {
+            const functions = document.querySelectorAll('.function');
+            let correct = 0;
+            let total = Object.keys(matches).length;
+            
+            // Clear previous selection state
+            document.querySelectorAll('.tool').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('.function').forEach(f => f.classList.remove('selectable'));
+            selectedTool = null;
+            
+            functions.forEach(func => {
+                const tool = func.querySelector('.tool');
+                if (tool) {
+                    const expected = func.dataset.expects;
+                    const actual = tool.dataset.tool;
+                    
+                    if (expected === actual) {
+                        func.classList.add('correct');
+                        func.classList.remove('incorrect');
+                        correct++;
+                    } else {
+                        func.classList.add('incorrect');
+                        func.classList.remove('correct');
+                    }
+                }
+            });
+            
+            const message = document.getElementById('message');
+            if (total === 0) {
+                message.textContent = 'Please match at least one tool before checking answers!';
+                message.className = 'message error';
+            } else if (correct === 5) {
+                message.textContent = '🎉 Perfect! All matches are correct! You\'re an AI expert!';
+                message.className = 'message success';
+            } else if (correct === total) {
+                message.textContent = `🎉 Excellent! You got all ${correct} matches correct!`;
+                message.className = 'message success';
+            } else {
+                message.textContent = `You got ${correct} out of ${total} matches correct. Keep trying! 💪`;
+                message.className = 'message error';
+            }
+        }
+        
+        function resetActivity() {
+            // Clear selection state
+            document.querySelectorAll('.tool').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('.function').forEach(f => f.classList.remove('selectable'));
+            selectedTool = null;
+            matches = {};
+            
+            // Move all tools back to the tools column
+            const toolsColumn = document.querySelector('.column:first-child');
+            document.querySelectorAll('.tool').forEach(tool => {
+                toolsColumn.appendChild(tool);
+            });
+            
+            // Clear all function slots
+            document.querySelectorAll('.function').forEach(func => {
+                func.classList.remove('has-tool', 'correct', 'incorrect');
+            });
+            
+            // Clear message
+            const message = document.getElementById('message');
+            message.className = 'message';
+            message.style.display = 'none';
+        }
+        
+        // Prevent default touch behaviors that might interfere
+        document.addEventListener('touchstart', function(e) {
+            if (e.target.classList.contains('tool') || e.target.classList.contains('function')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Handle orientation changes on mobile devices
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                window.location.reload();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
