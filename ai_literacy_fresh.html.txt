@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Literacy Self-Assessment Tool</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        // Fallback for icon loading
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                try {
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                } catch (error) {
+                    console.log('Icons will load shortly...');
+                }
+            }, 1000);
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            margin-top: 80px;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #74b9ff, #00b894);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #74b9ff;
+        }
+        
+        .section h2 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            color: #74b9ff;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .question h3 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f1f2f6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #74b9ff;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .option.selected {
+            background: #74b9ff;
+            color: white;
+            border-color: #0984e3;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #74b9ff, #00b894);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+            padding: 30px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .competency-level {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .learning-plan {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .learning-plan h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .learning-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .learning-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+        
+        .learning-item a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .learning-item-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        .learning-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+        
+        .priority-essential {
+            background: #e17055;
+            color: white;
+        }
+        
+        .priority-recommended {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+        
+        .priority-helpful {
+            background: #00b894;
+            color: white;
+        }
+        
+        .category-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .score-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .options {
+                gap: 8px;
+            }
+            
+            .option {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i data-lucide="brain-circuit"></i>AI Literacy Self-Assessment</h1>
+            <p>Based on UNESCO AI Competency Framework</p>
+        </div>
+        
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <form id="assessmentForm">
+                <!-- Understanding AI Fundamentals -->
+                <div class="section">
+                    <h2><i data-lucide="cpu" class="section-icon"></i>1. Understanding AI Fundamentals</h2>
+                    
+                    <div class="question">
+                        <h3>How well do you understand what artificial intelligence is?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q1" value="1">
+                                I have no clear understanding of AI
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="2">
+                                I have heard of AI but don't understand how it works
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="3">
+                                I understand basic AI concepts like machine learning
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="4">
+                                I can explain different types of AI and their applications
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="5">
+                                I have deep technical knowledge of AI algorithms and methods
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <h3>How familiar are you with different AI technologies (e.g., machine learning, natural language processing, computer vision)?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q2" value="1">
+                                Not familiar at all
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="2">
+                                I've heard of some terms but don't understand them
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="3">
+                                I understand the basic concepts of 2-3 AI technologies
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="4">
+                                I can explain multiple AI technologies and their use cases
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="5">
+                                I have hands-on experience with various AI technologies
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Ethics and Society -->
+                <div class="section">
+                    <h2><i data-lucide="shield-check" class="section-icon"></i>2. AI Ethics and Society</h2>
+                    
+                    <div class="question">
+                        <h3>How aware are you of ethical issues related to AI (bias, privacy, fairness)?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q3" value="1">
+                                Not aware of any ethical issues
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="2">
+                                I know there are some concerns but not specifics
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="3">
+                                I understand key ethical issues like bias and privacy
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="4">
+                                I can discuss various ethical frameworks for AI
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="5">
+                                I actively work to address AI ethics in my field
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <h3>How well do you understand the societal impact of AI on employment, education, and society?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q4" value="1">
+                                No understanding of societal impacts
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="2">
+                                I've heard AI might change jobs but don't know details
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="3">
+                                I understand some impacts on employment and education
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="4">
+                                I can discuss comprehensive societal implications of AI
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="5">
+                                I research or work on AI's societal impact
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Practical AI Use -->
+                <div class="section">
+                    <h2><i data-lucide="wrench" class="section-icon"></i>3. Practical AI Use</h2>
+                    
+                    <div class="question">
+                        <h3>How often do you use AI tools in your work or daily life?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q5" value="1">
+                                Never use AI tools
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="2">
+                                Rarely use AI tools, maybe occasionally
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="3">
+                                Use AI tools weekly for specific tasks
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="4">
+                                Use AI tools daily for various purposes
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="5">
+                                AI tools are integral to my work/life
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <h3>How skilled are you at prompting AI systems to get desired results?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q6" value="1">
+                                No experience with AI prompting
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="2">
+                                Basic prompting with simple questions
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="3">
+                                Can craft effective prompts for common tasks
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="4">
+                                Advanced prompting techniques and strategies
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6" value="5">
+                                Expert-level prompt engineering
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Critical Evaluation -->
+                <div class="section">
+                    <h2><i data-lucide="search" class="section-icon"></i>4. Critical Evaluation</h2>
+                    
+                    <div class="question">
+                        <h3>How well can you evaluate the quality and reliability of AI-generated content?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q7" value="1">
+                                Cannot evaluate AI content quality
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="2">
+                                Can spot obvious errors but miss subtle issues
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="3">
+                                Can assess quality for familiar topics
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="4">
+                                Strong ability to critically evaluate AI outputs
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7" value="5">
+                                Expert at identifying AI limitations and biases
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <h3>How well do you understand the limitations and potential risks of AI systems?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q8" value="1">
+                                Unaware of AI limitations or risks
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="2">
+                                Know AI isn't perfect but not specific limitations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="3">
+                                Understand common limitations like hallucinations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="4">
+                                Comprehensive understanding of AI risks and limitations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8" value="5">
+                                Expert knowledge of AI safety and risk mitigation
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Governance and Policy -->
+                <div class="section">
+                    <h2><i data-lucide="scale" class="section-icon"></i>5. AI Governance and Policy</h2>
+                    
+                    <div class="question">
+                        <h3>How familiar are you with AI regulations and policies (like GDPR, the UK AI White Paper, EU AI Act)?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q9" value="1">
+                                Not familiar with any AI regulations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q9" value="2">
+                                Heard of some regulations but don't know details
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q9" value="3">
+                                Understand basic principles of key AI regulations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q9" value="4">
+                                Good knowledge of current AI governance frameworks
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q9" value="5">
+                                Expert in AI policy and regulatory compliance
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <h3>How well do you understand your rights and responsibilities when using AI systems?</h3>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q10" value="1">
+                                No understanding of rights or responsibilities
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q10" value="2">
+                                Basic awareness but no specific knowledge
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q10" value="3">
+                                Understand basic user rights and responsibilities
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q10" value="4">
+                                Clear understanding of legal and ethical obligations
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q10" value="5">
+                                Expert knowledge of AI user rights and responsibilities
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i data-lucide="check-circle"></i>Complete Assessment
+                    </button>
+                </div>
+            </form>
+            
+            <div class="results" id="results">
+                <div class="competency-level">
+                    <h2>Your AI Literacy Level</h2>
+                    <div class="level-badge" id="levelBadge"></div>
+                    <p id="levelDescription"></p>
+                </div>
+                
+                <div class="category-scores" id="categoryScores"></div>
+                
+                <div class="learning-plan" id="learningPlan">
+                    <h3>Personalised Learning Plan</h3>
+                    <div id="recommendations"></div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="resetAssessment()">
+                        <i data-lucide="refresh-cw"></i>Take Assessment Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const competencyLevels = {
+            1: { name: "Beginner", description: "You're just starting your AI literacy journey. Focus on understanding basic concepts." },
+            2: { name: "Developing", description: "You have some awareness of AI but need to build foundational knowledge." },
+            3: { name: "Intermediate", description: "You have solid basic knowledge and are ready for more advanced concepts." },
+            4: { name: "Advanced", description: "You have strong AI literacy with good practical and theoretical knowledge." },
+            5: { name: "Expert", description: "You have comprehensive AI literacy and can guide others in their learning." }
+        };
+
+                    const learningPlans = {
+            1: [
+                {
+                    text: "Start with our comprehensive AI Literacy for Beginners course",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "graduation-cap"
+                },
+                {
+                    text: "Take 'AI for Everyone' course by Andrew Ng",
+                    url: "https://www.coursera.org/learn/ai-for-everyone",
+                    priority: "Recommended",
+                    icon: "play-circle"
+                },
+                {
+                    text: "Read 'Weapons of Math Destruction' by Cathy O'Neil for ethics awareness",
+                    url: "https://www.amazon.co.uk/Weapons-Math-Destruction-Increases-Inequality/dp/0241296813",
+                    priority: "Recommended",
+                    icon: "book-open"
+                },
+                {
+                    text: "Try basic AI tools like ChatGPT or Grammarly to gain hands-on experience",
+                    url: "https://chat.openai.com",
+                    priority: "Essential",
+                    icon: "mouse-pointer"
+                },
+                {
+                    text: "Watch 'Machine Learning Explained' by 3Blue1Brown",
+                    url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+                    priority: "Helpful",
+                    icon: "youtube"
+                }
+            ],
+            2: [
+                {
+                    text: "Explore advanced AI literacy modules at MJR Learning Academy",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "graduation-cap"
+                },
+                {
+                    text: "Complete UNESCO's AI and Education course",
+                    url: "https://www.unesco.org/en/artificial-intelligence/recommendation-ethics",
+                    priority: "Recommended",
+                    icon: "globe"
+                },
+                {
+                    text: "Read 'The Algorithmic Leader' by Mike Walsh",
+                    url: "https://www.amazon.co.uk/Algorithmic-Leader-Smart-Decisions-Machine/dp/0349424004",
+                    priority: "Recommended",
+                    icon: "book-open"
+                },
+                {
+                    text: "Practise with more AI tools: Midjourney, Claude, or Copilot",
+                    url: "https://claude.ai",
+                    priority: "Essential",
+                    icon: "zap"
+                },
+                {
+                    text: "Learn about AI bias through MIT's Introduction to Machine Learning",
+                    url: "https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/course/",
+                    priority: "Recommended",
+                    icon: "target"
+                }
+            ],
+            3: [
+                {
+                    text: "Access specialised AI literacy courses at MJR Learning Academy",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "graduation-cap"
+                },
+                {
+                    text: "Take 'Machine Learning for Everyone' specialisation",
+                    url: "https://www.coursera.org/specializations/machine-learning-introduction",
+                    priority: "Recommended",
+                    icon: "award"
+                },
+                {
+                    text: "Read 'Human Compatible' by Stuart Russell for AI safety insights",
+                    url: "https://www.amazon.co.uk/Human-Compatible-AI-Problem-Control/dp/0241335205",
+                    priority: "Recommended",
+                    icon: "book-open"
+                },
+                {
+                    text: "Study the UK AI White Paper and implementation guidance",
+                    url: "https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach",
+                    priority: "Essential",
+                    icon: "file-text"
+                },
+                {
+                    text: "Learn prompt engineering through OpenAI's documentation",
+                    url: "https://platform.openai.com/docs/guides/prompt-engineering",
+                    priority: "Essential",
+                    icon: "code"
+                }
+            ],
+            4: [
+                {
+                    text: "Join our advanced AI literacy practitioner community at MJR Learning Academy",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "graduation-cap"
+                },
+                {
+                    text: "Pursue courses in AI safety and alignment",
+                    url: "https://www.safetycourse.ai/",
+                    priority: "Recommended",
+                    icon: "shield"
+                },
+                {
+                    text: "Read research papers on AI governance via arXiv",
+                    url: "https://arxiv.org/list/cs.CY/recent",
+                    priority: "Recommended",
+                    icon: "file-text"
+                },
+                {
+                    text: "Follow UK AI governance developments via gov.uk",
+                    url: "https://www.gov.uk/government/collections/ai-and-digital-government",
+                    priority: "Essential",
+                    icon: "landmark"
+                },
+                {
+                    text: "Join professional AI ethics networks like Partnership on AI",
+                    url: "https://partnershiponai.org/",
+                    priority: "Helpful",
+                    icon: "users"
+                }
+            ],
+            5: [
+                {
+                    text: "Lead AI literacy initiatives using MJR Learning Academy expert resources",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "graduation-cap"
+                },
+                {
+                    text: "Contribute to UK AI policy consultations",
+                    url: "https://www.gov.uk/government/organisations/department-for-science-innovation-and-technology",
+                    priority: "Essential",
+                    icon: "megaphone"
+                },
+                {
+                    text: "Access cutting-edge AI research via Nature Machine Intelligence",
+                    url: "https://www.nature.com/natmachintell/",
+                    priority: "Recommended",
+                    icon: "microscope"
+                },
+                {
+                    text: "Join the AI Safety Institute community",
+                    url: "https://www.aisi.gov.uk/",
+                    priority: "Recommended",
+                    icon: "shield-check"
+                },
+                {
+                    text: "Contribute to AI literacy education and policy development",
+                    url: "https://mjr-learning-academy.getlearnworlds.com/course/ai-literacy-for-beginers",
+                    priority: "Essential",
+                    icon: "lightbulb"
+                }
+            ]
+        };
+
+        function updateProgress() {
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            const totalQuestions = 10;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function handleOptionClick(event) {
+            const option = event.currentTarget;
+            const radio = option.querySelector('input[type="radio"]');
+            const allOptions = option.parentNode.querySelectorAll('.option');
+            
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            radio.checked = true;
+            
+            updateProgress();
+        }
+
+        function calculateResults() {
+            const formData = new FormData(document.getElementById('assessmentForm'));
+            const scores = {
+                fundamentals: (parseInt(formData.get('q1')) + parseInt(formData.get('q2'))) / 2,
+                ethics: (parseInt(formData.get('q3')) + parseInt(formData.get('q4'))) / 2,
+                practical: (parseInt(formData.get('q5')) + parseInt(formData.get('q6'))) / 2,
+                critical: (parseInt(formData.get('q7')) + parseInt(formData.get('q8'))) / 2,
+                governance: (parseInt(formData.get('q9')) + parseInt(formData.get('q10'))) / 2
+            };
+
+            const overallScore = Object.values(scores).reduce((sum, score) => sum + score, 0) / 5;
+            const level = Math.round(overallScore);
+
+            return { scores, overallScore, level };
+        }
+
+        function displayResults(results) {
+            const { scores, level } = results;
+            
+            document.getElementById('levelBadge').textContent = competencyLevels[level].name;
+            document.getElementById('levelDescription').textContent = competencyLevels[level].description;
+
+            const categoryScores = document.getElementById('categoryScores');
+            categoryScores.innerHTML = `
+                <div class="score-card">
+                    <div class="score-value">${scores.fundamentals.toFixed(1)}/5</div>
+                    <div>AI Fundamentals</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${scores.ethics.toFixed(1)}/5</div>
+                    <div>Ethics & Society</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${scores.practical.toFixed(1)}/5</div>
+                    <div>Practical Use</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${scores.critical.toFixed(1)}/5</div>
+                    <div>Critical Evaluation</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${scores.governance.toFixed(1)}/5</div>
+                    <div>Governance & Policy</div>
+                </div>
+            `;
+
+            const recommendations = document.getElementById('recommendations');
+            const plan = learningPlans[level];
+            recommendations.innerHTML = plan.map(item => {
+                const priorityClass = `priority-${item.priority.toLowerCase()}`;
+                return `<div class="learning-item">
+                    <a href="${item.url}" target="_blank">
+                        <i data-lucide="${item.icon}" class="learning-item-icon"></i>
+                        <span>
+                            ${item.text}
+                            <span class="priority-badge ${priorityClass}">${item.priority}</span>
+                        </span>
+                    </a>
+                </div>`;
+            }).join('');
+
+            // Initialize Lucide icons
+            setTimeout(() => {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }, 100);
+
+            document.getElementById('assessmentForm').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function resetAssessment() {
+            document.getElementById('assessmentForm').reset();
+            document.getElementById('assessmentForm').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Reinitialize icons after reset
+            setTimeout(() => {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }, 100);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons with error handling
+            setTimeout(() => {
+                try {
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                } catch (error) {
+                    console.log('Icons loading...', error);
+                }
+            }, 500);
+            
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', handleOptionClick);
+            });
+
+            document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check if all questions are answered
+                const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                
+                if (answeredQuestions < 10) {
+                    alert('Please answer all questions before completing the assessment.');
+                    return;
+                }
+                
+                const results = calculateResults();
+                displayResults(results);
+            });
+        });
+    </script>
+</body>
+</html>
