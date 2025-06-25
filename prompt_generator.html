@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .output-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .prompt-output {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .tips {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .tips h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .tips ul {
+            color: #856404;
+            padding-left: 20px;
+        }
+        
+        .tips li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Prompt Generator</h1>
+            <p>Create effective prompts using proven best practices</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">📝 Prompt Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="promptType">Prompt Type:</label>
+                    <select id="promptType">
+                        <option value="general">General Query</option>
+                        <option value="creative">Creative Writing</option>
+                        <option value="analysis">Analysis & Research</option>
+                        <option value="coding">Code Generation</option>
+                        <option value="problem-solving">Problem Solving</option>
+                        <option value="educational">Educational Content</option>
+                        <option value="business">Business Communication</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">AI Role/Persona:</label>
+                    <input type="text" id="role" placeholder="e.g., expert data scientist, creative writer, tutor">
+                </div>
+                
+                <div class="form-group">
+                    <label for="task">Main Task/Request:</label>
+                    <textarea id="task" placeholder="Describe what you want the AI to do..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="context">Context/Background:</label>
+                    <textarea id="context" placeholder="Provide relevant context, background information, or constraints..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="audience">Target Audience:</label>
+                    <input type="text" id="audience" placeholder="e.g., beginners, experts, general public">
+                </div>
+                
+                <div class="form-group">
+                    <label for="format">Desired Output Format:</label>
+                    <select id="format">
+                        <option value="">Select format...</option>
+                        <option value="paragraph">Paragraph</option>
+                        <option value="bullet-points">Bullet Points</option>
+                        <option value="numbered-list">Numbered List</option>
+                        <option value="table">Table</option>
+                        <option value="step-by-step">Step-by-step Guide</option>
+                        <option value="json">JSON</option>
+                        <option value="markdown">Markdown</option>
+                        <option value="code">Code</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="length">Response Length:</label>
+                    <select id="length">
+                        <option value="">No preference</option>
+                        <option value="brief">Brief (1-2 sentences)</option>
+                        <option value="concise">Concise (1 paragraph)</option>
+                        <option value="detailed">Detailed (multiple paragraphs)</option>
+                        <option value="comprehensive">Comprehensive (extensive)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="examples">Examples (optional):</label>
+                    <textarea id="examples" placeholder="Provide examples to guide the AI's response..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Best Practice Elements:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="stepByStep" checked>
+                            <label for="stepByStep">Step-by-step reasoning</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="citations">
+                            <label for="citations">Include sources/citations</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="alternatives">
+                            <label for="alternatives">Consider alternatives</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="verification">
+                            <label for="verification">Double-check accuracy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="clarify">
+                            <label for="clarify">Ask for clarification if needed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assumptions">
+                            <label for="assumptions">State assumptions</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="generate-btn" onclick="generatePrompt()">✨ Generate Prompt</button>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title">🎯 Generated Prompt</h2>
+                <div id="promptOutput" class="prompt-output">Your generated prompt will appear here...</div>
+                <button class="copy-btn" onclick="copyPrompt()">📋 Copy Prompt</button>
+                
+                <div class="tips">
+                    <h4>💡 Pro Tips:</h4>
+                    <ul>
+                        <li>Be specific and clear about your requirements</li>
+                        <li>Provide context to help the AI understand your needs</li>
+                        <li>Use examples when possible to guide the response</li>
+                        <li>Specify the desired format and length</li>
+                        <li>Test and iterate on your prompts for better results</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generatePrompt() {
+            const promptType = document.getElementById('promptType').value;
+            const role = document.getElementById('role').value;
+            const task = document.getElementById('task').value;
+            const context = document.getElementById('context').value;
+            const audience = document.getElementById('audience').value;
+            const format = document.getElementById('format').value;
+            const length = document.getElementById('length').value;
+            const examples = document.getElementById('examples').value;
+            
+            // Get checked best practices
+            const practices = [];
+            if (document.getElementById('stepByStep').checked) practices.push('Think step-by-step');
+            if (document.getElementById('citations').checked) practices.push('Include relevant sources or citations');
+            if (document.getElementById('alternatives').checked) practices.push('Consider multiple perspectives or alternatives');
+            if (document.getElementById('verification').checked) practices.push('Double-check accuracy of information');
+            if (document.getElementById('clarify').checked) practices.push('Ask for clarification if the request is ambiguous');
+            if (document.getElementById('assumptions').checked) practices.push('State any assumptions you make');
+            
+            let prompt = '';
+            
+            // Add role if specified
+            if (role) {
+                prompt += `You are a ${role}. `;
+            }
+            
+            // Add main task
+            if (task) {
+                prompt += `${task}\n\n`;
+            }
+            
+            // Add context
+            if (context) {
+                prompt += `Context: ${context}\n\n`;
+            }
+            
+            // Add audience specification
+            if (audience) {
+                prompt += `Target audience: ${audience}\n\n`;
+            }
+            
+            // Add format requirements
+            if (format) {
+                const formatMap = {
+                    'paragraph': 'Provide your response in paragraph form.',
+                    'bullet-points': 'Format your response using bullet points.',
+                    'numbered-list': 'Present your response as a numbered list.',
+                    'table': 'Organize your response in a table format.',
+                    'step-by-step': 'Provide a step-by-step guide.',
+                    'json': 'Format your response as valid JSON.',
+                    'markdown': 'Use markdown formatting for your response.',
+                    'code': 'Provide code examples with explanations.'
+                };
+                prompt += `Format: ${formatMap[format]}\n\n`;
+            }
+            
+            // Add length requirement
+            if (length) {
+                const lengthMap = {
+                    'brief': 'Keep your response brief (1-2 sentences).',
+                    'concise': 'Provide a concise response (about 1 paragraph).',
+                    'detailed': 'Give a detailed response (multiple paragraphs).',
+                    'comprehensive': 'Provide a comprehensive, thorough response.'
+                };
+                prompt += `Length: ${lengthMap[length]}\n\n`;
+            }
+            
+            // Add examples if provided
+            if (examples) {
+                prompt += `Examples:\n${examples}\n\n`;
+            }
+            
+            // Add best practices
+            if (practices.length > 0) {
+                prompt += `Please:\n`;
+                practices.forEach(practice => {
+                    prompt += `- ${practice}\n`;
+                });
+                prompt += '\n';
+            }
+            
+            // Add closing instruction
+            prompt += 'Please provide your response based on the above requirements.';
+            
+            document.getElementById('promptOutput').textContent = prompt;
+        }
+        
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(promptText).then(function() {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Initialize with a sample prompt
+        window.onload = function() {
+            document.getElementById('role').value = 'helpful assistant';
+            document.getElementById('task').value = 'Explain the concept of machine learning';
+            document.getElementById('audience').value = 'beginners';
+            document.getElementById('format').value = 'step-by-step';
+            generatePrompt();
+        };
+    </script>
+</body>
+</html>
