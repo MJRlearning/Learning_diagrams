@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stimulate Recall: TRACE in the Classroom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the element being dragged */
+        .dragging {
+            opacity: 0.5;
+            border: 2px dashed #4f46e5;
+        }
+        /* Style for a valid drop target */
+        .drag-over {
+            background-color: #e0e7ff;
+            border-color: #4f46e5;
+        }
+        /* Simple transition for visual feedback */
+        .drop-zone, .draggable-item {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Correctly placed item style */
+        .correctly-placed {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none; /* Disable further interaction */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-indigo-700">Stimulate Recall of Prior Learning</h1>
+        </header>
+
+        <!-- Reflection Section -->
+        <section class="bg-white p-6 rounded-xl shadow-md mb-10">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-3">Clarity In = Quality Out</h2>
+            <div class="border-l-4 border-indigo-500 pl-4">
+                <blockquote class="text-lg italic text-gray-700">
+                    💬 “When you’ve used search engines or apps like Canva, Google Docs, or Kahoot, how did the clarity of your input affect what you got back?”
+                </blockquote>
+            </div>
+            <p class="mt-4 text-gray-600">
+                📝 Take a moment to think about a time you typed a vague vs. specific request into a tool. How did that change the result?
+            </p>
+        </section>
+
+        <!-- Matching Activity Section -->
+        <section id="matching-activity" class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-2">🧠 Matching Activity: TRACE in the Classroom</h2>
+            <p class="text-gray-600 mb-6">🎯 Match each TRACE element to how it would show up in a typical classroom AI prompt by dragging the examples on the right to the correct boxes on the left.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Drop Targets -->
+                <div id="trace-elements-container" class="space-y-4">
+                    <!-- JS will populate this -->
+                </div>
+                <!-- Draggable Items -->
+                <div id="classroom-uses-container" class="space-y-4 bg-gray-100 p-4 rounded-lg">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+            
+            <div id="message-area" class="mt-6 text-center h-8"></div>
+
+            <div class="flex justify-center space-x-4 mt-4">
+                 <button id="reset-btn" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Reset</button>
+            </div>
+        </section>
+        
+        <!-- Correct Answer Section -->
+        <section id="correct-answers" class="bg-green-50 border-2 border-green-200 p-6 rounded-xl shadow-md mt-10 hidden">
+             <h2 class="text-2xl font-semibold text-green-800 mb-4 text-center">✔️ All Correct!</h2>
+             <p class="text-center text-green-700 mb-6">Here's the correct breakdown of the TRACE model elements.</p>
+             <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg">
+                    <thead class="bg-green-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-green-900 uppercase tracking-wider">TRACE Element</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-green-900 uppercase tracking-wider">✅ Classroom Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-green-200">
+                            <td class="py-3 px-4 font-medium">Task</td>
+                            <td class="py-3 px-4 text-gray-700">Create a quiz</td>
+                        </tr>
+                        <tr class="border-b border-green-200">
+                            <td class="py-3 px-4 font-medium">Role</td>
+                            <td class="py-3 px-4 text-gray-700">Act as a reading coach</td>
+                        </tr>
+                        <tr class="border-b border-green-200">
+                            <td class="py-3 px-4 font-medium">Attributes</td>
+                            <td class="py-3 px-4 text-gray-700">3 questions, simple wording</td>
+                        </tr>
+                        <tr class="border-b border-green-200">
+                            <td class="py-3 px-4 font-medium">Context</td>
+                            <td class="py-3 px-4 text-gray-700">For ESL learners</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-medium">Extra</td>
+                            <td class="py-3 px-4 text-gray-700">Avoid multiple-choice format</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const traceData = [
+                { id: 'task', name: 'Task', example: 'Create a quiz' },
+                { id: 'role', name: 'Role', example: 'Act as a reading coach' },
+                { id: 'attributes', name: 'Attributes', example: '3 questions, simple wording' },
+                { id: 'context', name: 'Context', example: 'For ESL learners' },
+                { id: 'extra', name: 'Extra', example: 'Avoid multiple-choice format' }
+            ];
+
+            const traceElementsContainer = document.getElementById('trace-elements-container');
+            const classroomUsesContainer = document.getElementById('classroom-uses-container');
+            const messageArea = document.getElementById('message-area');
+            const correctAnswersSection = document.getElementById('correct-answers');
+            const resetButton = document.getElementById('reset-btn');
+            
+            let correctMatches = 0;
+
+            // Function to shuffle an array
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function initializeActivity() {
+                // Reset state
+                correctMatches = 0;
+                traceElementsContainer.innerHTML = '';
+                classroomUsesContainer.innerHTML = '';
+                messageArea.innerHTML = '';
+                correctAnswersSection.classList.add('hidden');
+
+                // Create drop zones
+                traceData.forEach(item => {
+                    const dropZoneHTML = `
+                        <div class="flex items-center space-x-4">
+                            <span class="font-bold w-24 text-right">${item.name}</span>
+                            <div id="drop-${item.id}" data-correct-id="${item.id}" class="drop-zone flex-1 flex items-center justify-center h-14 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg">
+                                <span class="text-2xl text-gray-400">🔲</span>
+                            </div>
+                        </div>
+                    `;
+                    traceElementsContainer.insertAdjacentHTML('beforeend', dropZoneHTML);
+                });
+
+                // Create and shuffle draggable items
+                const shuffledExamples = shuffle([...traceData]);
+                shuffledExamples.forEach(item => {
+                    const draggableItemHTML = `
+                        <div id="drag-${item.id}" draggable="true" class="draggable-item p-3 bg-white border border-gray-300 rounded-lg shadow-sm cursor-grab active:cursor-grabbing">
+                            ${item.example}
+                        </div>
+                    `;
+                    classroomUsesContainer.insertAdjacentHTML('beforeend', draggableItemHTML);
+                });
+
+                addEventListeners();
+            }
+
+            function addEventListeners() {
+                const draggables = document.querySelectorAll('.draggable-item');
+                const dropZones = document.querySelectorAll('.drop-zone');
+
+                draggables.forEach(draggable => {
+                    draggable.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', draggable.id);
+                        setTimeout(() => draggable.classList.add('dragging'), 0);
+                    });
+
+                    draggable.addEventListener('dragend', (e) => {
+                        draggable.classList.remove('dragging');
+                    });
+                });
+
+                dropZones.forEach(zone => {
+                    zone.addEventListener('dragover', (e) => {
+                        e.preventDefault(); // Necessary to allow dropping
+                        if (!zone.querySelector('.draggable-item')) {
+                           zone.classList.add('drag-over');
+                        }
+                    });
+
+                    zone.addEventListener('dragleave', () => {
+                        zone.classList.remove('drag-over');
+                    });
+
+                    zone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        zone.classList.remove('drag-over');
+
+                        // Prevent dropping on a filled zone
+                        if (zone.querySelector('.draggable-item')) {
+                            return;
+                        }
+
+                        const draggedId = e.dataTransfer.getData('text/plain');
+                        const draggedElement = document.getElementById(draggedId);
+                        const correctIdForZone = zone.dataset.correctId;
+                        
+                        // ID of draggable is 'drag-task', we need 'task'
+                        const draggedItemId = draggedId.split('-')[1];
+
+                        if (draggedItemId === correctIdForZone) {
+                            // Correct match
+                            zone.innerHTML = ''; // Clear the box icon
+                            zone.appendChild(draggedElement);
+                            draggedElement.classList.add('correctly-placed');
+                            draggedElement.draggable = false; // Make it no longer draggable
+                            zone.classList.remove('border-dashed');
+                            zone.classList.add('border-green-500', 'bg-green-50');
+                            correctMatches++;
+                            showMessage('Correct!', 'green');
+                            checkCompletion();
+                        } else {
+                            // Incorrect match
+                            showMessage('Not quite, try again!', 'red');
+                            zone.classList.add('border-red-500');
+                            setTimeout(() => zone.classList.remove('border-red-500'), 1000);
+                        }
+                    });
+                });
+            }
+            
+            function showMessage(text, color) {
+                messageArea.textContent = text;
+                messageArea.className = `mt-6 text-center h-8 font-semibold text-${color}-600`;
+                setTimeout(() => messageArea.textContent = '', 2000);
+            }
+
+            function checkCompletion() {
+                if (correctMatches === traceData.length) {
+                    setTimeout(() => {
+                        messageArea.innerHTML = '';
+                        document.getElementById('matching-activity').classList.add('hidden');
+                        correctAnswersSection.classList.remove('hidden');
+                    }, 1000);
+                }
+            }
+
+            resetButton.addEventListener('click', () => {
+                document.getElementById('matching-activity').classList.remove('hidden');
+                initializeActivity();
+            });
+
+            // Initial setup
+            initializeActivity();
+        });
+    </script>
+</body>
+</html>
