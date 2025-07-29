@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clarity In = Quality Out | TRACE Matching Activity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-red: #9E1B32;
+      --brand-charcoal: #3D3D3D;
+      --brand-light: #EFEFEF;
+    }
+    * {box-sizing:border-box;}
+    body {
+      margin: 0;
+      font-family: "Open Sans", sans-serif;
+      background: var(--brand-light);
+      color: var(--brand-charcoal);
+      padding: 1.5rem;
+    }
+    header {
+      background: var(--brand-red);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 1.6rem;
+      margin: 0;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    .prompt {
+      background: #fff;
+      border-left: 6px solid var(--brand-red);
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      font-style: italic;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      resize: vertical;
+      margin-top: 0.5rem;
+    }
+    .matching-wrapper {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .column {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      min-height: 280px;
+    }
+    h2 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
+    ul {list-style:none; padding:0; margin:0;}
+    li {
+      background: var(--brand-light);
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      cursor: move;
+      user-select: none;
+    }
+    li.dragging {opacity: 0.4;}
+    .dropzone {
+      background: #fff;
+      border: 2px dashed #bbb;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      min-height: 48px;
+      text-align: center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#777;
+    }
+    .dropzone.filled {
+      border-style: solid;
+      color: var(--brand-charcoal);
+    }
+    button {
+      background: var(--brand-red);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      margin-right: 1rem;
+    }
+    button:disabled {opacity:0.5; cursor:not-allowed;}
+    .result {
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Stimulate Recall of Prior Learning<br><small style="font-size:0.75em; font-weight:400;">Clarity In = Quality Out</small></h1>
+  </header>
+  <section>
+    <div class="prompt">
+      “When you’ve used search engines or apps like Canva, Google Docs, or Kahoot, how did the clarity of your input affect what you got back?”
+    </div>
+    <p><strong>Reflection:</strong> Take a moment to think about a time you typed a <em>vague</em> versus a <em>specific</em> request into a tool. How did that change the result?</p>
+    <textarea placeholder="Jot down your thoughts here…"></textarea>
+  </section>
+  <section>
+    <h2>🧠 Matching Activity: TRACE in the Classroom</h2>
+    <p><strong>Instructions:</strong> Drag each example to the correct TRACE element. When you’re finished, click <em>Check Answers</em>.</p>
+    <div class="matching-wrapper">
+      <div class="column" id="choices">
+        <h3>Examples</h3>
+        <ul id="draggables">
+          <li draggable="true" data-answer="Extra">Avoid multiple-choice format</li>
+          <li draggable="true" data-answer="Context">For ESL learners</li>
+          <li draggable="true" data-answer="Role">Act as a reading coach</li>
+          <li draggable="true" data-answer="Task">Create a quiz</li>
+          <li draggable="true" data-answer="Attributes">3 questions, simple wording</li>
+        </ul>
+      </div>
+      <div class="column" id="targets">
+        <h3>TRACE Elements</h3>
+        <ul>
+          <li class="dropzone" data-accept="Task">Task</li>
+          <li class="dropzone" data-accept="Role">Role</li>
+          <li class="dropzone" data-accept="Attributes">Attributes</li>
+          <li class="dropzone" data-accept="Context">Context</li>
+          <li class="dropzone" data-accept="Extra">Extra</li>
+        </ul>
+      </div>
+    </div>
+    <button id="checkBtn" disabled>Check Answers</button>
+    <button id="resetBtn">Reset</button>
+    <div class="result" id="result"></div>
+  </section>
+  <script>
+    const draggables = document.querySelectorAll('li[draggable="true"]');
+    const dropzones = document.querySelectorAll('.dropzone');
+    const checkBtn = document.getElementById('checkBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultBox = document.getElementById('result');
+    draggables.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.outerHTML);
+        item.classList.add('dragging');
+      });
+      item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    });
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.style.borderColor = 'var(--brand-red)';
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.style.borderColor = '#bbb';
+      });
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        const draggedHTML = e.dataTransfer.getData('text/plain');
+        zone.innerHTML = draggedHTML;
+        zone.classList.add('filled');
+        const temp = document.createElement('div');
+        temp.innerHTML = draggedHTML;
+        zone.dataset.useranswer = temp.firstChild.dataset.answer;
+        zone.style.borderColor = '#28a745';
+        enableCheck();
+      });
+    });
+    function enableCheck() {
+      const filled = [...dropzones].every(z => z.classList.contains('filled'));
+      checkBtn.disabled = !filled;
+    }
+    checkBtn.addEventListener('click', () => {
+      let correct = 0;
+      dropzones.forEach(zone => {
+        if (zone.dataset.useranswer === zone.dataset.accept) {
+          zone.style.background = '#d4edda';
+          correct++;
+        } else {
+          zone.style.background = '#f8d7da';
+        }
+      });
+      resultBox.textContent = `You matched ${correct} out of 5 correctly.`;
+    });
+    resetBtn.addEventListener('click', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>
