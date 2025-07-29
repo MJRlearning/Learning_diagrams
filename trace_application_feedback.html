@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRACE Prompt Writing & Feedback</title>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #EFEFEF;
+      padding: 2rem;
+      color: #3D3D3D;
+    }
+    h1, h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: #9E1B32;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background: #9E1B32;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 1rem;
+    }
+    .output {
+      background: white;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .checklist span {
+      display: block;
+      margin: 0.25rem 0;
+    }
+    .checklist span.pass {
+      color: green;
+    }
+    .checklist span.fail {
+      color: red;
+    }
+    .prompt-display {
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 Application Task: Write Prompts Using TRACE</h1>
+  <p>Write your AI prompts below. Then click <strong>'Generate Feedback'</strong> to see what the AI might return and how well your prompt matches TRACE.<br>
+  <strong>You can keep amending your prompts and asking for feedback. Try to get all 5 ✓ ticks!</strong></p>
+
+  <h2>1. Writing Prompt for 7th Grade (Descriptive Language)</h2>
+  <textarea id="input1" placeholder="Enter your prompt here..."></textarea>
+
+  <h2>2. Quiz Questions on Plant Reproduction (5th Grade)</h2>
+  <textarea id="input2" placeholder="Enter your prompt here..."></textarea>
+
+  <h2>3. Visual Aid on Water Cycle (4th Grade Science)</h2>
+  <textarea id="input3" placeholder="Enter your prompt here..."></textarea>
+
+  <button onclick="generateFeedback()">Generate Feedback</button>
+  <button onclick="resetFields()">Reset</button>
+
+  <div id="feedback"></div>
+
+  <script>
+    function generateChecklist(prompt) {
+      const checks = {
+        Task: /(Create|Generate|Design|Write)/i.test(prompt),
+        Role: /Act as|Pretend to be/i.test(prompt),
+        Attributes: /\d+\s?(questions|activities|items|steps)/i.test(prompt),
+        Context: /grade|for|target/i.test(prompt),
+        Extra: /Avoid|Include|Format/i.test(prompt)
+      };
+
+      return `<div class='checklist'>
+        <strong>TRACE Checklist:</strong>
+        <span class='${checks.Task ? "pass" : "fail"}'>${checks.Task ? '✓' : '✗'} Task</span>
+        <span class='${checks.Role ? "pass" : "fail"}'>${checks.Role ? '✓' : '✗'} Role</span>
+        <span class='${checks.Attributes ? "pass" : "fail"}'>${checks.Attributes ? '✓' : '✗'} Attributes</span>
+        <span class='${checks.Context ? "pass" : "fail"}'>${checks.Context ? '✓' : '✗'} Context</span>
+        <span class='${checks.Extra ? "pass" : "fail"}'>${checks.Extra ? '✓' : '✗'} Extra Instructions</span>
+      </div>`;
+    }
+
+    function generateSimulatedOutput(prompt) {
+      let example = "This is where the AI would respond based on your input.";
+      if (prompt.toLowerCase().includes("descriptive")) {
+        example = "Here's a writing task where students describe their favourite place using all five senses...";
+      } else if (prompt.toLowerCase().includes("quiz") || prompt.toLowerCase().includes("plant")) {
+        example = "1. What is pollination?\n2. Name two parts of a plant that help in reproduction...";
+      } else if (prompt.toLowerCase().includes("visual") || prompt.toLowerCase().includes("water")) {
+        example = "A labelled diagram showing the evaporation, condensation, precipitation and collection phases...";
+      }
+
+      return `<strong>AI's Simulated Response:</strong><br><em>${example}</em>`;
+    }
+
+    function generateFeedback() {
+      const prompts = [
+        document.getElementById('input1').value,
+        document.getElementById('input2').value,
+        document.getElementById('input3').value
+      ];
+
+      let html = '';
+      prompts.forEach((prompt, i) => {
+        html += `<div class='output'>
+          <h3>Prompt ${i + 1} Feedback</h3>
+          <div class='prompt-display'><strong>Your Prompt:</strong><br>${prompt}</div>
+          ${generateSimulatedOutput(prompt)}
+          ${generateChecklist(prompt)}
+        </div>`;
+      });
+
+      document.getElementById('feedback').innerHTML = html;
+    }
+
+    function resetFields() {
+      document.getElementById('input1').value = '';
+      document.getElementById('input2').value = '';
+      document.getElementById('input3').value = '';
+      document.getElementById('feedback').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
