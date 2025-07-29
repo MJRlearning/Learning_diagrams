@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRACE Real-World Application</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #EFEFEF;
+      padding: 2rem;
+      color: #3D3D3D;
+    }
+    h1, h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: #9E1B32;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      height: 200px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 0.5rem;
+      margin-right: 1rem;
+      background-color: #9E1B32;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎒 TRACE Real-World Application</h1>
+  <p>Use the space below to complete your reflection. When finished, you can download your work as a text file, PDF, or Word document for sharing or record keeping.</p>
+
+  <label for="name">Your Name:</label>
+  <input type="text" id="name" placeholder="Enter your name...">
+
+  <label for="title">Lesson Title:</label>
+  <input type="text" id="title" placeholder="Enter lesson or activity title...">
+
+  <label for="reflection">Your TRACE Reflection:</label>
+  <textarea id="reflection" placeholder="Write your TRACE-based lesson plan or reflection here..."></textarea>
+
+  <button onclick="downloadText()">Download .txt</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+  <button onclick="downloadDoc()">Download .doc</button>
+  <button onclick="clearFields()">Clear</button>
+
+  <script>
+    function getFullContent() {
+      const name = document.getElementById('name').value.trim();
+      const title = document.getElementById('title').value.trim();
+      const reflection = document.getElementById('reflection').value.trim();
+      return `Name: ${name}\nLesson Title: ${title}\n\nTRACE Reflection:\n${reflection}`;
+    }
+
+    function downloadText() {
+      const content = getFullContent();
+      if (!content.trim()) {
+        alert("Please fill in your response before downloading.");
+        return;
+      }
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'My_TRACE_Reflection.txt');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    async function downloadPDF() {
+      const content = getFullContent();
+      if (!content.trim()) {
+        alert("Please fill in your response before downloading.");
+        return;
+      }
+      const { jsPDF } = await window.jspdf;
+      const doc = new jsPDF();
+      const lines = doc.splitTextToSize(content, 180);
+      doc.text(lines, 10, 20);
+      doc.save('My_TRACE_Reflection.pdf');
+    }
+
+    function downloadDoc() {
+      const content = getFullContent().replace(/\n/g, '<br>');
+      const html = `<!DOCTYPE html><html><body>${content}</body></html>`;
+      const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'My_TRACE_Reflection.doc';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function clearFields() {
+      document.getElementById('name').value = '';
+      document.getElementById('title').value = '';
+      document.getElementById('reflection').value = '';
+    }
+  </script>
+</body>
+</html>
