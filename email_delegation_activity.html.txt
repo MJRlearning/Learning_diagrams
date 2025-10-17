@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in the Inbox: Task Delegation Activity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            margin: 20px 30px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .scene {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scene-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .scene-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .dialogue {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .dialogue::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #e0e0e0;
+        }
+
+        .speaker {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-badge {
+            background: #764ba2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+        }
+
+        .options {
+            margin: 30px 0;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-btn:active {
+            transform: translateX(3px);
+        }
+
+        .option-number {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .consequence {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .consequence.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .consequence-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .consequence.good {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .consequence.good .consequence-title {
+            color: #155724;
+        }
+
+        .consequence.bad {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .consequence.bad .consequence-title {
+            color: #721c24;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .summary ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .summary li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary li:last-child {
+            border-bottom: none;
+        }
+
+        .summary li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.2em;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI in the Inbox</h1>
+            <p>Effective Task Delegation to AI Agents</p>
+            <div class="role-badge">Your Role: Sam Rivera, Customer Support Lead</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="content">
+            <!-- Scene 1 -->
+            <div class="scene active" id="scene1">
+                <div class="scene-header">
+                    <div class="scene-title">Scene 1: Morning Inbox Overload</div>
+                    <p>It's Monday morning at BrightPath Solutions. Your team is testing MailMind, a new AI inbox manager designed to speed up customer responses.</p>
+                </div>
+
+                <div class="dialogue">
+                    <div class="speaker">👤 Amira (Support Agent)</div>
+                    <p>"Sam, we've got 180 new emails from overnight. MailMind says it can auto-reply to about 60% of them. Should I let it handle those?"</p>
+                </div>
+
+                <div class="options">
+                    <p style="font-weight: bold; margin-bottom: 15px;">What do you decide?</p>
+                    
+                    <button class="option-btn" onclick="selectOption(1, 1)">
+                        <span class="option-number">🤖</span>
+                        <strong>Let MailMind handle all auto-replies to save time.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(1, 2)">
+                        <span class="option-number">⚖️</span>
+                        <strong>Let MailMind draft replies, but require human approval before sending.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(1, 3)">
+                        <span class="option-number">🧍</span>
+                        <strong>Disable MailMind for now and let humans handle everything manually.</strong>
+                    </button>
+                </div>
+
+                <div id="consequence1" class="consequence"></div>
+
+                <div class="nav-buttons hidden" id="nav1">
+                    <button class="btn btn-primary" onclick="nextScene(2)">Continue to Scene 2 →</button>
+                </div>
+            </div>
+
+            <!-- Scene 2 -->
+            <div class="scene" id="scene2">
+                <div class="scene-header">
+                    <div class="scene-title">Scene 2: The Escalation Email</div>
+                    <p>Later that day, a challenging customer email arrives. MailMind has drafted a response, but something seems off...</p>
+                </div>
+
+                <div class="dialogue">
+                    <div class="speaker">🤖 MailMind <span class="ai-badge">AI</span></div>
+                    <p>"Hello. We regret the inconvenience. Please contact your bank for a refund."</p>
+                </div>
+
+                <div class="dialogue">
+                    <div class="speaker">👤 Amira</div>
+                    <p>"Uh… that sounds robotic and unhelpful. This customer was double-charged and is really frustrated. Should we tweak MailMind's settings?"</p>
+                </div>
+
+                <div class="options">
+                    <p style="font-weight: bold; margin-bottom: 15px;">How do you respond?</p>
+                    
+                    <button class="option-btn" onclick="selectOption(2, 1)">
+                        <span class="option-number">📝</span>
+                        <strong>Update AI prompt to emphasize empathy and company tone.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(2, 2)">
+                        <span class="option-number">⚙️</span>
+                        <strong>Restrict AI from replying to any complaint emails.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(2, 3)">
+                        <span class="option-number">🚫</span>
+                        <strong>Ignore it — customers will get used to AI tone over time.</strong>
+                    </button>
+                </div>
+
+                <div id="consequence2" class="consequence"></div>
+
+                <div class="nav-buttons hidden" id="nav2">
+                    <button class="btn btn-secondary" onclick="previousScene(1)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextScene(3)">Continue to Scene 3 →</button>
+                </div>
+            </div>
+
+            <!-- Scene 3 -->
+            <div class="scene" id="scene3">
+                <div class="scene-header">
+                    <div class="scene-title">Scene 3: Performance Review</div>
+                    <p>It's the end of the week. Leadership wants your assessment of the AI pilot program.</p>
+                </div>
+
+                <div class="dialogue">
+                    <div class="speaker">👔 Director</div>
+                    <p>"Sam, we've been watching the MailMind rollout closely. Should we expand its responsibilities next month?"</p>
+                </div>
+
+                <div class="options">
+                    <p style="font-weight: bold; margin-bottom: 15px;">What's your recommendation?</p>
+                    
+                    <button class="option-btn" onclick="selectOption(3, 1)">
+                        <span class="option-number">🌱</span>
+                        <strong>Yes, but only after refining prompts and approval workflows.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(3, 2)">
+                        <span class="option-number">🚀</span>
+                        <strong>Yes, let's automate more — speed is worth the risk.</strong>
+                    </button>
+
+                    <button class="option-btn" onclick="selectOption(3, 3)">
+                        <span class="option-number">🧯</span>
+                        <strong>No, it's too risky. Turn off AI use entirely.</strong>
+                    </button>
+                </div>
+
+                <div id="consequence3" class="consequence"></div>
+
+                <div class="nav-buttons hidden" id="nav3">
+                    <button class="btn btn-secondary" onclick="previousScene(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="showSummary()">View Results & Learning Takeaways →</button>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="scene" id="summary">
+                <div class="scene-header">
+                    <div class="scene-title">📊 Your AI Delegation Journey</div>
+                </div>
+
+                <div class="score-display" id="scoreDisplay"></div>
+
+                <div class="summary">
+                    <h3>🧭 Key Learning Takeaways</h3>
+                    <ul>
+                        <li><strong>Set Clear Boundaries:</strong> AI works best when given specific, well-defined tasks with clear constraints.</li>
+                        <li><strong>Build Review Workflows:</strong> Human oversight ensures quality and catches errors before they reach customers.</li>
+                        <li><strong>Refine Continuously:</strong> AI prompts and parameters need regular adjustment based on real-world performance.</li>
+                        <li><strong>Balance Speed and Quality:</strong> Automation can increase efficiency, but not at the cost of customer trust.</li>
+                        <li><strong>Consider Ethical Impact:</strong> Every AI decision affects real people—customers, team members, and your company's reputation.</li>
+                        <li><strong>Start Small, Scale Smart:</strong> Pilot programs help identify issues before full deployment.</li>
+                    </ul>
+                </div>
+
+                <div id="choicesSummary" class="summary" style="margin-top: 20px;">
+                    <h3>Your Decisions:</h3>
+                    <div id="choicesContent"></div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-primary" onclick="restart()">🔄 Try Different Choices</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const choices = {
+            scene1: 0,
+            scene2: 0,
+            scene3: 0
+        };
+
+        const consequences = {
+            scene1: {
+                1: {
+                    text: "⚠️ Fast results, but 15% of responses are tone-deaf or inaccurate — customers complain. Your team starts getting negative feedback and you notice some emails require follow-up corrections.",
+                    type: "bad"
+                },
+                2: {
+                    text: "✅ Slower output, but tone and accuracy remain strong — team gains confidence in AI use. Response times improve by 40% while maintaining quality. Your team appreciates having AI as an assistant, not a replacement.",
+                    type: "good"
+                },
+                3: {
+                    text: "⚠️ Excellent quality, but your team burns out quickly and response times suffer. By Wednesday, average response time reaches 8 hours. Amira reports feeling overwhelmed.",
+                    type: "bad"
+                }
+            },
+            scene2: {
+                1: {
+                    text: "✅ AI responses improve significantly — customers appreciate faster and friendlier replies. You update the prompt to include: 'Always acknowledge frustration, take ownership, and provide specific next steps.' Quality scores rise by 25%.",
+                    type: "good"
+                },
+                2: {
+                    text: "⚠️ Human workload rises again, but AI mistakes drop. Your team now manually handles 70% of emails. The benefits of automation begin to diminish as staff time is consumed by categorization.",
+                    type: "bad"
+                },
+                3: {
+                    text: "❌ Customer satisfaction plummets; leadership questions AI rollout. By Friday, three customers have escalated complaints to social media. The Director schedules an emergency meeting about the AI program.",
+                    type: "bad"
+                }
+            },
+            scene3: {
+                1: {
+                    text: "✅ Sustainable AI integration, improved team trust, fewer escalations. Over the next month, you implement a tiered approval system. Simple queries get auto-sent, moderate complexity requires quick review, complex issues go fully manual. Efficiency increases by 60% with 98% quality scores.",
+                    type: "good"
+                },
+                2: {
+                    text: "⚠️ Initial speed boost, but growing error rate and reputational risk. The first week shows impressive metrics, but by week three, complaint volume doubles. You're spending more time on damage control than the AI saved.",
+                    type: "bad"
+                },
+                3: {
+                    text: "⚠️ Safe short-term, but you lose future automation benefits. Six months later, your competitors are responding 3x faster using AI-assisted workflows. BrightPath begins losing customers to more responsive companies.",
+                    type: "bad"
+                }
+            }
+        };
+
+        function selectOption(scene, option) {
+            choices[`scene${scene}`] = option;
+            
+            const consequenceDiv = document.getElementById(`consequence${scene}`);
+            const consequence = consequences[`scene${scene}`][option];
+            
+            consequenceDiv.className = `consequence show ${consequence.type}`;
+            consequenceDiv.innerHTML = `
+                <div class="consequence-title">Consequence:</div>
+                <p>${consequence.text}</p>
+            `;
+
+            document.getElementById(`nav${scene}`).classList.remove('hidden');
+            
+            updateProgress();
+        }
+
+        function nextScene(sceneNum) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById(`scene${sceneNum}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function previousScene(sceneNum) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById(`scene${sceneNum}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const completed = Object.values(choices).filter(c => c > 0).length;
+            const progress = (completed / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showSummary() {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById('summary').classList.add('active');
+            
+            const goodChoices = Object.keys(choices).filter(key => {
+                const scene = key.replace('scene', '');
+                const choice = choices[key];
+                return consequences[key][choice].type === 'good';
+            }).length;
+
+            const scoreText = goodChoices === 3 
+                ? "🏆 Excellent! You demonstrated strong AI delegation skills."
+                : goodChoices === 2 
+                ? "👍 Good job! You made mostly sound decisions."
+                : "📚 Keep learning! Review the takeaways to improve your AI delegation strategy.";
+
+            document.getElementById('scoreDisplay').textContent = scoreText;
+
+            const choicesContent = document.getElementById('choicesContent');
+            choicesContent.innerHTML = `
+                <p><strong>Scene 1:</strong> You chose option ${choices.scene1}</p>
+                <p><strong>Scene 2:</strong> You chose option ${choices.scene2}</p>
+                <p><strong>Scene 3:</strong> You chose option ${choices.scene3}</p>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        function restart() {
+            choices.scene1 = 0;
+            choices.scene2 = 0;
+            choices.scene3 = 0;
+            
+            document.querySelectorAll('.consequence').forEach(c => {
+                c.classList.remove('show');
+                c.innerHTML = '';
+            });
+            
+            document.querySelectorAll('.nav-buttons').forEach(n => n.classList.add('hidden'));
+            
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById('scene1').classList.add('active');
+            
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
