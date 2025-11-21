@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADDIE Model Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .instructions {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .column h2 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .draggable {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: move;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            user-select: none;
+            touch-action: none;
+        }
+
+        .draggable:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .drop-zone {
+            background: #f8f9fa;
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 80px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .drop-zone h3 {
+            color: #764ba2;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone.drag-over {
+            background: #e7f3ff;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .drop-zone.filled {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .drop-zone.error {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        .dropped-item {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .success {
+            color: #28a745;
+        }
+
+        .error-msg {
+            color: #dc3545;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .instructions {
+                font-size: 1em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 ADDIE Model Exercise</h1>
+        <p class="instructions">Match each activity to the correct ADDIE phase by dragging and dropping</p>
+        
+        <div class="game-area">
+            <div class="column">
+                <h2>Activities</h2>
+                <div class="draggable" draggable="true" data-answer="analysis">
+                    Conducting interviews and surveys
+                </div>
+                <div class="draggable" draggable="true" data-answer="design">
+                    Writing objectives and outlining modules
+                </div>
+                <div class="draggable" draggable="true" data-answer="development">
+                    Building modules and resources
+                </div>
+                <div class="draggable" draggable="true" data-answer="implementation">
+                    Rolling out the course
+                </div>
+                <div class="draggable" draggable="true" data-answer="evaluation">
+                    Collecting feedback and performance data
+                </div>
+            </div>
+
+            <div class="column">
+                <h2>ADDIE Phases</h2>
+                <div class="drop-zone" data-phase="analysis">
+                    <h3>📊 Analysis</h3>
+                    <small>Gathering upfront information about learner needs</small>
+                </div>
+                <div class="drop-zone" data-phase="design">
+                    <h3>📐 Design</h3>
+                    <small>Creating a blueprint for instruction</small>
+                </div>
+                <div class="drop-zone" data-phase="development">
+                    <h3>🔨 Development</h3>
+                    <small>Producing learning materials</small>
+                </div>
+                <div class="drop-zone" data-phase="implementation">
+                    <h3>🚀 Implementation</h3>
+                    <small>Delivering the training to learners</small>
+                </div>
+                <div class="drop-zone" data-phase="evaluation">
+                    <h3>📈 Evaluation</h3>
+                    <small>Assessing effectiveness and identifying improvements</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="resetExercise()">🔄 Reset</button>
+            <button onclick="checkAnswers()">✓ Check Answers</button>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        let draggedElement = null;
+        let touchedElement = null;
+
+        // Desktop drag and drop
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZones = document.querySelectorAll('.drop-zone');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggedElement = draggable;
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+
+            // Touch events for mobile
+            draggable.addEventListener('touchstart', (e) => {
+                touchedElement = draggable;
+                draggable.classList.add('dragging');
+                e.preventDefault();
+            });
+
+            draggable.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                dropZones.forEach(zone => zone.classList.remove('drag-over'));
+                
+                if (elementBelow && elementBelow.classList.contains('drop-zone')) {
+                    elementBelow.classList.add('drag-over');
+                }
+            });
+
+            draggable.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                draggable.classList.remove('dragging');
+                
+                const touch = e.changedTouches[0];
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                dropZones.forEach(zone => zone.classList.remove('drag-over'));
+                
+                if (elementBelow) {
+                    const dropZone = elementBelow.closest('.drop-zone');
+                    if (dropZone) {
+                        handleDrop(dropZone, touchedElement);
+                    }
+                }
+                
+                touchedElement = null;
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                handleDrop(zone, draggedElement);
+            });
+        });
+
+        function handleDrop(dropZone, element) {
+            if (!element) return;
+
+            const existingItem = dropZone.querySelector('.dropped-item');
+            if (existingItem) {
+                existingItem.remove();
+            }
+
+            const droppedItem = document.createElement('div');
+            droppedItem.className = 'dropped-item';
+            droppedItem.textContent = element.textContent.trim();
+            droppedItem.dataset.answer = element.dataset.answer;
+            dropZone.appendChild(droppedItem);
+
+            element.style.display = 'none';
+            
+            dropZone.classList.remove('error');
+            document.getElementById('message').textContent = '';
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+
+            dropZones.forEach(zone => {
+                const droppedItem = zone.querySelector('.dropped-item');
+                if (droppedItem) {
+                    total++;
+                    const isCorrect = droppedItem.dataset.answer === zone.dataset.phase;
+                    
+                    if (isCorrect) {
+                        zone.classList.add('filled');
+                        zone.classList.remove('error');
+                        correct++;
+                    } else {
+                        zone.classList.add('error');
+                        zone.classList.remove('filled');
+                    }
+                }
+            });
+
+            const messageEl = document.getElementById('message');
+            if (total === 0) {
+                messageEl.textContent = 'Please drag items to the drop zones first!';
+                messageEl.className = 'message error-msg';
+            } else if (correct === 5) {
+                messageEl.textContent = '🎉 Perfect! You matched all activities correctly!';
+                messageEl.className = 'message success';
+            } else {
+                messageEl.textContent = `You got ${correct} out of ${total} correct. Try again!`;
+                messageEl.className = 'message error-msg';
+            }
+        }
+
+        function resetExercise() {
+            draggables.forEach(draggable => {
+                draggable.style.display = 'block';
+            });
+
+            dropZones.forEach(zone => {
+                const droppedItem = zone.querySelector('.dropped-item');
+                if (droppedItem) {
+                    droppedItem.remove();
+                }
+                zone.classList.remove('filled', 'error', 'drag-over');
+            });
+
+            document.getElementById('message').textContent = '';
+        }
+    </script>
+</body>
+</html>
