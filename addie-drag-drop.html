@@ -64,26 +64,32 @@
             text-align: center;
         }
 
-        .draggable {
+        .activity {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
             border-radius: 12px;
-            cursor: move;
+            cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             user-select: none;
-            touch-action: none;
+            border: 3px solid transparent;
         }
 
-        .draggable:hover {
+        .activity:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
-        .draggable.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
+        .activity.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .activity.placed {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .drop-zone {
@@ -94,6 +100,7 @@
             min-height: 80px;
             transition: all 0.3s;
             position: relative;
+            cursor: pointer;
         }
 
         .drop-zone h3 {
@@ -102,15 +109,26 @@
             margin-bottom: 10px;
         }
 
-        .drop-zone.drag-over {
+        .drop-zone:hover {
             background: #e7f3ff;
             border-color: #667eea;
             transform: scale(1.02);
         }
 
+        .drop-zone.selectable {
+            background: #fff3cd;
+            border-color: #ffc107;
+            animation: pulse 1s infinite;
+        }
+
         .drop-zone.filled {
             background: #d4edda;
             border-color: #28a745;
+            cursor: default;
+        }
+
+        .drop-zone.filled:hover {
+            transform: none;
         }
 
         .drop-zone.error {
@@ -126,6 +144,28 @@
             border-radius: 8px;
             margin-top: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
         }
 
         .controls {
@@ -174,6 +214,11 @@
             75% { transform: translateX(10px); }
         }
 
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
         @media (max-width: 768px) {
             .game-area {
                 grid-template-columns: 1fr;
@@ -196,24 +241,24 @@
 <body>
     <div class="container">
         <h1>🎯 ADDIE Model Exercise</h1>
-        <p class="instructions">Match each activity to the correct ADDIE phase by dragging and dropping</p>
+        <p class="instructions">Click on an activity, then click on the matching ADDIE phase</p>
         
         <div class="game-area">
             <div class="column">
                 <h2>Activities</h2>
-                <div class="draggable" draggable="true" data-answer="analysis">
+                <div class="activity" data-answer="analysis">
                     Conducting interviews and surveys
                 </div>
-                <div class="draggable" draggable="true" data-answer="design">
+                <div class="activity" data-answer="design">
                     Writing objectives and outlining modules
                 </div>
-                <div class="draggable" draggable="true" data-answer="development">
+                <div class="activity" data-answer="development">
                     Building modules and resources
                 </div>
-                <div class="draggable" draggable="true" data-answer="implementation">
+                <div class="activity" data-answer="implementation">
                     Rolling out the course
                 </div>
-                <div class="draggable" draggable="true" data-answer="evaluation">
+                <div class="activity" data-answer="evaluation">
                     Collecting feedback and performance data
                 </div>
             </div>
@@ -252,96 +297,94 @@
     </div>
 
     <script>
-        let draggedElement = null;
-        let touchedElement = null;
+        let selectedActivity = null;
 
-        // Desktop drag and drop
-        const draggables = document.querySelectorAll('.draggable');
+        const activities = document.querySelectorAll('.activity');
         const dropZones = document.querySelectorAll('.drop-zone');
 
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', () => {
-                draggedElement = draggable;
-                draggable.classList.add('dragging');
-            });
+        // Click on activity to select it
+        activities.forEach(activity => {
+            activity.addEventListener('click', () => {
+                // Don't select if already placed
+                if (activity.classList.contains('placed')) return;
 
-            draggable.addEventListener('dragend', () => {
-                draggable.classList.remove('dragging');
-            });
+                // Deselect all activities
+                activities.forEach(a => a.classList.remove('selected'));
+                
+                // Remove selectable state from all drop zones
+                dropZones.forEach(z => z.classList.remove('selectable'));
 
-            // Touch events for mobile
-            draggable.addEventListener('touchstart', (e) => {
-                touchedElement = draggable;
-                draggable.classList.add('dragging');
-                e.preventDefault();
-            });
+                // Select this activity
+                activity.classList.add('selected');
+                selectedActivity = activity;
 
-            draggable.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                
-                dropZones.forEach(zone => zone.classList.remove('drag-over'));
-                
-                if (elementBelow && elementBelow.classList.contains('drop-zone')) {
-                    elementBelow.classList.add('drag-over');
-                }
-            });
-
-            draggable.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                draggable.classList.remove('dragging');
-                
-                const touch = e.changedTouches[0];
-                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                
-                dropZones.forEach(zone => zone.classList.remove('drag-over'));
-                
-                if (elementBelow) {
-                    const dropZone = elementBelow.closest('.drop-zone');
-                    if (dropZone) {
-                        handleDrop(dropZone, touchedElement);
+                // Make drop zones selectable
+                dropZones.forEach(zone => {
+                    if (!zone.querySelector('.dropped-item')) {
+                        zone.classList.add('selectable');
                     }
-                }
-                
-                touchedElement = null;
+                });
+
+                document.getElementById('message').textContent = 'Now click on an ADDIE phase to place this activity';
+                document.getElementById('message').className = 'message';
             });
         });
 
+        // Click on drop zone to place selected activity
         dropZones.forEach(zone => {
-            zone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                zone.classList.add('drag-over');
-            });
+            zone.addEventListener('click', () => {
+                if (!selectedActivity) {
+                    document.getElementById('message').textContent = 'Please select an activity first';
+                    document.getElementById('message').className = 'message error-msg';
+                    return;
+                }
 
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('drag-over');
-            });
+                // Check if zone already has an item
+                if (zone.querySelector('.dropped-item')) {
+                    document.getElementById('message').textContent = 'This phase already has an activity. Remove it first.';
+                    document.getElementById('message').className = 'message error-msg';
+                    return;
+                }
 
-            zone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                zone.classList.remove('drag-over');
-                handleDrop(zone, draggedElement);
+                // Place the activity
+                const droppedItem = document.createElement('div');
+                droppedItem.className = 'dropped-item';
+                droppedItem.textContent = selectedActivity.textContent.trim();
+                droppedItem.dataset.answer = selectedActivity.dataset.answer;
+                
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removeItem(zone, selectedActivity);
+                };
+                droppedItem.appendChild(removeBtn);
+                
+                zone.appendChild(droppedItem);
+
+                // Mark activity as placed
+                selectedActivity.classList.add('placed');
+                selectedActivity.classList.remove('selected');
+
+                // Clear selection
+                selectedActivity = null;
+                dropZones.forEach(z => z.classList.remove('selectable'));
+                
+                zone.classList.remove('error');
+                document.getElementById('message').textContent = '';
             });
         });
 
-        function handleDrop(dropZone, element) {
-            if (!element) return;
-
-            const existingItem = dropZone.querySelector('.dropped-item');
-            if (existingItem) {
-                existingItem.remove();
+        function removeItem(zone, activity) {
+            const droppedItem = zone.querySelector('.dropped-item');
+            if (droppedItem) {
+                droppedItem.remove();
             }
-
-            const droppedItem = document.createElement('div');
-            droppedItem.className = 'dropped-item';
-            droppedItem.textContent = element.textContent.trim();
-            droppedItem.dataset.answer = element.dataset.answer;
-            dropZone.appendChild(droppedItem);
-
-            element.style.display = 'none';
             
-            dropZone.classList.remove('error');
+            activity.classList.remove('placed');
+            zone.classList.remove('filled', 'error');
             document.getElementById('message').textContent = '';
         }
 
@@ -368,7 +411,7 @@
 
             const messageEl = document.getElementById('message');
             if (total === 0) {
-                messageEl.textContent = 'Please drag items to the drop zones first!';
+                messageEl.textContent = 'Please place items in the drop zones first!';
                 messageEl.className = 'message error-msg';
             } else if (correct === 5) {
                 messageEl.textContent = '🎉 Perfect! You matched all activities correctly!';
@@ -380,8 +423,8 @@
         }
 
         function resetExercise() {
-            draggables.forEach(draggable => {
-                draggable.style.display = 'block';
+            activities.forEach(activity => {
+                activity.classList.remove('placed', 'selected');
             });
 
             dropZones.forEach(zone => {
@@ -389,9 +432,10 @@
                 if (droppedItem) {
                     droppedItem.remove();
                 }
-                zone.classList.remove('filled', 'error', 'drag-over');
+                zone.classList.remove('filled', 'error', 'selectable');
             });
 
+            selectedActivity = null;
             document.getElementById('message').textContent = '';
         }
     </script>
