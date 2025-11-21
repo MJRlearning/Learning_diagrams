@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Enhanced Instructional Designer Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .quiz-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .option {
+            margin: 10px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .option label {
+            cursor: pointer;
+            display: inline;
+        }
+        
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background: #5568d3;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .results p {
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>AI-Enhanced Instructional Designer</h1>
+            <p>Test your understanding of the skills required for the modern AI-enhanced instructional designer.</p>
+        </div>
+        
+        <form id="quizForm">
+            <div class="question" data-question="1">
+                <div class="question-header">1. Which skill best represents how instructional designers use AI to enhance personalisation for learners?</div>
+                <div class="option">
+                    <input type="radio" name="q1" value="a" id="q1a">
+                    <label for="q1a">Developing manual branching scenarios</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="b" id="q1b">
+                    <label for="q1b">Using AI tools to analyse learner behaviour and tailor content</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="c" id="q1c">
+                    <label for="q1c">Designing only linear eLearning pathways</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q1" value="d" id="q1d">
+                    <label for="q1d">Relying exclusively on SMEs for content updates</label>
+                </div>
+                <div class="feedback">AI allows IDs to analyse learner needs in real time and tailor pathways for greater personalisation.</div>
+            </div>
+            
+            <div class="question" data-question="2">
+                <div class="question-header">2. Which activity demonstrates effective use of prompt engineering in instructional design?</div>
+                <div class="option">
+                    <input type="radio" name="q2" value="a" id="q2a">
+                    <label for="q2a">Writing long, unstructured questions for AI tools</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" value="b" id="q2b">
+                    <label for="q2b">Crafting clear role-based prompts with context and examples</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" value="c" id="q2c">
+                    <label for="q2c">Asking AI to "make a course" with no details</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q2" value="d" id="q2d">
+                    <label for="q2d">Relying on default AI settings</label>
+                </div>
+                <div class="feedback">Strong prompts include role, task, context, and examples, enabling accurate and useful outputs for design work.</div>
+            </div>
+            
+            <div class="question" data-question="3">
+                <div class="question-header">3. Which task benefits most from building a custom GPT?</div>
+                <div class="option">
+                    <input type="radio" name="q3" value="a" id="q3a">
+                    <label for="q3a">Making decorative icons for slides</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" value="b" id="q3b">
+                    <label for="q3b">Generating learner analytics without any inputs</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" value="c" id="q3c">
+                    <label for="q3c">Providing consistent feedback aligned to a specific course or organisation</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q3" value="d" id="q3d">
+                    <label for="q3d">Formatting PowerPoint templates</label>
+                </div>
+                <div class="feedback">Custom GPTs excel when they can use uploaded knowledge bases to deliver consistent, context-aware responses.</div>
+            </div>
+            
+            <div class="question" data-question="4">
+                <div class="question-header">4. Which factor is essential when evaluating an AI tool for instructional design use?</div>
+                <div class="option">
+                    <input type="radio" name="q4" value="a" id="q4a">
+                    <label for="q4a">Whether it uses bright colours</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" value="b" id="q4b">
+                    <label for="q4b">Whether it integrates with your LMS and workflow</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" value="c" id="q4c">
+                    <label for="q4c">Whether it creates long output automatically</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="q4" value="d" id="q4d">
+                    <label for="q4d">Whether it replaces human review</label>
+                </div>
+                <div class="feedback">IDs should choose AI tools that integrate smoothly into existing workflows and support efficiency without removing human oversight.</div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit Quiz</button>
+        </form>
+        
+        <div class="results" id="results">
+            <h2>Quiz Results</h2>
+            <p id="score"></p>
+        </div>
+    </div>
+    
+    <script>
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'b',
+            q3: 'c',
+            q4: 'b'
+        };
+        
+        const form = document.getElementById('quizForm');
+        const resultsDiv = document.getElementById('results');
+        const scoreP = document.getElementById('score');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            let totalQuestions = Object.keys(correctAnswers).length;
+            
+            Object.keys(correctAnswers).forEach(question => {
+                const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
+                const questionDiv = document.querySelector(`[data-question="${question.slice(1)}"]`);
+                const feedback = questionDiv.querySelector('.feedback');
+                const options = questionDiv.querySelectorAll('.option');
+                
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                if (selectedOption) {
+                    const parentOption = selectedOption.closest('.option');
+                    
+                    if (selectedOption.value === correctAnswers[question]) {
+                        score++;
+                        parentOption.classList.add('correct');
+                        feedback.classList.add('show', 'correct');
+                        feedback.innerHTML = '<strong>✓ Correct!</strong><br>' + feedback.textContent;
+                    } else {
+                        parentOption.classList.add('incorrect');
+                        feedback.classList.add('show', 'incorrect');
+                        feedback.innerHTML = '<strong>✗ Incorrect.</strong><br>' + feedback.textContent;
+                        
+                        const correctOption = questionDiv.querySelector(`input[value="${correctAnswers[question]}"]`).closest('.option');
+                        correctOption.classList.add('correct');
+                    }
+                }
+            });
+            
+            scoreP.textContent = `You scored ${score} out of ${totalQuestions} (${Math.round((score/totalQuestions)*100)}%)`;
+            resultsDiv.classList.add('show');
+            
+            form.querySelector('.submit-btn').disabled = true;
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
